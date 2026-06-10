@@ -2,55 +2,62 @@
 
 Every habit shapes your character.
 
-LifeQuest is a Flutter mobile app concept for a gamified habit builder. Real-life habits award XP, stats, coins, streak progress, and pet growth.
+LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns real-life habits into XP, stats, streaks, rewards, and pet growth.
+
+## Stack
+
+- Mobile: React Native + Expo
+- Language: TypeScript
+- Navigation: Expo Router
+- State: Zustand
+- Local DB: Expo SQLite
+- Animation: Reanimated + Lottie
+- Notifications: Expo Notifications
+- Backend later: Supabase or Firebase
+- IAP later: RevenueCat
+- Admin/Web later: Next.js
 
 ## Current Phase
 
-This repository contains Task 01 and Task 02 only:
+This repository has been reset from the initial Flutter spike to an Expo TypeScript foundation.
 
-- Flutter project architecture
-- Base app shell
-- Router setup
-- Theme setup
-- Feature/data/service folder structure
-- Initial dependencies in `pubspec.yaml`
+Implemented now:
 
-Gameplay, persistence, quest completion, notifications, and tests will be implemented in later tasks.
+- Expo Router app shell
+- LifeQuest onboarding screen
+- Dashboard preview screen
+- Placeholder Habits, Pet, Rewards, Settings screens
+- Zustand store with starter player and quest preview data
+- SQLite and notification service placeholders
+- Core theme and reusable UI components
 
-## Tech Stack
+Not implemented yet:
 
-- Flutter
-- Dart
-- flutter_riverpod
-- go_router
-- hive and hive_flutter
-- flutter_local_notifications
-- intl
+- Habit CRUD
+- Quest generation and completion
+- XP, streak, level, and pet progression logic
+- Local persistence wiring
+- Real notification scheduling
+- Backend sync
 
-## Getting Started
+## Local Setup
 
-Install Flutter, then run:
+Use Node 22+.
 
 ```bash
-flutter create --platforms=android,ios .
-flutter pub get
-flutter run
+npm install
+npm run typecheck
+npm start
 ```
 
-`flutter create .` is needed only if the cloned repository does not yet contain generated Android/iOS runner folders.
+Useful commands:
 
-## Project Structure
-
-```text
-lib/
-  main.dart
-  app/
-  core/
-  data/
-  features/
-  services/
+```bash
+npm run android
+npm run ios
+npm run web
 ```
 
-## Development Order
+## Recommended Next Task
 
-Next recommended task: implement data models for Player, Habit, Quest, Streak, and Pet.
+Implement data models and local repositories for Player, Habit, Quest, Streak, and Pet using Expo SQLite.
