@@ -5,6 +5,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { AppScreen } from '@/core/components/AppScreen';
 import { ProgressBar } from '@/core/components/ProgressBar';
 import { StatPill } from '@/core/components/StatPill';
+import { characterClasses } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
@@ -19,6 +20,7 @@ const navItems = [
 export default function DashboardScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
+  const playerClass = characterClasses[player.selectedClass];
 
   return (
     <AppScreen>
@@ -36,10 +38,10 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeIn.duration(350)} style={styles.heroCard}>
           <View style={styles.avatarRow}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{player.classIcon}</Text>
+              <Text style={styles.avatarText}>{playerClass.icon}</Text>
             </View>
             <View style={styles.avatarInfo}>
-              <Text style={styles.className}>{player.className}</Text>
+              <Text style={styles.className}>{playerClass.name}</Text>
               <Text style={styles.classCopy}>XP turns real life into character growth.</Text>
             </View>
           </View>
@@ -51,12 +53,12 @@ export default function DashboardScreen() {
           <Text style={styles.sectionMeta}>MVP preview</Text>
         </View>
         <View style={styles.statsGrid}>
-          <StatPill label="STR" value={player.stats.strength} />
-          <StatPill label="INT" value={player.stats.intelligence} />
-          <StatPill label="FOC" value={player.stats.focus} />
-          <StatPill label="WIS" value={player.stats.wisdom} />
-          <StatPill label="CHA" value={player.stats.charisma} />
-          <StatPill label="DIS" value={player.stats.discipline} />
+          <StatPill label="STR" value={player.strength} />
+          <StatPill label="INT" value={player.intelligence} />
+          <StatPill label="FOC" value={player.focus} />
+          <StatPill label="WIS" value={player.wisdom} />
+          <StatPill label="CHA" value={player.charisma} />
+          <StatPill label="DIS" value={player.discipline} />
         </View>
 
         <View style={styles.sectionHeader}>

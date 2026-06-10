@@ -28,7 +28,8 @@ Implemented now:
 - Dashboard preview screen
 - Placeholder Habits, Pet, Rewards, Settings screens
 - Zustand store with starter player and quest preview data
-- SQLite and notification service placeholders
+- SQLite schema and repository foundation for Player, Habit, Quest, Streak, and Pet
+- Notification service placeholder
 - Core theme and reusable UI components
 
 Not implemented yet:
@@ -36,7 +37,7 @@ Not implemented yet:
 - Habit CRUD
 - Quest generation and completion
 - XP, streak, level, and pet progression logic
-- Local persistence wiring
+- UI wiring for local persistence
 - Real notification scheduling
 - Backend sync
 
@@ -60,4 +61,4 @@ npm run web
 
 ## Recommended Next Task
 
-Implement data models and local repositories for Player, Habit, Quest, Streak, and Pet using Expo SQLite.
+Wire onboarding and habit creation to the local repositories, then generate daily quests from active habits.
