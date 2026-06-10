@@ -16,7 +16,7 @@ ThemeData buildLifeQuestTheme() {
       backgroundColor: Color(0xFFF7F4EC),
       foregroundColor: Color(0xFF17221F),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 0,
       margin: EdgeInsets.zero,

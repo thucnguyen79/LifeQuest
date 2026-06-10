@@ -10,7 +10,8 @@ class SettingsScreen extends StatelessWidget {
     return const LifeQuestScaffold(
       title: 'Settings',
       child: Center(
-        child: Text('Settings and local notifications will be implemented later.'),
+        child:
+            Text('Settings and local notifications will be implemented later.'),
       ),
     );
   }
