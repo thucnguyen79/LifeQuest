@@ -2,18 +2,18 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Add Tests
+## Next Task: Continue Task 14 UI Review
 
-Goal: add focused confidence around the MVP progression rules and quest generation.
+Goal: review the strengthened RPG UI polish pass and decide whether Task 14 is acceptable before starting tests.
 
 Scope:
 
-- Add test tooling that fits the Expo TypeScript app.
-- Cover XP and level calculation.
-- Cover pet level/growth calculation.
-- Cover reminder time parsing.
-- Cover daily quest generation rules where practical.
-- Keep tests focused on pure logic before UI tests.
+- Review dashboard, companion, habits, rewards, and settings in web preview.
+- Confirm RPG visual direction feels sufficiently different from the earlier plain card UI.
+- Check empty states, card hierarchy, and buttons on desktop-width preview and mobile-width preview.
+- Confirm Reanimated details are subtle and do not make layout unstable.
+- If the UI is accepted, mark Task 14 done again and move to Task 15 Add Tests.
+- If the UI still feels weak, continue polish before adding tests.
 
 Acceptance checks:
 
@@ -24,6 +24,7 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
+- Add focused tests for XP, level, reminder parsing, and quest generation logic.
 - Persist streak and pet repository hydration.
 - Add backend sync planning after local MVP confidence is higher.
 

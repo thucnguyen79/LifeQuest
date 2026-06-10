@@ -19,6 +19,8 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
+Paused on 2026-06-10 after an additional RPG UI polish pass. The next session should continue reviewing Task 14 before moving to tests.
+
 Implemented:
 
 - Expo Router app shell
@@ -96,4 +98,4 @@ Notes:
 
 ## Recommended Next Task
 
-Add focused tests for core progression logic. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue Task 14 UI review and polish validation. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

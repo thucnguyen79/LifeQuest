@@ -137,7 +137,9 @@ Status: Done
 - Lottie/Reanimated details
 - Mobile responsive polish
 
-Status: Done
+Status: In Review
+
+Pause note: additional RPG UI polish was pushed on 2026-06-10. Continue reviewing this task in the next session before moving to tests.
 
 ## 15. Add Tests
 
@@ -147,7 +149,7 @@ Status: Done
 - Quest generation
 - Repository behavior where useful
 
-Status: Next
+Status: Pending
 
 ## Build Rules
 
