@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { playerRepository } from '@/data/repositories';
+import { playerRepository } from '@/data/repositories/playerRepository';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
 import type { Quest } from '@/features/quests/types';
