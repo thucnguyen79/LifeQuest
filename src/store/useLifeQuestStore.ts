@@ -9,6 +9,7 @@ import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
 import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
+import { resetLocalData } from '@/features/settings/resetLocalData';
 import type { Quest } from '@/features/quests/types';
 
 type StreakSummary = {
@@ -32,6 +33,7 @@ type LifeQuestState = {
   notificationsMessage: string;
   scheduledReminderCount: number;
   isSchedulingNotifications: boolean;
+  soundEnabled: boolean;
   player: Player | null;
   activePet: Pet;
   streakSummary: StreakSummary;
@@ -46,6 +48,8 @@ type LifeQuestState = {
   createPlayer: (name: string, selectedClass: PlayerClass) => Player;
   setNotificationsEnabled: (enabled: boolean) => Promise<void>;
   rescheduleNotifications: () => Promise<void>;
+  toggleSound: () => void;
+  resetAppData: () => Promise<void>;
 };
 
 const initialPet: Pet = {
@@ -65,6 +69,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   notificationsMessage: 'Daily reminders are off.',
   scheduledReminderCount: 0,
   isSchedulingNotifications: false,
+  soundEnabled: true,
   player: null,
   activePet: initialPet,
   streakSummary: {
@@ -157,6 +162,29 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       notificationsStatus: result.status,
       notificationsMessage: result.message,
       scheduledReminderCount: result.scheduledCount,
+    });
+  },
+  toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+  resetAppData: async () => {
+    await syncHabitReminderNotifications(false);
+    resetLocalData();
+    set({
+      isHydrated: true,
+      notificationsEnabled: false,
+      notificationsStatus: 'idle',
+      notificationsMessage: 'Daily reminders are off.',
+      scheduledReminderCount: 0,
+      isSchedulingNotifications: false,
+      soundEnabled: true,
+      player: null,
+      activePet: initialPet,
+      streakSummary: {
+        currentStreak: 0,
+        longestStreak: 0,
+      },
+      rewardFeedback: null,
+      draftPlayerName: '',
+      dailyQuests: [],
     });
   },
 }));

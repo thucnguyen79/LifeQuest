@@ -127,7 +127,7 @@ Status: Done
 - Reset local data
 - Privacy placeholder
 
-Status: Next
+Status: Done
 
 ## 14. Polish UI
 
@@ -137,7 +137,7 @@ Status: Next
 - Lottie/Reanimated details
 - Mobile responsive polish
 
-Status: Pending
+Status: Next
 
 ## 15. Add Tests
 

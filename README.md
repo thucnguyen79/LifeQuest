@@ -33,7 +33,7 @@ Implemented:
 - Level-up detection and reward feedback banner
 - Companion pet screen with mood, bond XP, level, and growth stage
 - Local habit reminder scheduling with Expo Notifications
-- Settings notification toggle with web preview fallback
+- Settings screen with notifications, sound placeholder, privacy copy, and guarded reset
 - Placeholder Rewards screen
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
@@ -95,4 +95,4 @@ Notes:
 
 ## Recommended Next Task
 
-Implement settings cleanup and reset local data. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Polish the UI and RPG presentation. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

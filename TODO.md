@@ -2,18 +2,18 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Settings
+## Next Task: Polish UI
 
-Goal: complete the MVP settings screen beyond notification scheduling.
+Goal: make the MVP feel more cohesive, polished, and game-like without adding new backend scope.
 
 Scope:
 
-- Keep the notification toggle and scheduling status visible.
-- Add sound placeholder setting.
-- Add privacy placeholder text.
-- Add reset local data action for MVP testing.
-- Keep reset behavior explicit and guarded.
-- Do not add account/backend settings yet.
+- Improve RPG visual direction across dashboard, habits, companion, rewards, and settings.
+- Tighten empty states and button/card hierarchy.
+- Add small Reanimated/Lottie details where useful.
+- Keep mobile layouts responsive and readable.
+- Do not introduce backend sync, subscriptions, or inventory systems yet.
+- Keep placeholders simple where real assets are not ready.
 
 Acceptance checks:
 
