@@ -62,7 +62,7 @@ Status: Done
 - Pet preview
 - Navigation shortcuts
 
-Status: Started
+Status: Done
 
 ## 7. Implement Habit Creation
 

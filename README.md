@@ -26,7 +26,7 @@ Implemented:
 - LifeQuest onboarding intro
 - Player name and class selection flow
 - Player creation persisted locally
-- Dashboard preview screen
+- Dashboard preview screen with player, XP, stats, quests, pet, and streak context
 - Placeholder Habits, Companion, Rewards, Settings screens
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation

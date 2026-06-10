@@ -1,14 +1,22 @@
 import { create } from 'zustand';
 
 import { playerRepository } from '@/data/repositories/playerRepository';
+import type { Pet } from '@/data/models/pet';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
 import type { Quest } from '@/features/quests/types';
+
+type StreakSummary = {
+  currentStreak: number;
+  longestStreak: number;
+};
 
 type LifeQuestState = {
   isHydrated: boolean;
   notificationsEnabled: boolean;
   player: Player | null;
+  activePet: Pet;
+  streakSummary: StreakSummary;
   draftPlayerName: string;
   dailyQuests: Quest[];
   hydrateFromLocal: () => void;
@@ -38,10 +46,25 @@ const initialQuests: Quest[] = [
   },
 ];
 
+const initialPet: Pet = {
+  id: 'pet-starter',
+  name: 'Mochi',
+  type: 'dragon',
+  level: 1,
+  xp: 0,
+  mood: 'neutral',
+  growthStage: 'baby',
+};
+
 export const useLifeQuestStore = create<LifeQuestState>((set) => ({
   isHydrated: false,
   notificationsEnabled: false,
   player: null,
+  activePet: initialPet,
+  streakSummary: {
+    currentStreak: 0,
+    longestStreak: 0,
+  },
   draftPlayerName: '',
   dailyQuests: initialQuests,
   hydrateFromLocal: () => {

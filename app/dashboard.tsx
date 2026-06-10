@@ -20,6 +20,8 @@ const navItems = [
 export default function DashboardScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
+  const activePet = useLifeQuestStore((state) => state.activePet);
+  const streakSummary = useLifeQuestStore((state) => state.streakSummary);
 
   if (!player) {
     return <Redirect href="/" />;
@@ -64,6 +66,34 @@ export default function DashboardScreen() {
           <StatPill label="WIS" value={player.wisdom} />
           <StatPill label="CHA" value={player.charisma} />
           <StatPill label="DIS" value={player.discipline} />
+        </View>
+
+        <View style={styles.previewGrid}>
+          <Pressable onPress={() => router.push('/companion')} style={styles.previewCard}>
+            <View style={styles.previewHeader}>
+              <Text style={styles.previewEyebrow}>Companion</Text>
+              <View style={styles.previewIcon}>
+                <Text style={styles.previewIconText}>P</Text>
+              </View>
+            </View>
+            <Text style={styles.previewTitle}>{activePet.name}</Text>
+            <Text style={styles.previewBody}>
+              Lv {activePet.level} {activePet.type} / {activePet.mood} / {activePet.growthStage}
+            </Text>
+          </Pressable>
+
+          <View style={styles.previewCard}>
+            <View style={styles.previewHeader}>
+              <Text style={styles.previewEyebrow}>Streak</Text>
+              <View style={styles.previewIcon}>
+                <Text style={styles.previewIconText}>S</Text>
+              </View>
+            </View>
+            <Text style={styles.previewTitle}>{streakSummary.currentStreak} days</Text>
+            <Text style={styles.previewBody}>
+              Longest streak: {streakSummary.longestStreak} days
+            </Text>
+          </View>
         </View>
 
         <View style={styles.sectionHeader}>
@@ -190,6 +220,56 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
+  },
+  previewGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  previewCard: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexBasis: '48%',
+    flexGrow: 1,
+    gap: spacing.sm,
+    minHeight: 128,
+    padding: spacing.md,
+  },
+  previewHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  previewEyebrow: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  previewIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.goldSoft,
+    borderRadius: 8,
+    height: 32,
+    justifyContent: 'center',
+    width: 32,
+  },
+  previewIconText: {
+    color: colors.ink,
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  previewTitle: {
+    color: colors.ink,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  previewBody: {
+    color: colors.muted,
+    fontSize: 13,
+    lineHeight: 18,
   },
   questList: {
     gap: spacing.sm,
