@@ -4,6 +4,7 @@ import { playerRepository } from '@/data/repositories/playerRepository';
 import type { Pet } from '@/data/models/pet';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
+import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
 import type { Quest } from '@/features/quests/types';
 
 type StreakSummary = {
@@ -20,31 +21,11 @@ type LifeQuestState = {
   draftPlayerName: string;
   dailyQuests: Quest[];
   hydrateFromLocal: () => void;
+  generateTodayQuests: () => void;
   setDraftPlayerName: (name: string) => void;
   createPlayer: (name: string, selectedClass: PlayerClass) => Player;
   toggleNotifications: () => void;
 };
-
-const initialQuests: Quest[] = [
-  {
-    id: 'quest-read',
-    habitId: 'habit-reading',
-    title: 'Read for 20 minutes',
-    date: new Date().toISOString().slice(0, 10),
-    xpReward: 20,
-    coinReward: 6,
-    status: 'pending',
-  },
-  {
-    id: 'quest-focus',
-    habitId: 'habit-focus',
-    title: 'Complete one deep work session',
-    date: new Date().toISOString().slice(0, 10),
-    xpReward: 35,
-    coinReward: 10,
-    status: 'pending',
-  },
-];
 
 const initialPet: Pet = {
   id: 'pet-starter',
@@ -66,10 +47,13 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
     longestStreak: 0,
   },
   draftPlayerName: '',
-  dailyQuests: initialQuests,
+  dailyQuests: [],
   hydrateFromLocal: () => {
     const player = playerRepository.getCurrent();
     set({ isHydrated: true, player });
+  },
+  generateTodayQuests: () => {
+    set({ dailyQuests: generateDailyQuests() });
   },
   setDraftPlayerName: (name: string) => set({ draftPlayerName: name }),
   createPlayer: (name: string, selectedClass: PlayerClass) => {

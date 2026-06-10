@@ -2,19 +2,19 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Daily Quest Generator
+## Next Task: Quest Completion
 
-Goal: generate today's quests from active habits using the existing repository layer.
+Goal: allow the user to complete a pending quest and apply MVP rewards.
 
 Scope:
 
-- Add a quest generator service.
-- Read active habits from `habitRepository`.
-- Respect daily vs selected weekdays frequency.
-- Avoid duplicate quests for the same habit/date.
-- Persist generated quests through `questRepository`.
-- Load today's quests on Dashboard from `questRepository`.
-- Keep quest completion out of scope for this task.
+- Add complete button/action for pending quests on Dashboard.
+- Mark quest as completed through `questRepository`.
+- Add XP and coins to player.
+- Increase mapped stat using habit category.
+- Update discipline preview/streak summary in MVP-safe form.
+- Keep pet XP update simple or placeholder if needed.
+- Do not build full level-up dialog yet.
 - Keep UI simple and mobile-first.
 
 Acceptance checks:
@@ -26,7 +26,6 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Complete quest and apply XP, coins, stats, streak, and pet XP.
 - Implement level-up logic and reward dialog placeholder.
 - Implement companion screen with pet mood and growth.
 - Schedule Expo Notifications for habit reminders.

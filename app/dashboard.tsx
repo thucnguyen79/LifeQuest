@@ -1,4 +1,5 @@
-import { Redirect, router } from 'expo-router';
+import { Redirect, router, useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -22,6 +23,13 @@ export default function DashboardScreen() {
   const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
   const activePet = useLifeQuestStore((state) => state.activePet);
   const streakSummary = useLifeQuestStore((state) => state.streakSummary);
+  const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
+
+  useFocusEffect(
+    useCallback(() => {
+      generateTodayQuests();
+    }, [generateTodayQuests]),
+  );
 
   if (!player) {
     return <Redirect href="/" />;
@@ -98,23 +106,35 @@ export default function DashboardScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Today Quests</Text>
-          <Text style={styles.sectionMeta}>Generated later</Text>
+          <Text style={styles.sectionMeta}>Generated from habits</Text>
         </View>
-        <View style={styles.questList}>
-          {dailyQuests.map((quest) => (
-            <View key={quest.id} style={styles.questCard}>
-              <View style={styles.questCopy}>
-                <Text style={styles.questTitle}>{quest.title}</Text>
-                <Text style={styles.questReward}>
-                  +{quest.xpReward} XP / +{quest.coinReward} coins
-                </Text>
+        {dailyQuests.length === 0 ? (
+          <View style={styles.emptyQuestCard}>
+            <Text style={styles.emptyQuestTitle}>No quests today</Text>
+            <Text style={styles.emptyQuestBody}>
+              Add an active habit to generate today&apos;s quest list.
+            </Text>
+            <Pressable onPress={() => router.push('/habits')} style={styles.emptyQuestButton}>
+              <Text style={styles.emptyQuestButtonText}>Create Habit</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.questList}>
+            {dailyQuests.map((quest) => (
+              <View key={quest.id} style={styles.questCard}>
+                <View style={styles.questCopy}>
+                  <Text style={styles.questTitle}>{quest.title}</Text>
+                  <Text style={styles.questReward}>
+                    +{quest.xpReward} XP / +{quest.coinReward} coins
+                  </Text>
+                </View>
+                <View style={styles.questStatus}>
+                  <Text style={styles.questStatusText}>Pending</Text>
+                </View>
               </View>
-              <View style={styles.questStatus}>
-                <Text style={styles.questStatusText}>Pending</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
 
         <View style={styles.navGrid}>
           {navItems.map((item) => (
@@ -273,6 +293,39 @@ const styles = StyleSheet.create({
   },
   questList: {
     gap: spacing.sm,
+  },
+  emptyQuestCard: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  emptyQuestTitle: {
+    color: colors.ink,
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  emptyQuestBody: {
+    color: colors.muted,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  emptyQuestButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginTop: spacing.xs,
+    minHeight: 40,
+    paddingHorizontal: spacing.md,
+  },
+  emptyQuestButtonText: {
+    color: colors.surface,
+    fontSize: 14,
+    fontWeight: '900',
   },
   questCard: {
     alignItems: 'center',

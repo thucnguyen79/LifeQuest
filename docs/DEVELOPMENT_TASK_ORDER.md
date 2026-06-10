@@ -80,7 +80,7 @@ Status: Done
 - Respect frequency
 - Avoid duplicate quests per day
 
-Status: Next
+Status: Done
 
 ## 9. Implement Quest Completion
 
@@ -91,7 +91,7 @@ Status: Next
 - Update streak
 - Update pet XP
 
-Status: Pending
+Status: Next
 
 ## 10. Implement Level System
 

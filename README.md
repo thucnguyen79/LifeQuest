@@ -28,6 +28,7 @@ Implemented:
 - Player creation persisted locally
 - Dashboard preview screen with player, XP, stats, quests, pet, and streak context
 - Habit list, create, edit, and archive flow
+- Daily quest generation from active habits
 - Placeholder Companion, Rewards, Settings screens
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
@@ -36,7 +37,7 @@ Implemented:
 
 Not implemented yet:
 
-- Quest generation and completion
+- Quest completion
 - XP, streak, level, and pet progression logic
 - Full UI wiring for local persistence beyond player creation
 - Real notification scheduling
@@ -91,4 +92,4 @@ Notes:
 
 ## Recommended Next Task
 
-Generate daily quests from active habits. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Implement quest completion rewards and progression. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
