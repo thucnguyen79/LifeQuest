@@ -25,6 +25,7 @@ Implemented now:
 
 - Expo Router app shell
 - LifeQuest onboarding screen
+- Player name and class selection flow
 - Dashboard preview screen
 - Placeholder Habits, Pet, Rewards, Settings screens
 - Zustand store with starter player and quest preview data
@@ -37,7 +38,7 @@ Not implemented yet:
 - Habit CRUD
 - Quest generation and completion
 - XP, streak, level, and pet progression logic
-- UI wiring for local persistence
+- Full UI wiring for local persistence beyond player creation
 - Real notification scheduling
 - Backend sync
 
@@ -61,4 +62,4 @@ npm run web
 
 ## Recommended Next Task
 
-Wire onboarding and habit creation to the local repositories, then generate daily quests from active habits.
+Build Habit CRUD and persist active habits through the local repository.

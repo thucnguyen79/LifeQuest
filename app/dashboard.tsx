@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -20,6 +20,11 @@ const navItems = [
 export default function DashboardScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
+
+  if (!player) {
+    return <Redirect href="/" />;
+  }
+
   const playerClass = characterClasses[player.selectedClass];
 
   return (

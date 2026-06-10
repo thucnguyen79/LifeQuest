@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
@@ -15,12 +15,11 @@ const onboardingPoints = [
 ];
 
 export default function OnboardingScreen() {
-  const completeOnboarding = useLifeQuestStore((state) => state.completeOnboarding);
+  const player = useLifeQuestStore((state) => state.player);
 
-  const start = () => {
-    completeOnboarding();
-    router.replace('/dashboard');
-  };
+  if (player) {
+    return <Redirect href="/dashboard" />;
+  }
 
   return (
     <AppScreen>
@@ -45,7 +44,7 @@ export default function OnboardingScreen() {
         </Animated.View>
 
         <View style={styles.actions}>
-          <PrimaryButton label="Start Adventure" onPress={start} />
+          <PrimaryButton label="Start Adventure" onPress={() => router.push('/onboarding/name')} />
           <Pressable onPress={() => router.push('/settings')} style={styles.secondaryAction}>
             <Text style={styles.secondaryText}>Settings</Text>
           </Pressable>

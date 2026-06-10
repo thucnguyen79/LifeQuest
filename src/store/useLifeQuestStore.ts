@@ -1,33 +1,20 @@
 import { create } from 'zustand';
 
-import type { Player } from '@/features/player/types';
+import { playerRepository } from '@/data/repositories';
+import { createInitialPlayer } from '@/features/player/createInitialPlayer';
+import type { Player, PlayerClass } from '@/features/player/types';
 import type { Quest } from '@/features/quests/types';
 
 type LifeQuestState = {
-  onboardingComplete: boolean;
+  isHydrated: boolean;
   notificationsEnabled: boolean;
-  player: Player;
+  player: Player | null;
+  draftPlayerName: string;
   dailyQuests: Quest[];
-  completeOnboarding: () => void;
+  hydrateFromLocal: () => void;
+  setDraftPlayerName: (name: string) => void;
+  createPlayer: (name: string, selectedClass: PlayerClass) => Player;
   toggleNotifications: () => void;
-};
-
-const initialPlayer: Player = {
-  id: 'local-player',
-  name: 'Adventurer',
-  selectedClass: 'scholar',
-  level: 1,
-  currentXp: 0,
-  totalXp: 0,
-  coins: 0,
-  strength: 1,
-  intelligence: 3,
-  focus: 2,
-  wisdom: 1,
-  charisma: 1,
-  discipline: 1,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
 };
 
 const initialQuests: Quest[] = [
@@ -52,11 +39,22 @@ const initialQuests: Quest[] = [
 ];
 
 export const useLifeQuestStore = create<LifeQuestState>((set) => ({
-  onboardingComplete: false,
+  isHydrated: false,
   notificationsEnabled: false,
-  player: initialPlayer,
+  player: null,
+  draftPlayerName: '',
   dailyQuests: initialQuests,
-  completeOnboarding: () => set({ onboardingComplete: true }),
+  hydrateFromLocal: () => {
+    const player = playerRepository.getCurrent();
+    set({ isHydrated: true, player });
+  },
+  setDraftPlayerName: (name: string) => set({ draftPlayerName: name }),
+  createPlayer: (name: string, selectedClass: PlayerClass) => {
+    const player = createInitialPlayer(name, selectedClass);
+    playerRepository.upsert(player);
+    set({ draftPlayerName: '', player });
+    return player;
+  },
   toggleNotifications: () =>
     set((state) => ({ notificationsEnabled: !state.notificationsEnabled })),
 }));
