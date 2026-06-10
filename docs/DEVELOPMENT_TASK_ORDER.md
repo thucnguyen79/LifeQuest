@@ -100,7 +100,7 @@ Status: Done
 - Level-up state
 - Reward animation placeholder
 
-Status: Next
+Status: Done
 
 ## 11. Implement Pet Screen
 
@@ -110,7 +110,7 @@ Status: Next
 - Growth stage
 - Streak-linked progression
 
-Status: Pending
+Status: Next
 
 ## 12. Implement Local Notifications
 

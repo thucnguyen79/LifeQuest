@@ -23,8 +23,10 @@ export default function DashboardScreen() {
   const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
   const activePet = useLifeQuestStore((state) => state.activePet);
   const streakSummary = useLifeQuestStore((state) => state.streakSummary);
+  const rewardFeedback = useLifeQuestStore((state) => state.rewardFeedback);
   const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const completeQuest = useLifeQuestStore((state) => state.completeQuest);
+  const dismissRewardFeedback = useLifeQuestStore((state) => state.dismissRewardFeedback);
 
   useFocusEffect(
     useCallback(() => {
@@ -62,7 +64,29 @@ export default function DashboardScreen() {
             </View>
           </View>
           <ProgressBar current={player.currentXp} label={`${player.currentXp} / 100 XP`} max={100} />
+          <Text style={styles.coinText}>{player.coins} coins</Text>
         </Animated.View>
+
+        {rewardFeedback ? (
+          <Animated.View entering={FadeIn.duration(250)} style={styles.rewardCard}>
+            <View style={styles.rewardCopy}>
+              <Text style={styles.rewardEyebrow}>
+                {rewardFeedback.leveledUp ? 'Level Up' : 'Quest Complete'}
+              </Text>
+              <Text style={styles.rewardTitle}>
+                {rewardFeedback.leveledUp
+                  ? `Level ${rewardFeedback.previousLevel} -> ${rewardFeedback.newLevel}`
+                  : `+${rewardFeedback.xpGained} XP earned`}
+              </Text>
+              <Text style={styles.rewardBody}>
+                +{rewardFeedback.xpGained} XP / +{rewardFeedback.coinsGained} coins
+              </Text>
+            </View>
+            <Pressable onPress={dismissRewardFeedback} style={styles.rewardDismiss}>
+              <Text style={styles.rewardDismissText}>OK</Text>
+            </Pressable>
+          </Animated.View>
+        ) : null}
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Stats</Text>
@@ -227,6 +251,54 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 2,
+  },
+  coinText: {
+    color: colors.muted,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  rewardCard: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    flexDirection: 'row',
+    gap: spacing.md,
+    justifyContent: 'space-between',
+    padding: spacing.md,
+  },
+  rewardCopy: {
+    flex: 1,
+  },
+  rewardEyebrow: {
+    color: colors.gold,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  rewardTitle: {
+    color: colors.surface,
+    fontSize: 20,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  rewardBody: {
+    color: colors.goldSoft,
+    fontSize: 14,
+    fontWeight: '800',
+    marginTop: 4,
+  },
+  rewardDismiss: {
+    alignItems: 'center',
+    backgroundColor: colors.gold,
+    borderRadius: 8,
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingHorizontal: spacing.md,
+  },
+  rewardDismissText: {
+    color: colors.ink,
+    fontSize: 14,
+    fontWeight: '900',
   },
   sectionHeader: {
     alignItems: 'baseline',

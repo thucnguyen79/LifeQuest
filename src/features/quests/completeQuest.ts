@@ -8,6 +8,9 @@ import { questRepository } from '@/data/repositories/questRepository';
 type CompleteQuestResult = {
   player: Player;
   quest: Quest;
+  previousLevel: number;
+  newLevel: number;
+  leveledUp: boolean;
 };
 
 function applyQuestRewards(player: Player, quest: Quest): Player {
@@ -48,5 +51,8 @@ export function completeQuest(player: Player, questId: string): CompleteQuestRes
   return {
     player: updatedPlayer,
     quest: completedQuest,
+    previousLevel: player.level,
+    newLevel: updatedPlayer.level,
+    leveledUp: updatedPlayer.level > player.level,
   };
 }

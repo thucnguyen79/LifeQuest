@@ -2,19 +2,17 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Level System
+## Next Task: Pet Screen
 
-Goal: make level progression visible and add MVP level-up feedback.
+Goal: turn the companion placeholder into a useful MVP pet progression screen.
 
 Scope:
 
-- Refine current XP display using `currentXp / 100`.
-- Detect when completing a quest increases `player.level`.
-- Add level-up dialog or lightweight reward banner.
-- Show coin gain and new level feedback after completion.
-- Keep animation simple with Reanimated/Lottie placeholder.
-- Do not implement advanced reward inventory yet.
-- Keep UI simple and mobile-first.
+- Show active pet name, type, mood, level, XP, and growth stage.
+- Add a mobile-first pet status layout with RPG flavor.
+- Reflect quest completion progress from current store state.
+- Keep pet progression simple and local for MVP.
+- Do not implement pet inventory, cosmetics, or backend sync yet.
 
 Acceptance checks:
 
@@ -25,7 +23,6 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Implement companion screen with pet mood and growth.
 - Schedule Expo Notifications for habit reminders.
 - Add settings reset local data.
 - Add focused tests for XP, level, streak, and quest generation logic.

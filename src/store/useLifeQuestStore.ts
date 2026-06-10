@@ -13,17 +13,28 @@ type StreakSummary = {
   longestStreak: number;
 };
 
+type RewardFeedback = {
+  id: string;
+  xpGained: number;
+  coinsGained: number;
+  previousLevel: number;
+  newLevel: number;
+  leveledUp: boolean;
+};
+
 type LifeQuestState = {
   isHydrated: boolean;
   notificationsEnabled: boolean;
   player: Player | null;
   activePet: Pet;
   streakSummary: StreakSummary;
+  rewardFeedback: RewardFeedback | null;
   draftPlayerName: string;
   dailyQuests: Quest[];
   hydrateFromLocal: () => void;
   generateTodayQuests: () => void;
   completeQuest: (questId: string) => void;
+  dismissRewardFeedback: () => void;
   setDraftPlayerName: (name: string) => void;
   createPlayer: (name: string, selectedClass: PlayerClass) => Player;
   toggleNotifications: () => void;
@@ -48,6 +59,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
     currentStreak: 0,
     longestStreak: 0,
   },
+  rewardFeedback: null,
   draftPlayerName: '',
   dailyQuests: [],
   hydrateFromLocal: () => {
@@ -83,9 +95,18 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
           xp: state.activePet.xp + result.quest.xpReward,
           mood: 'happy',
         },
+        rewardFeedback: {
+          id: `${result.quest.id}-${result.quest.completedAt}`,
+          xpGained: result.quest.xpReward,
+          coinsGained: result.quest.coinReward,
+          previousLevel: result.previousLevel,
+          newLevel: result.newLevel,
+          leveledUp: result.leveledUp,
+        },
       };
     });
   },
+  dismissRewardFeedback: () => set({ rewardFeedback: null }),
   setDraftPlayerName: (name: string) => set({ draftPlayerName: name }),
   createPlayer: (name: string, selectedClass: PlayerClass) => {
     const player = createInitialPlayer(name, selectedClass);
