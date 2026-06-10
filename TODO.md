@@ -1,5 +1,7 @@
 # LifeQuest TODO
 
+Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
+
 ## Next Task: Habit CRUD
 
 Goal: let the user create and view active habits using the existing SQLite repository layer.

@@ -91,4 +91,4 @@ Notes:
 
 ## Recommended Next Task
 
-Build Habit CRUD and persist active habits through the local repository. Details are tracked in [TODO.md](./TODO.md).
+Build Habit CRUD and persist active habits through the local repository. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
