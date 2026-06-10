@@ -34,7 +34,8 @@ Implemented:
 - Companion pet screen with mood, bond XP, level, and growth stage
 - Local habit reminder scheduling with Expo Notifications
 - Settings screen with notifications, sound placeholder, privacy copy, and guarded reset
-- Placeholder Rewards screen
+- Rewards vault screen with coin balance and future reward tracks
+- UI polish pass for dashboard, habits, rewards, and navigation cards
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -95,4 +96,4 @@ Notes:
 
 ## Recommended Next Task
 
-Polish the UI and RPG presentation. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Add focused tests for core progression logic. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

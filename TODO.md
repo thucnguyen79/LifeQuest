@@ -2,18 +2,18 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Polish UI
+## Next Task: Add Tests
 
-Goal: make the MVP feel more cohesive, polished, and game-like without adding new backend scope.
+Goal: add focused confidence around the MVP progression rules and quest generation.
 
 Scope:
 
-- Improve RPG visual direction across dashboard, habits, companion, rewards, and settings.
-- Tighten empty states and button/card hierarchy.
-- Add small Reanimated/Lottie details where useful.
-- Keep mobile layouts responsive and readable.
-- Do not introduce backend sync, subscriptions, or inventory systems yet.
-- Keep placeholders simple where real assets are not ready.
+- Add test tooling that fits the Expo TypeScript app.
+- Cover XP and level calculation.
+- Cover pet level/growth calculation.
+- Cover reminder time parsing.
+- Cover daily quest generation rules where practical.
+- Keep tests focused on pure logic before UI tests.
 
 Acceptance checks:
 
@@ -24,7 +24,8 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Add focused tests for XP, level, streak, and quest generation logic.
+- Persist streak and pet repository hydration.
+- Add backend sync planning after local MVP confidence is higher.
 
 ## Product Guardrails
 

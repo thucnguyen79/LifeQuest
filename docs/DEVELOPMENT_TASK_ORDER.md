@@ -137,7 +137,7 @@ Status: Done
 - Lottie/Reanimated details
 - Mobile responsive polish
 
-Status: Next
+Status: Done
 
 ## 15. Add Tests
 
@@ -147,7 +147,7 @@ Status: Next
 - Quest generation
 - Repository behavior where useful
 
-Status: Pending
+Status: Next
 
 ## Build Rules
 

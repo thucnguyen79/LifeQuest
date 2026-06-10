@@ -37,7 +37,7 @@ export default function HabitsScreen() {
           <View style={styles.headerCopy}>
             <Text style={styles.eyebrow}>Habits</Text>
             <Text style={styles.title}>Quest sources</Text>
-            <Text style={styles.body}>Active habits become daily quests in the next task.</Text>
+            <Text style={styles.body}>Active habits become daily quests and reminder sources.</Text>
           </View>
           <Pressable onPress={() => router.push('/habit-form')} style={styles.iconButton}>
             <Text style={styles.iconButtonText}>+</Text>
@@ -77,6 +77,9 @@ export default function HabitsScreen() {
                   </Text>
                   <Text style={styles.detailText}>
                     Reminder: {habit.reminderTime ?? 'none'}
+                  </Text>
+                  <Text style={styles.detailText}>
+                    Frequency: {habit.frequencyType === 'daily' ? 'daily' : 'selected days'}
                   </Text>
                 </View>
 

@@ -1,7 +1,7 @@
 import { Redirect, router, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { ProgressBar } from '@/core/components/ProgressBar';
@@ -12,10 +12,10 @@ import { spacing } from '@/core/theme/spacing';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const navItems = [
-  { label: 'Habits', route: '/habits', icon: '+' },
-  { label: 'Pet', route: '/companion', icon: 'P' },
-  { label: 'Rewards', route: '/rewards', icon: '$' },
-  { label: 'Settings', route: '/settings', icon: '*' },
+  { label: 'Habits', meta: 'Quest sources', route: '/habits', icon: '+' },
+  { label: 'Pet', meta: 'Bond growth', route: '/companion', icon: 'P' },
+  { label: 'Rewards', meta: 'Coins & badges', route: '/rewards', icon: '$' },
+  { label: 'Settings', meta: 'Preferences', route: '/settings', icon: '*' },
 ] as const;
 
 export default function DashboardScreen() {
@@ -39,6 +39,9 @@ export default function DashboardScreen() {
   }
 
   const playerClass = characterClasses[player.selectedClass];
+  const completedQuestCount = dailyQuests.filter((quest) => quest.status === 'completed').length;
+  const totalQuestCount = dailyQuests.length;
+  const allQuestsDone = totalQuestCount > 0 && completedQuestCount === totalQuestCount;
 
   return (
     <AppScreen>
@@ -64,7 +67,12 @@ export default function DashboardScreen() {
             </View>
           </View>
           <ProgressBar current={player.currentXp} label={`${player.currentXp} / 100 XP`} max={100} />
-          <Text style={styles.coinText}>{player.coins} coins</Text>
+          <View style={styles.heroMetaRow}>
+            <Text style={styles.coinText}>{player.coins} coins</Text>
+            <Text style={styles.questProgressText}>
+              {completedQuestCount}/{totalQuestCount} quests
+            </Text>
+          </View>
         </Animated.View>
 
         {rewardFeedback ? (
@@ -131,7 +139,13 @@ export default function DashboardScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Today Quests</Text>
-          <Text style={styles.sectionMeta}>Generated from habits</Text>
+          <Text style={styles.sectionMeta}>
+            {totalQuestCount === 0
+              ? 'Generated from habits'
+              : allQuestsDone
+                ? 'Cleared'
+                : `${completedQuestCount}/${totalQuestCount} complete`}
+          </Text>
         </View>
         {dailyQuests.length === 0 ? (
           <View style={styles.emptyQuestCard}>
@@ -145,8 +159,12 @@ export default function DashboardScreen() {
           </View>
         ) : (
           <View style={styles.questList}>
-            {dailyQuests.map((quest) => (
-              <View key={quest.id} style={styles.questCard}>
+            {dailyQuests.map((quest, index) => (
+              <Animated.View
+                entering={FadeInDown.delay(index * 45).duration(250)}
+                key={quest.id}
+                style={[styles.questCard, quest.status === 'completed' ? styles.questCardDone : null]}
+              >
                 <View style={styles.questCopy}>
                   <Text style={styles.questTitle}>{quest.title}</Text>
                   <Text style={styles.questReward}>
@@ -162,7 +180,7 @@ export default function DashboardScreen() {
                     <Text style={styles.completeButtonText}>Complete</Text>
                   </Pressable>
                 )}
-              </View>
+              </Animated.View>
             ))}
           </View>
         )}
@@ -171,7 +189,10 @@ export default function DashboardScreen() {
           {navItems.map((item) => (
             <Pressable key={item.route} onPress={() => router.push(item.route)} style={styles.navCard}>
               <Text style={styles.navIcon}>{item.icon}</Text>
-              <Text style={styles.navLabel}>{item.label}</Text>
+              <View style={styles.navCopy}>
+                <Text style={styles.navLabel}>{item.label}</Text>
+                <Text style={styles.navMeta}>{item.meta}</Text>
+              </View>
             </Pressable>
           ))}
         </View>
@@ -256,6 +277,17 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 13,
     fontWeight: '800',
+  },
+  heroMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+  },
+  questProgressText: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: '900',
   },
   rewardCard: {
     alignItems: 'center',
@@ -417,6 +449,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: spacing.md,
   },
+  questCardDone: {
+    backgroundColor: '#F4FBF7',
+    borderColor: colors.mint,
+  },
   questCopy: {
     flex: 1,
   },
@@ -467,19 +503,31 @@ const styles = StyleSheet.create({
     backgroundColor: colors.ink,
     borderRadius: 8,
     flexBasis: '48%',
+    flexDirection: 'row',
     flexGrow: 1,
-    gap: spacing.xs,
-    justifyContent: 'center',
+    gap: spacing.sm,
+    justifyContent: 'flex-start',
     minHeight: 88,
+    padding: spacing.md,
   },
   navIcon: {
     color: colors.gold,
     fontSize: 18,
     fontWeight: '900',
+    minWidth: 20,
+  },
+  navCopy: {
+    flex: 1,
   },
   navLabel: {
     color: colors.surface,
     fontSize: 15,
     fontWeight: '800',
+  },
+  navMeta: {
+    color: colors.goldSoft,
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 2,
   },
 });
