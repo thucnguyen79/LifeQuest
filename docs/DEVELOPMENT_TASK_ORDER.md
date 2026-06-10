@@ -118,7 +118,7 @@ Status: Done
 - Schedule habit reminders
 - Toggle notifications in settings
 
-Status: Next
+Status: Done
 
 ## 13. Implement Settings
 
@@ -127,7 +127,7 @@ Status: Next
 - Reset local data
 - Privacy placeholder
 
-Status: Pending
+Status: Next
 
 ## 14. Polish UI
 

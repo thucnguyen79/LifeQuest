@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import { calculatePetGrowthStage, calculatePetLevel } from '@/core/constants/gameRules';
 import { playerRepository } from '@/data/repositories/playerRepository';
 import type { Pet } from '@/data/models/pet';
+import type { ReminderPermissionStatus } from '@/features/notifications/habitReminders';
+import { syncHabitReminderNotifications } from '@/features/notifications/habitReminders';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
 import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
@@ -26,6 +28,10 @@ type RewardFeedback = {
 type LifeQuestState = {
   isHydrated: boolean;
   notificationsEnabled: boolean;
+  notificationsStatus: ReminderPermissionStatus;
+  notificationsMessage: string;
+  scheduledReminderCount: number;
+  isSchedulingNotifications: boolean;
   player: Player | null;
   activePet: Pet;
   streakSummary: StreakSummary;
@@ -38,7 +44,8 @@ type LifeQuestState = {
   dismissRewardFeedback: () => void;
   setDraftPlayerName: (name: string) => void;
   createPlayer: (name: string, selectedClass: PlayerClass) => Player;
-  toggleNotifications: () => void;
+  setNotificationsEnabled: (enabled: boolean) => Promise<void>;
+  rescheduleNotifications: () => Promise<void>;
 };
 
 const initialPet: Pet = {
@@ -51,9 +58,13 @@ const initialPet: Pet = {
   growthStage: 'baby',
 };
 
-export const useLifeQuestStore = create<LifeQuestState>((set) => ({
+export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   isHydrated: false,
   notificationsEnabled: false,
+  notificationsStatus: 'idle',
+  notificationsMessage: 'Daily reminders are off.',
+  scheduledReminderCount: 0,
+  isSchedulingNotifications: false,
   player: null,
   activePet: initialPet,
   streakSummary: {
@@ -118,6 +129,34 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
     set({ draftPlayerName: '', player });
     return player;
   },
-  toggleNotifications: () =>
-    set((state) => ({ notificationsEnabled: !state.notificationsEnabled })),
+  setNotificationsEnabled: async (enabled: boolean) => {
+    set({ isSchedulingNotifications: true, notificationsEnabled: enabled });
+    const result = await syncHabitReminderNotifications(enabled);
+    set({
+      isSchedulingNotifications: false,
+      notificationsEnabled: result.enabled,
+      notificationsStatus: result.status,
+      notificationsMessage: result.message,
+      scheduledReminderCount: result.scheduledCount,
+    });
+  },
+  rescheduleNotifications: async () => {
+    const enabled = get().notificationsEnabled;
+
+    if (!enabled) {
+      return;
+    }
+
+    set({ isSchedulingNotifications: true });
+
+    const result = await syncHabitReminderNotifications(enabled);
+
+    set({
+      isSchedulingNotifications: false,
+      notificationsEnabled: result.enabled,
+      notificationsStatus: result.status,
+      notificationsMessage: result.message,
+      scheduledReminderCount: result.scheduledCount,
+    });
+  },
 }));

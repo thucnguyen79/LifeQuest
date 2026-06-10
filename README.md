@@ -32,7 +32,9 @@ Implemented:
 - Quest completion with MVP rewards applied to player progress
 - Level-up detection and reward feedback banner
 - Companion pet screen with mood, bond XP, level, and growth stage
-- Placeholder Rewards and Settings screens
+- Local habit reminder scheduling with Expo Notifications
+- Settings notification toggle with web preview fallback
+- Placeholder Rewards screen
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -42,7 +44,6 @@ Not implemented yet:
 
 - Persistent streak and pet repository hydration
 - Full UI wiring for local persistence beyond player creation
-- Real notification scheduling
 - Backend sync
 
 ## Setup On A New Machine
@@ -94,4 +95,4 @@ Notes:
 
 ## Recommended Next Task
 
-Implement local notifications. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Implement settings cleanup and reset local data. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

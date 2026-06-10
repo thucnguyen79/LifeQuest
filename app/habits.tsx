@@ -12,9 +12,11 @@ import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { Habit } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
+import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 export default function HabitsScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
+  const rescheduleNotifications = useLifeQuestStore((state) => state.rescheduleNotifications);
 
   const loadHabits = useCallback(() => {
     setHabits(habitRepository.listActive());
@@ -24,6 +26,7 @@ export default function HabitsScreen() {
 
   const archiveHabit = (habitId: string) => {
     habitRepository.deactivate(habitId);
+    void rescheduleNotifications();
     loadHabits();
   };
 

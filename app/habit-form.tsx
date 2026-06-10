@@ -21,10 +21,13 @@ import type {
 } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
 import { createHabit } from '@/features/habits/createHabit';
+import { isValidReminderTime } from '@/features/notifications/habitReminders';
+import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 export default function HabitFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const editingHabit = useMemo(() => (id ? habitRepository.getById(id) : null), [id]);
+  const rescheduleNotifications = useLifeQuestStore((state) => state.rescheduleNotifications);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<HabitCategory>('fitness');
@@ -49,11 +52,14 @@ export default function HabitFormScreen() {
   }, [editingHabit]);
 
   const normalizedTitle = title.trim();
+  const normalizedReminderTime = reminderTime.trim();
   const parsedTargetCount = targetCount.trim() ? Number.parseInt(targetCount, 10) : undefined;
   const hasValidTargetCount =
     parsedTargetCount === undefined || (!Number.isNaN(parsedTargetCount) && parsedTargetCount > 0);
   const hasValidWeekdays = frequencyType === 'daily' || selectedWeekdays.length > 0;
-  const canSave = normalizedTitle.length >= 2 && hasValidTargetCount && hasValidWeekdays;
+  const hasValidReminderTime = isValidReminderTime(reminderTime);
+  const canSave =
+    normalizedTitle.length >= 2 && hasValidTargetCount && hasValidWeekdays && hasValidReminderTime;
 
   const toggleWeekday = (weekday: Weekday) => {
     setSelectedWeekdays((current) =>
@@ -76,12 +82,13 @@ export default function HabitFormScreen() {
       frequencyType,
       selectedWeekdays,
       targetCount: parsedTargetCount,
-      reminderTime,
+      reminderTime: normalizedReminderTime || undefined,
       createdAt: editingHabit?.createdAt,
       isActive: editingHabit?.isActive ?? true,
     });
 
     habitRepository.upsert(habit);
+    void rescheduleNotifications();
     router.replace('/habits');
   };
 
@@ -185,6 +192,9 @@ export default function HabitFormScreen() {
         ) : null}
         {!hasValidWeekdays ? (
           <Text style={styles.errorText}>Choose at least one weekday.</Text>
+        ) : null}
+        {!hasValidReminderTime ? (
+          <Text style={styles.errorText}>Reminder must use 24-hour HH:mm format.</Text>
         ) : null}
 
         <PrimaryButton label={editingHabit ? 'Save Habit' : 'Create Habit'} onPress={saveHabit} />

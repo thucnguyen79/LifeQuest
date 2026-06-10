@@ -2,18 +2,18 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Local Notifications
+## Next Task: Settings
 
-Goal: add MVP habit reminder scheduling with Expo Notifications.
+Goal: complete the MVP settings screen beyond notification scheduling.
 
 Scope:
 
-- Ask for notification permission from settings or reminder setup.
-- Schedule local reminders for habits that have `reminderTime`.
-- Keep notification copy simple and habit-focused.
-- Add a settings toggle that enables/disables reminder scheduling.
-- Support web preview gracefully without breaking when notifications are unavailable.
-- Do not implement backend push notifications yet.
+- Keep the notification toggle and scheduling status visible.
+- Add sound placeholder setting.
+- Add privacy placeholder text.
+- Add reset local data action for MVP testing.
+- Keep reset behavior explicit and guarded.
+- Do not add account/backend settings yet.
 
 Acceptance checks:
 
@@ -24,7 +24,6 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Add settings reset local data.
 - Add focused tests for XP, level, streak, and quest generation logic.
 
 ## Product Guardrails

@@ -7,7 +7,13 @@ import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 export default function SettingsScreen() {
   const notificationsEnabled = useLifeQuestStore((state) => state.notificationsEnabled);
-  const toggleNotifications = useLifeQuestStore((state) => state.toggleNotifications);
+  const notificationsStatus = useLifeQuestStore((state) => state.notificationsStatus);
+  const notificationsMessage = useLifeQuestStore((state) => state.notificationsMessage);
+  const scheduledReminderCount = useLifeQuestStore((state) => state.scheduledReminderCount);
+  const isSchedulingNotifications = useLifeQuestStore(
+    (state) => state.isSchedulingNotifications,
+  );
+  const setNotificationsEnabled = useLifeQuestStore((state) => state.setNotificationsEnabled);
 
   return (
     <AppScreen canGoBack>
@@ -19,9 +25,16 @@ export default function SettingsScreen() {
       <View style={styles.card}>
         <View style={styles.settingCopy}>
           <Text style={styles.settingTitle}>Daily reminders</Text>
-          <Text style={styles.settingBody}>Notification scheduling starts in a later task.</Text>
+          <Text style={styles.settingBody}>{notificationsMessage}</Text>
+          <Text style={styles.settingMeta}>
+            {notificationsStatus} / {scheduledReminderCount} scheduled
+          </Text>
         </View>
-        <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
+        <Switch
+          disabled={isSchedulingNotifications}
+          value={notificationsEnabled}
+          onValueChange={setNotificationsEnabled}
+        />
       </View>
     </AppScreen>
   );
@@ -66,5 +79,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 4,
+  },
+  settingMeta: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '900',
+    marginTop: spacing.xs,
+    textTransform: 'uppercase',
   },
 });
