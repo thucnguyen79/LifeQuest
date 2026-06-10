@@ -24,6 +24,7 @@ export default function DashboardScreen() {
   const activePet = useLifeQuestStore((state) => state.activePet);
   const streakSummary = useLifeQuestStore((state) => state.streakSummary);
   const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
+  const completeQuest = useLifeQuestStore((state) => state.completeQuest);
 
   useFocusEffect(
     useCallback(() => {
@@ -128,9 +129,15 @@ export default function DashboardScreen() {
                     +{quest.xpReward} XP / +{quest.coinReward} coins
                   </Text>
                 </View>
-                <View style={styles.questStatus}>
-                  <Text style={styles.questStatusText}>Pending</Text>
-                </View>
+                {quest.status === 'completed' ? (
+                  <View style={[styles.questStatus, styles.questStatusCompleted]}>
+                    <Text style={styles.questStatusText}>Done</Text>
+                  </View>
+                ) : (
+                  <Pressable onPress={() => completeQuest(quest.id)} style={styles.completeButton}>
+                    <Text style={styles.completeButtonText}>Complete</Text>
+                  </Pressable>
+                )}
               </View>
             ))}
           </View>
@@ -357,10 +364,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
   },
+  questStatusCompleted: {
+    backgroundColor: colors.mint,
+  },
   questStatusText: {
     color: colors.ink,
     fontSize: 12,
     fontWeight: '800',
+  },
+  completeButton: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingHorizontal: spacing.md,
+  },
+  completeButtonText: {
+    color: colors.surface,
+    fontSize: 13,
+    fontWeight: '900',
   },
   navGrid: {
     flexDirection: 'row',

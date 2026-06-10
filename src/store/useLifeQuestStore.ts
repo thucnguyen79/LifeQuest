@@ -4,6 +4,7 @@ import { playerRepository } from '@/data/repositories/playerRepository';
 import type { Pet } from '@/data/models/pet';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
+import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
 import type { Quest } from '@/features/quests/types';
 
@@ -22,6 +23,7 @@ type LifeQuestState = {
   dailyQuests: Quest[];
   hydrateFromLocal: () => void;
   generateTodayQuests: () => void;
+  completeQuest: (questId: string) => void;
   setDraftPlayerName: (name: string) => void;
   createPlayer: (name: string, selectedClass: PlayerClass) => Player;
   toggleNotifications: () => void;
@@ -54,6 +56,35 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
   },
   generateTodayQuests: () => {
     set({ dailyQuests: generateDailyQuests() });
+  },
+  completeQuest: (questId: string) => {
+    set((state) => {
+      if (!state.player) {
+        return state;
+      }
+
+      const result = completeQuestWithRewards(state.player, questId);
+
+      if (!result) {
+        return state;
+      }
+
+      const nextCurrentStreak = state.streakSummary.currentStreak + 1;
+
+      return {
+        player: result.player,
+        dailyQuests: generateDailyQuests(),
+        streakSummary: {
+          currentStreak: nextCurrentStreak,
+          longestStreak: Math.max(state.streakSummary.longestStreak, nextCurrentStreak),
+        },
+        activePet: {
+          ...state.activePet,
+          xp: state.activePet.xp + result.quest.xpReward,
+          mood: 'happy',
+        },
+      };
+    });
   },
   setDraftPlayerName: (name: string) => set({ draftPlayerName: name }),
   createPlayer: (name: string, selectedClass: PlayerClass) => {

@@ -2,19 +2,18 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Quest Completion
+## Next Task: Level System
 
-Goal: allow the user to complete a pending quest and apply MVP rewards.
+Goal: make level progression visible and add MVP level-up feedback.
 
 Scope:
 
-- Add complete button/action for pending quests on Dashboard.
-- Mark quest as completed through `questRepository`.
-- Add XP and coins to player.
-- Increase mapped stat using habit category.
-- Update discipline preview/streak summary in MVP-safe form.
-- Keep pet XP update simple or placeholder if needed.
-- Do not build full level-up dialog yet.
+- Refine current XP display using `currentXp / 100`.
+- Detect when completing a quest increases `player.level`.
+- Add level-up dialog or lightweight reward banner.
+- Show coin gain and new level feedback after completion.
+- Keep animation simple with Reanimated/Lottie placeholder.
+- Do not implement advanced reward inventory yet.
 - Keep UI simple and mobile-first.
 
 Acceptance checks:
@@ -26,7 +25,6 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Implement level-up logic and reward dialog placeholder.
 - Implement companion screen with pet mood and growth.
 - Schedule Expo Notifications for habit reminders.
 - Add settings reset local data.

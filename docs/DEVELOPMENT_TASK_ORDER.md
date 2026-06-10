@@ -91,7 +91,7 @@ Status: Done
 - Update streak
 - Update pet XP
 
-Status: Next
+Status: Done
 
 ## 10. Implement Level System
 
@@ -100,7 +100,7 @@ Status: Next
 - Level-up state
 - Reward animation placeholder
 
-Status: Pending
+Status: Next
 
 ## 11. Implement Pet Screen
 

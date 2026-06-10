@@ -29,6 +29,7 @@ Implemented:
 - Dashboard preview screen with player, XP, stats, quests, pet, and streak context
 - Habit list, create, edit, and archive flow
 - Daily quest generation from active habits
+- Quest completion with MVP rewards applied to player progress
 - Placeholder Companion, Rewards, Settings screens
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
@@ -37,8 +38,8 @@ Implemented:
 
 Not implemented yet:
 
-- Quest completion
-- XP, streak, level, and pet progression logic
+- Full level-up dialog and reward animation
+- Persistent streak and pet progression logic
 - Full UI wiring for local persistence beyond player creation
 - Real notification scheduling
 - Backend sync
@@ -92,4 +93,4 @@ Notes:
 
 ## Recommended Next Task
 
-Implement quest completion rewards and progression. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Implement the level system UI and level-up feedback. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
