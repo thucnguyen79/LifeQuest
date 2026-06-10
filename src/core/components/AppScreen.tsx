@@ -32,13 +32,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
+    alignSelf: 'center',
     flex: 1,
+    maxWidth: 860,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
+    width: '100%',
   },
   backButton: {
     alignItems: 'center',
     alignSelf: 'flex-start',
+    backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: 8,
     borderWidth: 1,

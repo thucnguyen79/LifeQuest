@@ -1,5 +1,6 @@
 import { Redirect } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { ProgressBar } from '@/core/components/ProgressBar';
@@ -12,25 +13,21 @@ import { spacing } from '@/core/theme/spacing';
 import type { PetGrowthStage, PetMood, PetType } from '@/data/models/pet';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
-const petTypeConfig: Record<PetType, { label: string; mark: string; trait: string }> = {
+const petTypeConfig: Record<PetType, { label: string; trait: string }> = {
   dragon: {
     label: 'Dragon',
-    mark: 'D',
     trait: 'Brave and steady under pressure.',
   },
   fox: {
     label: 'Fox',
-    mark: 'F',
     trait: 'Quick, curious, and adaptable.',
   },
   cat: {
     label: 'Cat',
-    mark: 'C',
     trait: 'Calm, focused, and independent.',
   },
   owl: {
     label: 'Owl',
-    mark: 'O',
     trait: 'Patient, observant, and wise.',
   },
 };
@@ -94,17 +91,18 @@ export default function CompanionScreen() {
           <Text style={styles.body}>{petType.trait}</Text>
         </View>
 
-        <View style={styles.heroCard}>
-          <View style={styles.petVisual}>
-            <Text style={styles.petMark}>{petType.mark}</Text>
-          </View>
+        <Animated.View entering={FadeInDown.duration(320)} style={styles.heroCard}>
+          <PetAvatar type={activePet.type} />
           <View style={styles.heroCopy}>
             <Text style={styles.petName}>{petType.label}</Text>
             <Text style={styles.petMeta}>
               Lv {activePet.level} / {petGrowth.label} / {petMood.label}
             </Text>
+            <View style={styles.bondBadge}>
+              <Text style={styles.bondBadgeText}>{activePet.xp} bond XP</Text>
+            </View>
           </View>
-        </View>
+        </Animated.View>
 
         <View style={styles.progressCard}>
           <View style={styles.sectionHeader}>
@@ -119,14 +117,16 @@ export default function CompanionScreen() {
         </View>
 
         <View style={styles.grid}>
-          <StatusCard label="Mood" title={petMood.label} body={petMood.body} />
-          <StatusCard label="Growth" title={petGrowth.label} body={petGrowth.next} />
+          <StatusCard accent="gold" label="Mood" title={petMood.label} body={petMood.body} />
+          <StatusCard accent="mint" label="Growth" title={petGrowth.label} body={petGrowth.next} />
           <StatusCard
+            accent="sky"
             label="Streak"
             title={`${streakSummary.currentStreak} days`}
             body={`Best streak: ${streakSummary.longestStreak} days`}
           />
           <StatusCard
+            accent="ember"
             label="Today"
             title={`${completedQuestCount} quests`}
             body="Completed quests feed bond XP."
@@ -147,17 +147,43 @@ export default function CompanionScreen() {
 }
 
 type StatusCardProps = {
+  accent: 'ember' | 'gold' | 'mint' | 'sky';
   label: string;
   title: string;
   body: string;
 };
 
-function StatusCard({ label, title, body }: StatusCardProps) {
+function StatusCard({ accent, label, title, body }: StatusCardProps) {
   return (
     <View style={styles.statusCard}>
+      <View style={[styles.statusAccent, styles[`${accent}Accent`]]} />
       <Text style={styles.statusLabel}>{label}</Text>
       <Text style={styles.statusTitle}>{title}</Text>
       <Text style={styles.statusBody}>{body}</Text>
+    </View>
+  );
+}
+
+type PetAvatarProps = {
+  type: PetType;
+};
+
+function PetAvatar({ type }: PetAvatarProps) {
+  return (
+    <View style={styles.petVisual}>
+      <View style={styles.petAura} />
+      <View style={styles.petWingLeft} />
+      <View style={styles.petWingRight} />
+      <View style={styles.petBody}>
+        <View style={styles.petHornLeft} />
+        <View style={styles.petHornRight} />
+        <View style={styles.petFace}>
+          <View style={styles.petEye} />
+          <View style={styles.petEye} />
+        </View>
+        <View style={styles.petMouth} />
+      </View>
+      <Text style={styles.petTypeMark}>{type.slice(0, 2).toUpperCase()}</Text>
     </View>
   );
 }
@@ -206,7 +232,9 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     alignItems: 'center',
-    backgroundColor: colors.ink,
+    backgroundColor: colors.panelDeep,
+    borderColor: colors.accent,
+    borderWidth: 1,
     borderRadius: 8,
     flexDirection: 'row',
     gap: spacing.lg,
@@ -214,17 +242,99 @@ const styles = StyleSheet.create({
   },
   petVisual: {
     alignItems: 'center',
-    backgroundColor: colors.mint,
+    backgroundColor: '#17362E',
     borderRadius: 8,
-    height: 112,
+    height: 136,
     justifyContent: 'center',
-    width: 112,
+    overflow: 'hidden',
+    position: 'relative',
+    width: 136,
   },
-  petMark: {
-    color: colors.ink,
-    fontSize: 64,
+  petAura: {
+    backgroundColor: colors.goldSoft,
+    borderRadius: 80,
+    height: 104,
+    opacity: 0.25,
+    position: 'absolute',
+    width: 104,
+  },
+  petWingLeft: {
+    backgroundColor: colors.sky,
+    borderRadius: 8,
+    height: 42,
+    left: 18,
+    opacity: 0.9,
+    position: 'absolute',
+    top: 48,
+    transform: [{ rotate: '-22deg' }],
+    width: 42,
+  },
+  petWingRight: {
+    backgroundColor: colors.sky,
+    borderRadius: 8,
+    height: 42,
+    opacity: 0.9,
+    position: 'absolute',
+    right: 18,
+    top: 48,
+    transform: [{ rotate: '22deg' }],
+    width: 42,
+  },
+  petBody: {
+    alignItems: 'center',
+    backgroundColor: colors.mint,
+    borderColor: colors.surface,
+    borderRadius: 28,
+    borderWidth: 3,
+    height: 78,
+    justifyContent: 'center',
+    position: 'relative',
+    width: 78,
+  },
+  petHornLeft: {
+    backgroundColor: colors.gold,
+    borderRadius: 6,
+    height: 20,
+    left: 14,
+    position: 'absolute',
+    top: -12,
+    transform: [{ rotate: '-20deg' }],
+    width: 12,
+  },
+  petHornRight: {
+    backgroundColor: colors.gold,
+    borderRadius: 6,
+    height: 20,
+    position: 'absolute',
+    right: 14,
+    top: -12,
+    transform: [{ rotate: '20deg' }],
+    width: 12,
+  },
+  petFace: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  petEye: {
+    backgroundColor: colors.ink,
+    borderRadius: 6,
+    height: 10,
+    width: 10,
+  },
+  petMouth: {
+    backgroundColor: colors.ember,
+    borderRadius: 8,
+    height: 6,
+    marginTop: spacing.sm,
+    width: 24,
+  },
+  petTypeMark: {
+    bottom: spacing.sm,
+    color: colors.goldSoft,
+    fontSize: 11,
     fontWeight: '900',
-    lineHeight: 70,
+    position: 'absolute',
+    right: spacing.sm,
   },
   heroCopy: {
     flex: 1,
@@ -240,6 +350,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '800',
     lineHeight: 22,
+  },
+  bondBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.gold,
+    borderRadius: 8,
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  bondBadgeText: {
+    color: colors.ink,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
   },
   progressCard: {
     backgroundColor: colors.surface,
@@ -270,7 +394,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   statusCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderColor: colors.border,
     borderRadius: 8,
     borderWidth: 1,
@@ -279,6 +403,27 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     minHeight: 132,
     padding: spacing.md,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  statusAccent: {
+    height: 5,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  emberAccent: {
+    backgroundColor: colors.ember,
+  },
+  goldAccent: {
+    backgroundColor: colors.gold,
+  },
+  mintAccent: {
+    backgroundColor: colors.accent,
+  },
+  skyAccent: {
+    backgroundColor: colors.sky,
   },
   statusLabel: {
     color: colors.accent,

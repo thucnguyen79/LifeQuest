@@ -59,19 +59,29 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeIn.duration(350)} style={styles.heroCard}>
           <View style={styles.avatarRow}>
             <View style={styles.avatar}>
+              <View style={styles.avatarBlade} />
+              <View style={styles.avatarGem} />
               <Text style={styles.avatarText}>{playerClass.icon}</Text>
             </View>
             <View style={styles.avatarInfo}>
               <Text style={styles.className}>{playerClass.name}</Text>
-              <Text style={styles.classCopy}>XP turns real life into character growth.</Text>
+              <Text style={styles.classCopy}>Character growth powered by today&apos;s quests.</Text>
             </View>
           </View>
-          <ProgressBar current={player.currentXp} label={`${player.currentXp} / 100 XP`} max={100} />
+          <View style={styles.heroProgress}>
+            <ProgressBar current={player.currentXp} label={`${player.currentXp} / 100 XP`} max={100} />
+          </View>
           <View style={styles.heroMetaRow}>
-            <Text style={styles.coinText}>{player.coins} coins</Text>
-            <Text style={styles.questProgressText}>
-              {completedQuestCount}/{totalQuestCount} quests
-            </Text>
+            <View style={styles.heroChip}>
+              <Text style={styles.heroChipLabel}>Coins</Text>
+              <Text style={styles.heroChipValue}>{player.coins}</Text>
+            </View>
+            <View style={styles.heroChip}>
+              <Text style={styles.heroChipLabel}>Quests</Text>
+              <Text style={styles.heroChipValue}>
+                {completedQuestCount}/{totalQuestCount}
+              </Text>
+            </View>
           </View>
         </Animated.View>
 
@@ -149,13 +159,18 @@ export default function DashboardScreen() {
         </View>
         {dailyQuests.length === 0 ? (
           <View style={styles.emptyQuestCard}>
-            <Text style={styles.emptyQuestTitle}>No quests today</Text>
-            <Text style={styles.emptyQuestBody}>
-              Add an active habit to generate today&apos;s quest list.
-            </Text>
-            <Pressable onPress={() => router.push('/habits')} style={styles.emptyQuestButton}>
-              <Text style={styles.emptyQuestButtonText}>Create Habit</Text>
-            </Pressable>
+            <View style={styles.emptyQuestMark}>
+              <Text style={styles.emptyQuestMarkText}>Q</Text>
+            </View>
+            <View style={styles.emptyQuestCopy}>
+              <Text style={styles.emptyQuestTitle}>Quest board is empty</Text>
+              <Text style={styles.emptyQuestBody}>
+                Add one active habit to start generating daily quests.
+              </Text>
+              <Pressable onPress={() => router.push('/habits')} style={styles.emptyQuestButton}>
+                <Text style={styles.emptyQuestButtonText}>Create Habit</Text>
+              </Pressable>
+            </View>
           </View>
         ) : (
           <View style={styles.questList}>
@@ -224,7 +239,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   levelBadge: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.panelDeep,
     borderRadius: 8,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
@@ -234,8 +249,8 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   heroCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    backgroundColor: colors.panelDeep,
+    borderColor: colors.accent,
     borderRadius: 8,
     borderWidth: 1,
     gap: spacing.lg,
@@ -248,11 +263,32 @@ const styles = StyleSheet.create({
   },
   avatar: {
     alignItems: 'center',
-    backgroundColor: colors.mint,
+    backgroundColor: colors.gold,
     borderRadius: 8,
     height: 64,
     justifyContent: 'center',
+    overflow: 'hidden',
+    position: 'relative',
     width: 64,
+  },
+  avatarBlade: {
+    backgroundColor: colors.ember,
+    height: 92,
+    opacity: 0.85,
+    position: 'absolute',
+    right: -18,
+    top: -14,
+    transform: [{ rotate: '26deg' }],
+    width: 24,
+  },
+  avatarGem: {
+    backgroundColor: colors.sky,
+    borderRadius: 8,
+    bottom: 8,
+    height: 12,
+    position: 'absolute',
+    right: 10,
+    width: 12,
   },
   avatarText: {
     color: colors.ink,
@@ -263,20 +299,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   className: {
-    color: colors.ink,
+    color: colors.surface,
     fontSize: 18,
     fontWeight: '900',
   },
   classCopy: {
-    color: colors.muted,
+    color: colors.goldSoft,
     fontSize: 14,
     lineHeight: 20,
     marginTop: 2,
   },
-  coinText: {
-    color: colors.muted,
-    fontSize: 13,
-    fontWeight: '800',
+  heroProgress: {
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    padding: spacing.md,
   },
   heroMetaRow: {
     flexDirection: 'row',
@@ -284,10 +320,27 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     justifyContent: 'space-between',
   },
-  questProgressText: {
-    color: colors.accent,
-    fontSize: 13,
+  heroChip: {
+    backgroundColor: '#17362E',
+    borderColor: '#285A4E',
+    borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 58,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  heroChipLabel: {
+    color: colors.goldSoft,
+    fontSize: 12,
     fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  heroChipValue: {
+    color: colors.surface,
+    fontSize: 20,
+    fontWeight: '900',
+    marginTop: 2,
   },
   rewardCard: {
     alignItems: 'center',
@@ -358,7 +411,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   previewCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderColor: colors.border,
     borderRadius: 8,
     borderWidth: 1,
@@ -406,12 +459,31 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   emptyQuestCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    alignItems: 'center',
+    backgroundColor: colors.panel,
+    borderColor: colors.gold,
     borderRadius: 8,
     borderWidth: 1,
-    gap: spacing.sm,
-    padding: spacing.md,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  emptyQuestMark: {
+    alignItems: 'center',
+    backgroundColor: colors.panelDeep,
+    borderRadius: 8,
+    height: 64,
+    justifyContent: 'center',
+    width: 64,
+  },
+  emptyQuestMarkText: {
+    color: colors.gold,
+    fontSize: 26,
+    fontWeight: '900',
+  },
+  emptyQuestCopy: {
+    flex: 1,
+    gap: spacing.xs,
   },
   emptyQuestTitle: {
     color: colors.ink,

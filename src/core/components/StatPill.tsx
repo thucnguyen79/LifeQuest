@@ -20,7 +20,7 @@ export function StatPill({ label, value }: StatPillProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderColor: colors.border,
     borderRadius: 8,
     borderWidth: 1,
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
   },
   label: {
-    color: colors.muted,
+    color: colors.accent,
     fontSize: 12,
     fontWeight: '900',
   },
