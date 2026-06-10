@@ -1,11 +1,346 @@
-import { PlaceholderScreen } from '@/core/components/PlaceholderScreen';
+import { Redirect } from 'expo-router';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import { AppScreen } from '@/core/components/AppScreen';
+import { ProgressBar } from '@/core/components/ProgressBar';
+import {
+  calculatePetCurrentXp,
+  petXpPerLevel,
+} from '@/core/constants/gameRules';
+import { colors } from '@/core/theme/colors';
+import { spacing } from '@/core/theme/spacing';
+import type { PetGrowthStage, PetMood, PetType } from '@/data/models/pet';
+import { useLifeQuestStore } from '@/store/useLifeQuestStore';
+
+const petTypeConfig: Record<PetType, { label: string; mark: string; trait: string }> = {
+  dragon: {
+    label: 'Dragon',
+    mark: 'D',
+    trait: 'Brave and steady under pressure.',
+  },
+  fox: {
+    label: 'Fox',
+    mark: 'F',
+    trait: 'Quick, curious, and adaptable.',
+  },
+  cat: {
+    label: 'Cat',
+    mark: 'C',
+    trait: 'Calm, focused, and independent.',
+  },
+  owl: {
+    label: 'Owl',
+    mark: 'O',
+    trait: 'Patient, observant, and wise.',
+  },
+};
+
+const moodCopy: Record<PetMood, { label: string; body: string }> = {
+  happy: {
+    label: 'Happy',
+    body: 'Quest progress is keeping your companion energized.',
+  },
+  neutral: {
+    label: 'Neutral',
+    body: 'Complete a quest to lift your companion mood.',
+  },
+  sad: {
+    label: 'Sad',
+    body: 'Missed momentum will be handled in a later streak task.',
+  },
+};
+
+const growthCopy: Record<PetGrowthStage, { label: string; next: string }> = {
+  egg: {
+    label: 'Egg',
+    next: 'Hatch at the first growth milestone.',
+  },
+  baby: {
+    label: 'Baby',
+    next: 'Young at 160 bond XP.',
+  },
+  young: {
+    label: 'Young',
+    next: 'Adult at 400 bond XP.',
+  },
+  adult: {
+    label: 'Adult',
+    next: 'Max MVP growth stage reached.',
+  },
+};
 
 export default function CompanionScreen() {
+  const player = useLifeQuestStore((state) => state.player);
+  const activePet = useLifeQuestStore((state) => state.activePet);
+  const streakSummary = useLifeQuestStore((state) => state.streakSummary);
+  const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
+
+  if (!player) {
+    return <Redirect href="/" />;
+  }
+
+  const petType = petTypeConfig[activePet.type];
+  const petMood = moodCopy[activePet.mood];
+  const petGrowth = growthCopy[activePet.growthStage];
+  const currentBondXp = calculatePetCurrentXp(activePet.xp);
+  const completedQuestCount = dailyQuests.filter((quest) => quest.status === 'completed').length;
+
   return (
-    <PlaceholderScreen
-      body="The MVP pet will grow from streaks and react to missed quests."
-      eyebrow="Pet System"
-      title="Companion"
-    />
+    <AppScreen canGoBack>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.eyebrow}>Companion</Text>
+          <Text style={styles.title}>{activePet.name}</Text>
+          <Text style={styles.body}>{petType.trait}</Text>
+        </View>
+
+        <View style={styles.heroCard}>
+          <View style={styles.petVisual}>
+            <Text style={styles.petMark}>{petType.mark}</Text>
+          </View>
+          <View style={styles.heroCopy}>
+            <Text style={styles.petName}>{petType.label}</Text>
+            <Text style={styles.petMeta}>
+              Lv {activePet.level} / {petGrowth.label} / {petMood.label}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.progressCard}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Bond XP</Text>
+            <Text style={styles.sectionMeta}>{activePet.xp} total</Text>
+          </View>
+          <ProgressBar
+            current={currentBondXp}
+            label={`${currentBondXp} / ${petXpPerLevel} XP to next level`}
+            max={petXpPerLevel}
+          />
+        </View>
+
+        <View style={styles.grid}>
+          <StatusCard label="Mood" title={petMood.label} body={petMood.body} />
+          <StatusCard label="Growth" title={petGrowth.label} body={petGrowth.next} />
+          <StatusCard
+            label="Streak"
+            title={`${streakSummary.currentStreak} days`}
+            body={`Best streak: ${streakSummary.longestStreak} days`}
+          />
+          <StatusCard
+            label="Today"
+            title={`${completedQuestCount} quests`}
+            body="Completed quests feed bond XP."
+          />
+        </View>
+
+        <View style={styles.timelineCard}>
+          <Text style={styles.sectionTitle}>Growth Path</Text>
+          <View style={styles.timelineList}>
+            <GrowthStep active={activePet.growthStage === 'baby'} label="Baby" meta="0 XP" />
+            <GrowthStep active={activePet.growthStage === 'young'} label="Young" meta="160 XP" />
+            <GrowthStep active={activePet.growthStage === 'adult'} label="Adult" meta="400 XP" />
+          </View>
+        </View>
+      </ScrollView>
+    </AppScreen>
   );
 }
+
+type StatusCardProps = {
+  label: string;
+  title: string;
+  body: string;
+};
+
+function StatusCard({ label, title, body }: StatusCardProps) {
+  return (
+    <View style={styles.statusCard}>
+      <Text style={styles.statusLabel}>{label}</Text>
+      <Text style={styles.statusTitle}>{title}</Text>
+      <Text style={styles.statusBody}>{body}</Text>
+    </View>
+  );
+}
+
+type GrowthStepProps = {
+  active: boolean;
+  label: string;
+  meta: string;
+};
+
+function GrowthStep({ active, label, meta }: GrowthStepProps) {
+  return (
+    <View style={[styles.growthStep, active ? styles.growthStepActive : null]}>
+      <View style={[styles.growthDot, active ? styles.growthDotActive : null]} />
+      <View style={styles.growthCopy}>
+        <Text style={styles.growthLabel}>{label}</Text>
+        <Text style={styles.growthMeta}>{meta}</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  content: {
+    gap: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
+  header: {
+    gap: spacing.xs,
+  },
+  eyebrow: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  title: {
+    color: colors.ink,
+    fontSize: 34,
+    fontWeight: '900',
+  },
+  body: {
+    color: colors.muted,
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  heroCard: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    flexDirection: 'row',
+    gap: spacing.lg,
+    padding: spacing.lg,
+  },
+  petVisual: {
+    alignItems: 'center',
+    backgroundColor: colors.mint,
+    borderRadius: 8,
+    height: 112,
+    justifyContent: 'center',
+    width: 112,
+  },
+  petMark: {
+    color: colors.ink,
+    fontSize: 64,
+    fontWeight: '900',
+    lineHeight: 70,
+  },
+  heroCopy: {
+    flex: 1,
+    gap: spacing.xs,
+  },
+  petName: {
+    color: colors.surface,
+    fontSize: 28,
+    fontWeight: '900',
+  },
+  petMeta: {
+    color: colors.goldSoft,
+    fontSize: 15,
+    fontWeight: '800',
+    lineHeight: 22,
+  },
+  progressCard: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  sectionHeader: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sectionTitle: {
+    color: colors.ink,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  sectionMeta: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  statusCard: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexBasis: '48%',
+    flexGrow: 1,
+    gap: spacing.xs,
+    minHeight: 132,
+    padding: spacing.md,
+  },
+  statusLabel: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  statusTitle: {
+    color: colors.ink,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  statusBody: {
+    color: colors.muted,
+    fontSize: 13,
+    lineHeight: 19,
+  },
+  timelineCard: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  timelineList: {
+    gap: spacing.sm,
+  },
+  growthStep: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  growthStepActive: {
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+  },
+  growthDot: {
+    backgroundColor: colors.border,
+    borderRadius: 8,
+    height: 16,
+    width: 16,
+  },
+  growthDotActive: {
+    backgroundColor: colors.gold,
+  },
+  growthCopy: {
+    flex: 1,
+  },
+  growthLabel: {
+    color: colors.ink,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  growthMeta: {
+    color: colors.muted,
+    fontSize: 13,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+});

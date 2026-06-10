@@ -1,4 +1,5 @@
 import type { HabitCategory, HabitDifficulty } from '@/data/models/habit';
+import type { PetGrowthStage } from '@/data/models/pet';
 import type { PlayerClass, StatKey } from '@/data/models/player';
 
 export const characterClasses: Record<
@@ -64,4 +65,26 @@ export const statByHabitCategory: Record<HabitCategory, StatKey> = {
 
 export function calculateLevel(totalXp: number) {
   return Math.floor(totalXp / 100) + 1;
+}
+
+export const petXpPerLevel = 80;
+
+export function calculatePetLevel(totalXp: number) {
+  return Math.floor(totalXp / petXpPerLevel) + 1;
+}
+
+export function calculatePetCurrentXp(totalXp: number) {
+  return totalXp % petXpPerLevel;
+}
+
+export function calculatePetGrowthStage(totalXp: number): PetGrowthStage {
+  if (totalXp >= 400) {
+    return 'adult';
+  }
+
+  if (totalXp >= 160) {
+    return 'young';
+  }
+
+  return 'baby';
 }

@@ -31,7 +31,8 @@ Implemented:
 - Daily quest generation from active habits
 - Quest completion with MVP rewards applied to player progress
 - Level-up detection and reward feedback banner
-- Placeholder Companion, Rewards, Settings screens
+- Companion pet screen with mood, bond XP, level, and growth stage
+- Placeholder Rewards and Settings screens
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -39,7 +40,7 @@ Implemented:
 
 Not implemented yet:
 
-- Persistent streak and pet progression logic
+- Persistent streak and pet repository hydration
 - Full UI wiring for local persistence beyond player creation
 - Real notification scheduling
 - Backend sync
@@ -93,4 +94,4 @@ Notes:
 
 ## Recommended Next Task
 
-Implement the companion pet screen. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Implement local notifications. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

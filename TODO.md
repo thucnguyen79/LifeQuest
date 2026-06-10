@@ -2,17 +2,18 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Pet Screen
+## Next Task: Local Notifications
 
-Goal: turn the companion placeholder into a useful MVP pet progression screen.
+Goal: add MVP habit reminder scheduling with Expo Notifications.
 
 Scope:
 
-- Show active pet name, type, mood, level, XP, and growth stage.
-- Add a mobile-first pet status layout with RPG flavor.
-- Reflect quest completion progress from current store state.
-- Keep pet progression simple and local for MVP.
-- Do not implement pet inventory, cosmetics, or backend sync yet.
+- Ask for notification permission from settings or reminder setup.
+- Schedule local reminders for habits that have `reminderTime`.
+- Keep notification copy simple and habit-focused.
+- Add a settings toggle that enables/disables reminder scheduling.
+- Support web preview gracefully without breaking when notifications are unavailable.
+- Do not implement backend push notifications yet.
 
 Acceptance checks:
 
@@ -23,7 +24,6 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Schedule Expo Notifications for habit reminders.
 - Add settings reset local data.
 - Add focused tests for XP, level, streak, and quest generation logic.
 

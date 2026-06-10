@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+import { calculatePetGrowthStage, calculatePetLevel } from '@/core/constants/gameRules';
 import { playerRepository } from '@/data/repositories/playerRepository';
 import type { Pet } from '@/data/models/pet';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
@@ -82,6 +83,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
       }
 
       const nextCurrentStreak = state.streakSummary.currentStreak + 1;
+      const nextPetXp = state.activePet.xp + result.quest.xpReward;
 
       return {
         player: result.player,
@@ -92,8 +94,10 @@ export const useLifeQuestStore = create<LifeQuestState>((set) => ({
         },
         activePet: {
           ...state.activePet,
-          xp: state.activePet.xp + result.quest.xpReward,
+          level: calculatePetLevel(nextPetXp),
+          xp: nextPetXp,
           mood: 'happy',
+          growthStage: calculatePetGrowthStage(nextPetXp),
         },
         rewardFeedback: {
           id: `${result.quest.id}-${result.quest.completedAt}`,

@@ -110,7 +110,7 @@ Status: Done
 - Growth stage
 - Streak-linked progression
 
-Status: Next
+Status: Done
 
 ## 12. Implement Local Notifications
 
@@ -118,7 +118,7 @@ Status: Next
 - Schedule habit reminders
 - Toggle notifications in settings
 
-Status: Pending
+Status: Next
 
 ## 13. Implement Settings
 
