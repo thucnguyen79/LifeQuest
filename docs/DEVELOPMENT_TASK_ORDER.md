@@ -72,7 +72,7 @@ Status: Done
 - Habit list
 - Persist to local DB
 
-Status: Next
+Status: Done
 
 ## 8. Implement Daily Quest Generator
 
@@ -80,7 +80,7 @@ Status: Next
 - Respect frequency
 - Avoid duplicate quests per day
 
-Status: Pending
+Status: Next
 
 ## 9. Implement Quest Completion
 

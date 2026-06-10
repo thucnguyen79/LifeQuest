@@ -27,7 +27,8 @@ Implemented:
 - Player name and class selection flow
 - Player creation persisted locally
 - Dashboard preview screen with player, XP, stats, quests, pet, and streak context
-- Placeholder Habits, Companion, Rewards, Settings screens
+- Habit list, create, edit, and archive flow
+- Placeholder Companion, Rewards, Settings screens
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -35,7 +36,6 @@ Implemented:
 
 Not implemented yet:
 
-- Habit CRUD UI
 - Quest generation and completion
 - XP, streak, level, and pet progression logic
 - Full UI wiring for local persistence beyond player creation
@@ -91,4 +91,4 @@ Notes:
 
 ## Recommended Next Task
 
-Build Habit CRUD and persist active habits through the local repository. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Generate daily quests from active habits. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

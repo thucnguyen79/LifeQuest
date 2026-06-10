@@ -2,19 +2,20 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Habit CRUD
+## Next Task: Daily Quest Generator
 
-Goal: let the user create and view active habits using the existing SQLite repository layer.
+Goal: generate today's quests from active habits using the existing repository layer.
 
 Scope:
 
-- Replace placeholder `app/habits.tsx` with a real habit list screen.
-- Add create habit screen.
-- Fields: title, category, difficulty, frequency type, selected weekdays, optional target count, optional reminder time.
-- Persist habits through `habitRepository`.
-- Load active habits from local storage when opening Habits.
+- Add a quest generator service.
+- Read active habits from `habitRepository`.
+- Respect daily vs selected weekdays frequency.
+- Avoid duplicate quests for the same habit/date.
+- Persist generated quests through `questRepository`.
+- Load today's quests on Dashboard from `questRepository`.
+- Keep quest completion out of scope for this task.
 - Keep UI simple and mobile-first.
-- Do not implement quest generation yet.
 
 Acceptance checks:
 
@@ -25,7 +26,6 @@ Acceptance checks:
 
 ## Later MVP Tasks
 
-- Generate daily quests from active habits.
 - Complete quest and apply XP, coins, stats, streak, and pet XP.
 - Implement level-up logic and reward dialog placeholder.
 - Implement companion screen with pet mood and growth.
