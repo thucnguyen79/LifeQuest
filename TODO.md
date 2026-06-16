@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Task 14 UI polish and Task 15 focused tests are implemented and pushed-ready.
+Task 14 UI polish, Task 15 focused tests, and Task 16 persistence hardening are implemented.
 
 Task 14B/14C UI pass:
 
@@ -24,6 +24,15 @@ Task 15 test pass:
 - Added daily quest generation tests for weekday filtering, rewards, and duplicate prevention.
 - Added quest completion tests for XP, coins, level-up, discipline, mapped stat rewards, and completed quest guard.
 
+Task 16 persistence hardening:
+
+- Added web `petRepository` fallback so pet progress survives browser refresh.
+- Added global `streakSummaryRepository` for native and web persistence.
+- Hydrated player, active pet, and streak summary together on app start.
+- Persisted pet progress and streak summary after quest completion.
+- Reset local pet/streak data from Settings on native and web.
+- Added web repository tests for pet and streak summary persistence.
+
 Latest checks:
 
 - `npm test` passes.
@@ -34,13 +43,12 @@ Latest checks:
 
 Recommended options:
 
-- Review dashboard, companion, habits, rewards, and settings in web preview.
-- Add repository hydration tests for local persistence if we want more confidence before feature expansion.
-- Start a small Task 16 planning pass for next MVP phase: onboarding polish, stronger animation moments, persistence hardening, or backend sync planning.
+- Test refresh/reopen behavior after completing quests to confirm pet/streak remain visible.
+- Start Task 17 Gameplay Rules v2: daily streak rules, missed quests, archive/edit quest reconciliation, and reward claim flow.
+- Or start UI/Animation v2: level-up modal, quest-complete feedback, and pet idle animation.
 
 ## Later MVP Tasks
 
-- Persist streak and pet repository hydration.
 - Add backend sync planning after local MVP confidence is higher.
 
 ## Product Guardrails

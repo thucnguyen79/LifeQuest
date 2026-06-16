@@ -9,5 +9,6 @@ export function resetLocalData() {
     DELETE FROM quests;
     DELETE FROM habits;
     DELETE FROM players;
+    DELETE FROM app_metadata WHERE key = 'streak_summary';
   `);
 }

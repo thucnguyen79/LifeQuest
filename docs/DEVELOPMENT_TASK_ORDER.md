@@ -153,6 +153,27 @@ Status: Done
 
 Completion note: Added Vitest with focused coverage for level and pet XP rules, daily quest generation, and quest completion reward behavior.
 
+## 16. Persistence Hardening
+
+- Persist active pet progress across refresh/restart
+- Persist global streak summary across refresh/restart
+- Hydrate player, pet, and streak state together
+- Reset local pet/streak data with Settings reset
+- Add web fallback repositories and focused repository tests
+
+Status: Done
+
+Completion note: Added web `petRepository`, native/web `streakSummaryRepository`, store hydration/upsert wiring, reset coverage, and repository tests for web pet/streak persistence.
+
+## 17. Gameplay Rules v2
+
+- Daily streak rules that increase once per day
+- Missed quest behavior
+- Archive/edit reconciliation for today's pending quests
+- Reward claim flow
+
+Status: Pending
+
 ## Build Rules
 
 - Do not build all features at once.

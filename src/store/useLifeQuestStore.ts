@@ -2,6 +2,8 @@ import { create } from 'zustand';
 
 import { calculatePetGrowthStage, calculatePetLevel } from '@/core/constants/gameRules';
 import { playerRepository } from '@/data/repositories/playerRepository';
+import { petRepository } from '@/data/repositories/petRepository';
+import { streakSummaryRepository } from '@/data/repositories/streakSummaryRepository';
 import type { Pet } from '@/data/models/pet';
 import type { ReminderPermissionStatus } from '@/features/notifications/habitReminders';
 import { syncHabitReminderNotifications } from '@/features/notifications/habitReminders';
@@ -81,7 +83,10 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   dailyQuests: [],
   hydrateFromLocal: () => {
     const player = playerRepository.getCurrent();
-    set({ isHydrated: true, player });
+    const activePet = petRepository.getActive() ?? initialPet;
+    const streakSummary = streakSummaryRepository.get();
+
+    set({ activePet, isHydrated: true, player, streakSummary });
   },
   generateTodayQuests: () => {
     set({ dailyQuests: generateDailyQuests() });
@@ -100,21 +105,26 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
 
       const nextCurrentStreak = state.streakSummary.currentStreak + 1;
       const nextPetXp = state.activePet.xp + result.quest.xpReward;
+      const nextPet: Pet = {
+        ...state.activePet,
+        level: calculatePetLevel(nextPetXp),
+        xp: nextPetXp,
+        mood: 'happy',
+        growthStage: calculatePetGrowthStage(nextPetXp),
+      };
+      const nextStreakSummary = {
+        currentStreak: nextCurrentStreak,
+        longestStreak: Math.max(state.streakSummary.longestStreak, nextCurrentStreak),
+      };
+
+      petRepository.upsert(nextPet);
+      streakSummaryRepository.upsert(nextStreakSummary);
 
       return {
         player: result.player,
         dailyQuests: generateDailyQuests(),
-        streakSummary: {
-          currentStreak: nextCurrentStreak,
-          longestStreak: Math.max(state.streakSummary.longestStreak, nextCurrentStreak),
-        },
-        activePet: {
-          ...state.activePet,
-          level: calculatePetLevel(nextPetXp),
-          xp: nextPetXp,
-          mood: 'happy',
-          growthStage: calculatePetGrowthStage(nextPetXp),
-        },
+        streakSummary: nextStreakSummary,
+        activePet: nextPet,
         rewardFeedback: {
           id: `${result.quest.id}-${result.quest.completedAt}`,
           xpGained: result.quest.xpReward,
@@ -131,7 +141,20 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   createPlayer: (name: string, selectedClass: PlayerClass) => {
     const player = createInitialPlayer(name, selectedClass);
     playerRepository.upsert(player);
-    set({ draftPlayerName: '', player });
+    petRepository.upsert(initialPet);
+    streakSummaryRepository.upsert({
+      currentStreak: 0,
+      longestStreak: 0,
+    });
+    set({
+      activePet: initialPet,
+      draftPlayerName: '',
+      player,
+      streakSummary: {
+        currentStreak: 0,
+        longestStreak: 0,
+      },
+    });
     return player;
   },
   setNotificationsEnabled: async (enabled: boolean) => {

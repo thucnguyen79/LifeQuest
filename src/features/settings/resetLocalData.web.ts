@@ -1,4 +1,10 @@
-const storageKeys = ['lifequest.player', 'lifequest.habits', 'lifequest.quests'];
+const storageKeys = [
+  'lifequest.player',
+  'lifequest.habits',
+  'lifequest.quests',
+  'lifequest.pet',
+  'lifequest.streakSummary',
+];
 
 function getStorage() {
   try {
