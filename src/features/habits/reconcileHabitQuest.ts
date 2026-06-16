@@ -1,0 +1,54 @@
+import { coinRewardByDifficulty, xpRewardByDifficulty } from '@/core/constants/gameRules';
+import type { Habit, Weekday } from '@/data/models/habit';
+import type { Quest } from '@/data/models/quest';
+import { questRepository } from '@/data/repositories/questRepository';
+import { getTodayDateKey, getWeekdayFromDateKey } from '@/features/quests/dateUtils';
+
+function getQuestId(habitId: string, dateKey: string) {
+  return `quest-${habitId}-${dateKey}`;
+}
+
+function isHabitDueOnDate(habit: Habit, dateKey: string) {
+  if (!habit.isActive) {
+    return false;
+  }
+
+  if (habit.frequencyType === 'daily') {
+    return true;
+  }
+
+  const weekday: Weekday = getWeekdayFromDateKey(dateKey);
+  return habit.selectedWeekdays.includes(weekday);
+}
+
+function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
+  return {
+    coinReward: coinRewardByDifficulty[habit.difficulty],
+    date: dateKey,
+    habitId: habit.id,
+    id: getQuestId(habit.id, dateKey),
+    status: 'pending',
+    title: habit.title,
+    xpReward: xpRewardByDifficulty[habit.difficulty],
+  };
+}
+
+export function reconcileHabitQuestForDate(habit: Habit, dateKey = getTodayDateKey()) {
+  const existingQuest = questRepository.getById(getQuestId(habit.id, dateKey));
+
+  if (existingQuest && existingQuest.status !== 'pending') {
+    return existingQuest;
+  }
+
+  if (!isHabitDueOnDate(habit, dateKey)) {
+    if (existingQuest?.status === 'pending') {
+      questRepository.remove(existingQuest.id);
+    }
+
+    return null;
+  }
+
+  const nextQuest = createQuestFromHabit(habit, dateKey);
+  questRepository.upsert(nextQuest);
+  return nextQuest;
+}

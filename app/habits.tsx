@@ -16,6 +16,7 @@ import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { Habit } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
+import { reconcileHabitQuestForDate } from '@/features/habits/reconcileHabitQuest';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const categoryIcon: Record<Habit['category'], GameIconName> = {
@@ -28,6 +29,7 @@ const categoryIcon: Record<Habit['category'], GameIconName> = {
 
 export default function HabitsScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
+  const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const rescheduleNotifications = useLifeQuestStore((state) => state.rescheduleNotifications);
 
   const loadHabits = useCallback(() => {
@@ -37,7 +39,21 @@ export default function HabitsScreen() {
   useFocusEffect(loadHabits);
 
   const archiveHabit = (habitId: string) => {
-    habitRepository.deactivate(habitId);
+    const habit = habitRepository.getById(habitId);
+
+    if (!habit) {
+      return;
+    }
+
+    const archivedHabit = {
+      ...habit,
+      isActive: false,
+      updatedAt: new Date().toISOString(),
+    };
+
+    habitRepository.upsert(archivedHabit);
+    reconcileHabitQuestForDate(archivedHabit);
+    generateTodayQuests();
     void rescheduleNotifications();
     loadHabits();
   };

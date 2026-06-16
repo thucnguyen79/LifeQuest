@@ -21,6 +21,7 @@ import type {
 } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
 import { createHabit } from '@/features/habits/createHabit';
+import { reconcileHabitQuestForDate } from '@/features/habits/reconcileHabitQuest';
 import { isValidReminderTime } from '@/features/notifications/habitReminders';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
@@ -90,6 +91,7 @@ export default function HabitFormScreen() {
     });
 
     habitRepository.upsert(habit);
+    reconcileHabitQuestForDate(habit);
     generateTodayQuests();
     void rescheduleNotifications();
     router.replace('/habits');

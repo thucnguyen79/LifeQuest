@@ -92,4 +92,9 @@ export const questRepository = {
     initializeLocalDatabase();
     getDatabase().runSync('DELETE FROM quests WHERE date = ?', date);
   },
+
+  remove(id: string) {
+    initializeLocalDatabase();
+    getDatabase().runSync('DELETE FROM quests WHERE id = ?', id);
+  },
 };

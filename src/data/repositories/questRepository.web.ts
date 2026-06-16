@@ -68,4 +68,8 @@ export const questRepository = {
   removeForDate(date: string) {
     writeQuests(readQuests().filter((quest) => quest.date !== date));
   },
+
+  remove(id: string) {
+    writeQuests(readQuests().filter((quest) => quest.id !== id));
+  },
 };

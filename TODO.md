@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-18 are implemented through UI/Animation v2.
+Tasks 14-19 are implemented through Quest Reconciliation.
 
 Task 14B/14C UI pass:
 
@@ -51,6 +51,15 @@ Task 18 UI/Animation v2:
 - Completed quests show a small animated sparkle.
 - Dashboard shortcuts are now presented as an RPG-style Adventure Map.
 
+Task 19 quest reconciliation:
+
+- Editing a habit updates today's pending quest title/reward when the habit is still due today.
+- Editing a habit to a non-due weekday removes today's pending quest.
+- Archiving a habit removes today's pending quest.
+- Completed/missed quests are kept intact for history and rewards.
+- Habit form and habit archive actions refresh Dashboard quest/chest state.
+- Added focused tests for edit/archive reconciliation.
+
 Latest checks:
 
 - `npm test` passes.
@@ -62,9 +71,9 @@ Latest checks:
 
 Recommended options:
 
-- Test UI/Animation v2 in Dashboard, Companion, and Rewards on web preview.
-- Start Task 19 Quest Reconciliation: edit/archive habits and update today's pending quests predictably.
-- Or start mobile build readiness: Expo Go/dev build, icon/splash, and notification QA.
+- Test Task 19 manually: edit pending habit title/difficulty, archive pending habit, verify Dashboard updates.
+- Start Task 20 Mobile Build Readiness: Expo Go/dev build, icon/splash, and notification QA.
+- Or start backend sync planning after local MVP confidence is higher.
 
 ## Later MVP Tasks
 

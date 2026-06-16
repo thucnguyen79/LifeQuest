@@ -196,6 +196,18 @@ Completion note: Added native Lottie JSON assets, web Reanimated/SVG animation f
 - Keep completed historical quests intact
 - Add tests for edit/archive reconciliation
 
+Status: Done
+
+Completion note: Added `reconcileHabitQuestForDate`, repository removal by quest id, habit form/archive wiring, Dashboard refresh after edit/archive, and tests covering pending updates, completed quest preservation, non-due weekday removal, and archive removal.
+
+## 20. Mobile Build Readiness
+
+- Validate Expo Go/dev build startup
+- App icon and splash pass
+- Native notification behavior QA
+- Mobile responsive pass on real device dimensions
+- Document mobile setup for continuing on another machine
+
 Status: Pending
 
 ## Build Rules
