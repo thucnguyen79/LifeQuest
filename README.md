@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Paused on 2026-06-10 after an additional RPG UI polish pass. The next session should continue reviewing Task 14 before moving to tests.
+Paused on Task 14 review after adding a stronger 14B UI pass with reusable game UI primitives. Continue reviewing the polish before moving to tests.
 
 Implemented:
 

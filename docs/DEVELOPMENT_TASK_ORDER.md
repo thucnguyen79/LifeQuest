@@ -139,7 +139,7 @@ Status: Done
 
 Status: In Review
 
-Pause note: additional RPG UI polish was pushed on 2026-06-10. Continue reviewing this task in the next session before moving to tests.
+Review note: Task 14B added reusable game UI primitives and applied them to dashboard, habits, rewards, and settings. Keep this task in review until the UI is accepted in browser/mobile preview.
 
 ## 15. Add Tests
 

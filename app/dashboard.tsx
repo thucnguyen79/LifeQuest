@@ -4,7 +4,10 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
+import { EmptyState } from '@/core/components/EmptyState';
+import { GameBadge } from '@/core/components/GameBadge';
 import { ProgressBar } from '@/core/components/ProgressBar';
+import { RuneIcon } from '@/core/components/RuneIcon';
 import { StatPill } from '@/core/components/StatPill';
 import { characterClasses } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
@@ -59,9 +62,7 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeIn.duration(350)} style={styles.heroCard}>
           <View style={styles.avatarRow}>
             <View style={styles.avatar}>
-              <View style={styles.avatarBlade} />
-              <View style={styles.avatarGem} />
-              <Text style={styles.avatarText}>{playerClass.icon}</Text>
+              <RuneIcon label={playerClass.icon} size="lg" tone="gold" />
             </View>
             <View style={styles.avatarInfo}>
               <Text style={styles.className}>{playerClass.name}</Text>
@@ -108,7 +109,7 @@ export default function DashboardScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Stats</Text>
-          <Text style={styles.sectionMeta}>MVP preview</Text>
+          <GameBadge label="MVP preview" tone="muted" />
         </View>
         <View style={styles.statsGrid}>
           <StatPill label="STR" value={player.strength} />
@@ -123,9 +124,7 @@ export default function DashboardScreen() {
           <Pressable onPress={() => router.push('/companion')} style={styles.previewCard}>
             <View style={styles.previewHeader}>
               <Text style={styles.previewEyebrow}>Companion</Text>
-              <View style={styles.previewIcon}>
-                <Text style={styles.previewIconText}>P</Text>
-              </View>
+              <RuneIcon label="P" size="sm" tone="mint" />
             </View>
             <Text style={styles.previewTitle}>{activePet.name}</Text>
             <Text style={styles.previewBody}>
@@ -136,9 +135,7 @@ export default function DashboardScreen() {
           <View style={styles.previewCard}>
             <View style={styles.previewHeader}>
               <Text style={styles.previewEyebrow}>Streak</Text>
-              <View style={styles.previewIcon}>
-                <Text style={styles.previewIconText}>S</Text>
-              </View>
+              <RuneIcon label="S" size="sm" tone="gold" />
             </View>
             <Text style={styles.previewTitle}>{streakSummary.currentStreak} days</Text>
             <Text style={styles.previewBody}>
@@ -149,29 +146,25 @@ export default function DashboardScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Today Quests</Text>
-          <Text style={styles.sectionMeta}>
-            {totalQuestCount === 0
-              ? 'Generated from habits'
-              : allQuestsDone
-                ? 'Cleared'
-                : `${completedQuestCount}/${totalQuestCount} complete`}
-          </Text>
+          <GameBadge
+            label={
+              totalQuestCount === 0
+                ? 'Generated from habits'
+                : allQuestsDone
+                  ? 'Cleared'
+                  : `${completedQuestCount}/${totalQuestCount} complete`
+            }
+            tone={allQuestsDone ? 'accent' : 'gold'}
+          />
         </View>
         {dailyQuests.length === 0 ? (
-          <View style={styles.emptyQuestCard}>
-            <View style={styles.emptyQuestMark}>
-              <Text style={styles.emptyQuestMarkText}>Q</Text>
-            </View>
-            <View style={styles.emptyQuestCopy}>
-              <Text style={styles.emptyQuestTitle}>Quest board is empty</Text>
-              <Text style={styles.emptyQuestBody}>
-                Add one active habit to start generating daily quests.
-              </Text>
-              <Pressable onPress={() => router.push('/habits')} style={styles.emptyQuestButton}>
-                <Text style={styles.emptyQuestButtonText}>Create Habit</Text>
-              </Pressable>
-            </View>
-          </View>
+          <EmptyState
+            actionLabel="Create Habit"
+            body="Add one active habit to start generating daily quests."
+            mark="Q"
+            title="Quest board is empty"
+            onAction={() => router.push('/habits')}
+          />
         ) : (
           <View style={styles.questList}>
             {dailyQuests.map((quest, index) => (
@@ -203,7 +196,7 @@ export default function DashboardScreen() {
         <View style={styles.navGrid}>
           {navItems.map((item) => (
             <Pressable key={item.route} onPress={() => router.push(item.route)} style={styles.navCard}>
-              <Text style={styles.navIcon}>{item.icon}</Text>
+              <RuneIcon label={item.icon} size="sm" tone="gold" />
               <View style={styles.navCopy}>
                 <Text style={styles.navLabel}>{item.label}</Text>
                 <Text style={styles.navMeta}>{item.meta}</Text>
@@ -263,37 +256,10 @@ const styles = StyleSheet.create({
   },
   avatar: {
     alignItems: 'center',
-    backgroundColor: colors.gold,
     borderRadius: 8,
-    height: 64,
+    height: 72,
     justifyContent: 'center',
-    overflow: 'hidden',
-    position: 'relative',
-    width: 64,
-  },
-  avatarBlade: {
-    backgroundColor: colors.ember,
-    height: 92,
-    opacity: 0.85,
-    position: 'absolute',
-    right: -18,
-    top: -14,
-    transform: [{ rotate: '26deg' }],
-    width: 24,
-  },
-  avatarGem: {
-    backgroundColor: colors.sky,
-    borderRadius: 8,
-    bottom: 8,
-    height: 12,
-    position: 'absolute',
-    right: 10,
-    width: 12,
-  },
-  avatarText: {
-    color: colors.ink,
-    fontSize: 28,
-    fontWeight: '900',
+    width: 72,
   },
   avatarInfo: {
     flex: 1,
@@ -395,11 +361,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
   },
-  sectionMeta: {
-    color: colors.muted,
-    fontSize: 12,
-    fontWeight: '700',
-  },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -432,19 +393,6 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     textTransform: 'uppercase',
   },
-  previewIcon: {
-    alignItems: 'center',
-    backgroundColor: colors.goldSoft,
-    borderRadius: 8,
-    height: 32,
-    justifyContent: 'center',
-    width: 32,
-  },
-  previewIconText: {
-    color: colors.ink,
-    fontSize: 14,
-    fontWeight: '900',
-  },
   previewTitle: {
     color: colors.ink,
     fontSize: 20,
@@ -457,58 +405,6 @@ const styles = StyleSheet.create({
   },
   questList: {
     gap: spacing.sm,
-  },
-  emptyQuestCard: {
-    alignItems: 'center',
-    backgroundColor: colors.panel,
-    borderColor: colors.gold,
-    borderRadius: 8,
-    borderWidth: 1,
-    flexDirection: 'row',
-    gap: spacing.md,
-    padding: spacing.lg,
-  },
-  emptyQuestMark: {
-    alignItems: 'center',
-    backgroundColor: colors.panelDeep,
-    borderRadius: 8,
-    height: 64,
-    justifyContent: 'center',
-    width: 64,
-  },
-  emptyQuestMarkText: {
-    color: colors.gold,
-    fontSize: 26,
-    fontWeight: '900',
-  },
-  emptyQuestCopy: {
-    flex: 1,
-    gap: spacing.xs,
-  },
-  emptyQuestTitle: {
-    color: colors.ink,
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  emptyQuestBody: {
-    color: colors.muted,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  emptyQuestButton: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    backgroundColor: colors.ink,
-    borderRadius: 8,
-    justifyContent: 'center',
-    marginTop: spacing.xs,
-    minHeight: 40,
-    paddingHorizontal: spacing.md,
-  },
-  emptyQuestButtonText: {
-    color: colors.surface,
-    fontSize: 14,
-    fontWeight: '900',
   },
   questCard: {
     alignItems: 'center',
@@ -581,12 +477,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     minHeight: 88,
     padding: spacing.md,
-  },
-  navIcon: {
-    color: colors.gold,
-    fontSize: 18,
-    fontWeight: '900',
-    minWidth: 20,
   },
   navCopy: {
     flex: 1,

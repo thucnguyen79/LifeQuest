@@ -3,7 +3,10 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/core/components/AppScreen';
-import { PrimaryButton } from '@/core/components/PrimaryButton';
+import { EmptyState } from '@/core/components/EmptyState';
+import { GameBadge } from '@/core/components/GameBadge';
+import { GamePanel } from '@/core/components/GamePanel';
+import { RuneIcon } from '@/core/components/RuneIcon';
 import {
   getHabitCategoryLabel,
   getHabitDifficultyLabel,
@@ -13,6 +16,14 @@ import { spacing } from '@/core/theme/spacing';
 import type { Habit } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
+
+const categoryRune = {
+  deepWork: 'F',
+  fitness: 'S',
+  learning: 'I',
+  meditation: 'W',
+  social: 'C',
+} as const;
 
 export default function HabitsScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -45,42 +56,38 @@ export default function HabitsScreen() {
         </View>
 
         {habits.length === 0 ? (
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyTitle}>No active habits yet</Text>
-            <Text style={styles.emptyBody}>
-              Create one habit to start shaping your character progression.
-            </Text>
-            <PrimaryButton label="Create Habit" onPress={() => router.push('/habit-form')} />
-          </View>
+          <EmptyState
+            actionLabel="Create Habit"
+            body="Create one habit to turn real life into daily quests, XP, and pet bond progress."
+            mark="H"
+            title="No quest sources yet"
+            onAction={() => router.push('/habit-form')}
+          />
         ) : (
           <View style={styles.list}>
             {habits.map((habit) => (
-              <View key={habit.id} style={styles.habitCard}>
+              <GamePanel accent key={habit.id} tone="parchment" style={styles.habitCard}>
                 <View style={styles.habitTopRow}>
+                  <RuneIcon label={categoryRune[habit.category]} tone="mint" />
                   <View style={styles.habitCopy}>
                     <Text style={styles.habitTitle}>{habit.title}</Text>
                     <Text style={styles.habitMeta}>
-                      {getHabitCategoryLabel(habit.category)} /{' '}
-                      {getHabitDifficultyLabel(habit.difficulty)}
+                      {getHabitCategoryLabel(habit.category)}
                     </Text>
                   </View>
-                  <View style={styles.frequencyBadge}>
-                    <Text style={styles.frequencyText}>
-                      {habit.frequencyType === 'daily' ? 'Daily' : 'Selected'}
-                    </Text>
-                  </View>
+                  <GameBadge
+                    label={habit.frequencyType === 'daily' ? 'Daily' : 'Selected'}
+                    tone="gold"
+                  />
                 </View>
 
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailText}>
-                    Target: {habit.targetCount ? `${habit.targetCount}x` : 'none'}
-                  </Text>
-                  <Text style={styles.detailText}>
-                    Reminder: {habit.reminderTime ?? 'none'}
-                  </Text>
-                  <Text style={styles.detailText}>
-                    Frequency: {habit.frequencyType === 'daily' ? 'daily' : 'selected days'}
-                  </Text>
+                  <GameBadge label={getHabitDifficultyLabel(habit.difficulty)} tone="accent" />
+                  <GameBadge
+                    label={`Target ${habit.targetCount ? `${habit.targetCount}x` : 'none'}`}
+                    tone="muted"
+                  />
+                  <GameBadge label={`Reminder ${habit.reminderTime ?? 'none'}`} tone="muted" />
                 </View>
 
                 <View style={styles.actions}>
@@ -96,7 +103,7 @@ export default function HabitsScreen() {
                     <Text style={styles.archiveButtonText}>Archive</Text>
                   </Pressable>
                 </View>
-              </View>
+              </GamePanel>
             ))}
           </View>
         )}
@@ -151,34 +158,11 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     lineHeight: 28,
   },
-  emptyCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: spacing.md,
-    padding: spacing.lg,
-  },
-  emptyTitle: {
-    color: colors.ink,
-    fontSize: 22,
-    fontWeight: '900',
-  },
-  emptyBody: {
-    color: colors.muted,
-    fontSize: 15,
-    lineHeight: 22,
-  },
   list: {
     gap: spacing.md,
   },
   habitCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 8,
-    borderWidth: 1,
     gap: spacing.md,
-    padding: spacing.md,
   },
   habitTopRow: {
     alignItems: 'flex-start',
@@ -200,26 +184,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 4,
   },
-  frequencyBadge: {
-    backgroundColor: colors.goldSoft,
-    borderRadius: 8,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  frequencyText: {
-    color: colors.ink,
-    fontSize: 12,
-    fontWeight: '900',
-  },
   detailRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
-  },
-  detailText: {
-    color: colors.muted,
-    fontSize: 13,
-    fontWeight: '700',
   },
   actions: {
     flexDirection: 'row',

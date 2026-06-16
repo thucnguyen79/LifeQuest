@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { AppScreen } from '@/core/components/AppScreen';
+import { GameBadge } from '@/core/components/GameBadge';
+import { GamePanel } from '@/core/components/GamePanel';
+import { RuneIcon } from '@/core/components/RuneIcon';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
@@ -39,42 +42,56 @@ export default function SettingsScreen() {
           <Text style={styles.title}>App Preferences</Text>
         </View>
 
-        <View style={styles.card}>
+        <GamePanel tone="surface" style={styles.card}>
+          <RuneIcon label="N" size="sm" tone="sky" />
           <View style={styles.settingCopy}>
             <Text style={styles.settingTitle}>Daily reminders</Text>
             <Text style={styles.settingBody}>{notificationsMessage}</Text>
-            <Text style={styles.settingMeta}>
-              {notificationsStatus} / {scheduledReminderCount} scheduled
-            </Text>
+            <GameBadge
+              label={`${notificationsStatus} / ${scheduledReminderCount} scheduled`}
+              tone={notificationsEnabled ? 'accent' : 'muted'}
+              style={styles.settingBadge}
+            />
           </View>
           <Switch
             disabled={isSchedulingNotifications}
             value={notificationsEnabled}
             onValueChange={setNotificationsEnabled}
           />
-        </View>
+        </GamePanel>
 
-        <View style={styles.card}>
+        <GamePanel tone="surface" style={styles.card}>
+          <RuneIcon label="S" size="sm" tone="gold" />
           <View style={styles.settingCopy}>
             <Text style={styles.settingTitle}>Sound effects</Text>
             <Text style={styles.settingBody}>
               Placeholder toggle for future quest completion and reward sounds.
             </Text>
-            <Text style={styles.settingMeta}>{soundEnabled ? 'enabled' : 'muted'}</Text>
+            <GameBadge
+              label={soundEnabled ? 'enabled' : 'muted'}
+              tone={soundEnabled ? 'gold' : 'muted'}
+              style={styles.settingBadge}
+            />
           </View>
           <Switch value={soundEnabled} onValueChange={toggleSound} />
-        </View>
+        </GamePanel>
 
-        <View style={styles.cardStack}>
-          <Text style={styles.settingTitle}>Privacy</Text>
-          <Text style={styles.settingBody}>
-            MVP data stays on this device. Backend sync and account privacy controls start after
-            the local MVP is stable.
-          </Text>
-        </View>
+        <GamePanel tone="parchment" style={styles.cardStack}>
+          <View style={styles.cardHeaderRow}>
+            <RuneIcon label="P" size="sm" tone="mint" />
+            <Text style={styles.settingTitle}>Privacy</Text>
+          </View>
+            <Text style={styles.settingBody}>
+              MVP data stays on this device. Backend sync and account privacy controls start after
+              the local MVP is stable.
+            </Text>
+        </GamePanel>
 
-        <View style={[styles.cardStack, styles.dangerCard]}>
-          <Text style={styles.dangerTitle}>Reset local data</Text>
+        <GamePanel tone="surface" style={[styles.cardStack, styles.dangerCard]}>
+          <View style={styles.cardHeaderRow}>
+            <RuneIcon label="!" size="sm" tone="ember" />
+            <Text style={styles.dangerTitle}>Reset local data</Text>
+          </View>
           <Text style={styles.settingBody}>
             Clears player, habits, quests, streak preview, pet progress, and scheduled reminders.
           </Text>
@@ -89,7 +106,7 @@ export default function SettingsScreen() {
               {resetArmed ? 'Confirm Reset' : 'Arm Reset'}
             </Text>
           </Pressable>
-        </View>
+        </GamePanel>
       </ScrollView>
     </AppScreen>
   );
@@ -117,21 +134,16 @@ const styles = StyleSheet.create({
   },
   card: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 8,
-    borderWidth: 1,
     flexDirection: 'row',
     gap: spacing.md,
-    padding: spacing.lg,
   },
   cardStack: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 8,
-    borderWidth: 1,
     gap: spacing.sm,
-    padding: spacing.lg,
+  },
+  cardHeaderRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
   },
   settingCopy: {
     flex: 1,
@@ -147,12 +159,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 4,
   },
-  settingMeta: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: '900',
+  settingBadge: {
+    alignSelf: 'flex-start',
     marginTop: spacing.xs,
-    textTransform: 'uppercase',
   },
   dangerCard: {
     borderColor: '#E8B4AE',

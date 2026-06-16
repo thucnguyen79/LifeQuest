@@ -3,6 +3,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
+import { GameBadge } from '@/core/components/GameBadge';
+import { GamePanel } from '@/core/components/GamePanel';
+import { RuneIcon } from '@/core/components/RuneIcon';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
@@ -46,8 +49,11 @@ export default function RewardsScreen() {
             <Text style={styles.coinLabel}>Current Balance</Text>
             <Text style={styles.coinValue}>{player.coins}</Text>
           </View>
-          <View style={styles.coinMark}>
-            <Text style={styles.coinMarkText}>$</Text>
+          <View style={styles.chest}>
+            <View style={styles.chestLid} />
+            <View style={styles.chestLock}>
+              <Text style={styles.chestLockText}>$</Text>
+            </View>
           </View>
         </Animated.View>
 
@@ -56,15 +62,23 @@ export default function RewardsScreen() {
             <Animated.View
               entering={FadeInDown.delay(index * 60).duration(280)}
               key={track.title}
-              style={styles.trackCard}
             >
-              <View style={styles.trackTopRow}>
-                <Text style={styles.trackTitle}>{track.title}</Text>
-                <View style={styles.statusBadge}>
-                  <Text style={styles.statusText}>{track.status}</Text>
+              <GamePanel tone="parchment" style={styles.trackCard}>
+                <View style={styles.trackTopRow}>
+                  <RuneIcon label={String(index + 1)} size="sm" tone={index === 0 ? 'gold' : 'sky'} />
+                  <Text style={styles.trackTitle}>{track.title}</Text>
+                  <GameBadge
+                    label={track.status}
+                    tone={track.status === 'Locked' ? 'muted' : 'gold'}
+                  />
                 </View>
-              </View>
-              <Text style={styles.trackBody}>{track.body}</Text>
+                <Text style={styles.trackBody}>{track.body}</Text>
+                <View style={styles.slotRow}>
+                  <View style={styles.rewardSlot} />
+                  <View style={styles.rewardSlot} />
+                  <View style={styles.rewardSlot} />
+                </View>
+              </GamePanel>
             </Animated.View>
           ))}
         </View>
@@ -103,7 +117,9 @@ const styles = StyleSheet.create({
   },
   coinCard: {
     alignItems: 'center',
-    backgroundColor: colors.ink,
+    backgroundColor: colors.panelDeep,
+    borderColor: colors.accent,
+    borderWidth: 1,
     borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -121,29 +137,44 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginTop: spacing.xs,
   },
-  coinMark: {
+  chest: {
     alignItems: 'center',
+    backgroundColor: colors.ember,
+    borderRadius: 8,
+    borderWidth: 3,
+    borderColor: colors.gold,
+    height: 76,
+    justifyContent: 'center',
+    position: 'relative',
+    width: 92,
+  },
+  chestLid: {
     backgroundColor: colors.gold,
     borderRadius: 8,
-    height: 64,
-    justifyContent: 'center',
-    width: 64,
+    height: 24,
+    left: -6,
+    position: 'absolute',
+    right: -6,
+    top: -14,
   },
-  coinMarkText: {
+  chestLock: {
+    alignItems: 'center',
+    backgroundColor: colors.goldSoft,
+    borderRadius: 8,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
+  },
+  chestLockText: {
     color: colors.ink,
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: '900',
   },
   trackList: {
     gap: spacing.md,
   },
   trackCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 8,
-    borderWidth: 1,
     gap: spacing.sm,
-    padding: spacing.lg,
   },
   trackTopRow: {
     alignItems: 'center',
@@ -162,16 +193,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
-  statusBadge: {
-    backgroundColor: colors.goldSoft,
-    borderRadius: 8,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+  slotRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.xs,
   },
-  statusText: {
-    color: colors.ink,
-    fontSize: 12,
-    fontWeight: '900',
+  rewardSlot: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    flex: 1,
+    height: 42,
   },
   dashboardButton: {
     alignItems: 'center',

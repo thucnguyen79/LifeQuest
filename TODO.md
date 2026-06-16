@@ -6,6 +6,14 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 Goal: review the strengthened RPG UI polish pass and decide whether Task 14 is acceptable before starting tests.
 
+Current 14B pass:
+
+- Added reusable game UI primitives: `GamePanel`, `RuneIcon`, `GameBadge`, and `EmptyState`.
+- Applied the primitives to dashboard, habits, rewards, and settings for a more consistent visual language.
+- Updated Rewards with a chest visual and reward slots.
+- Updated Habits with quest-source cards, category runes, and badge metadata.
+- Updated Expo SDK 56 patch packages so `expo-doctor` passes with the current tooling.
+
 Scope:
 
 - Review dashboard, companion, habits, rewards, and settings in web preview.
