@@ -27,6 +27,7 @@ import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 export default function HabitFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const editingHabit = useMemo(() => (id ? habitRepository.getById(id) : null), [id]);
+  const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const rescheduleNotifications = useLifeQuestStore((state) => state.rescheduleNotifications);
 
   const [title, setTitle] = useState('');
@@ -54,12 +55,13 @@ export default function HabitFormScreen() {
   const normalizedTitle = title.trim();
   const normalizedReminderTime = reminderTime.trim();
   const parsedTargetCount = targetCount.trim() ? Number.parseInt(targetCount, 10) : undefined;
+  const hasValidTitle = normalizedTitle.length >= 2;
   const hasValidTargetCount =
     parsedTargetCount === undefined || (!Number.isNaN(parsedTargetCount) && parsedTargetCount > 0);
   const hasValidWeekdays = frequencyType === 'daily' || selectedWeekdays.length > 0;
   const hasValidReminderTime = isValidReminderTime(reminderTime);
   const canSave =
-    normalizedTitle.length >= 2 && hasValidTargetCount && hasValidWeekdays && hasValidReminderTime;
+    hasValidTitle && hasValidTargetCount && hasValidWeekdays && hasValidReminderTime;
 
   const toggleWeekday = (weekday: Weekday) => {
     setSelectedWeekdays((current) =>
@@ -88,6 +90,7 @@ export default function HabitFormScreen() {
     });
 
     habitRepository.upsert(habit);
+    generateTodayQuests();
     void rescheduleNotifications();
     router.replace('/habits');
   };
@@ -108,12 +111,18 @@ export default function HabitFormScreen() {
           <TextInput
             maxLength={48}
             onChangeText={setTitle}
-            placeholder="Read 20 minutes"
+            placeholder="Type a habit title"
             placeholderTextColor={colors.muted}
             style={styles.input}
             value={title}
           />
         </View>
+        {title.length === 0 ? (
+          <Text style={styles.helperText}>Example: Read 20 minutes.</Text>
+        ) : null}
+        {title.length > 0 && !hasValidTitle ? (
+          <Text style={styles.errorText}>Title must be at least 2 characters.</Text>
+        ) : null}
 
         <OptionGroup
           label="Category"
@@ -197,7 +206,11 @@ export default function HabitFormScreen() {
           <Text style={styles.errorText}>Reminder must use 24-hour HH:mm format.</Text>
         ) : null}
 
-        <PrimaryButton label={editingHabit ? 'Save Habit' : 'Create Habit'} onPress={saveHabit} />
+        <PrimaryButton
+          disabled={!canSave}
+          label={editingHabit ? 'Save Habit' : 'Create Habit'}
+          onPress={saveHabit}
+        />
       </ScrollView>
     </AppScreen>
   );
@@ -321,5 +334,11 @@ const styles = StyleSheet.create({
     color: '#A6423A',
     fontSize: 13,
     fontWeight: '800',
+  },
+  helperText: {
+    color: colors.muted,
+    fontSize: 13,
+    fontWeight: '700',
+    marginTop: -spacing.md,
   },
 });
