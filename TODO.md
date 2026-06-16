@@ -2,11 +2,11 @@
 
 Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
-## Next Task: Continue Task 14 UI Review
+## Current Status
 
-Goal: review the strengthened RPG UI polish pass and decide whether Task 14 is acceptable before starting tests.
+Task 14 UI polish and Task 15 focused tests are implemented and pushed-ready.
 
-Current 14B/14C pass:
+Task 14B/14C UI pass:
 
 - Added reusable game UI primitives: `GamePanel`, `RuneIcon`, `GameBadge`, and `EmptyState`.
 - Applied the primitives to dashboard, habits, rewards, and settings for a more consistent visual language.
@@ -17,26 +17,29 @@ Current 14B/14C pass:
 - Updated empty states and companion pet visual to use generated SVG assets.
 - Updated Expo SDK 56 patch packages so `expo-doctor` passes with the current tooling.
 
-Scope:
+Task 15 test pass:
 
-- Review dashboard, companion, habits, rewards, and settings in web preview.
-- Confirm RPG visual direction feels sufficiently different from the earlier plain card UI.
-- Review whether the generated SVG assets are strong enough for MVP, or whether Task 14D should introduce Lottie/Rive hero moments.
-- Check empty states, card hierarchy, and buttons on desktop-width preview and mobile-width preview.
-- Confirm Reanimated details are subtle and do not make layout unstable.
-- If the UI is accepted, mark Task 14 done again and move to Task 15 Add Tests.
-- If the UI still feels weak, continue polish before adding tests.
+- Added Vitest with `npm test`.
+- Added level, pet XP, and pet growth stage tests.
+- Added daily quest generation tests for weekday filtering, rewards, and duplicate prevention.
+- Added quest completion tests for XP, coins, level-up, discipline, mapped stat rewards, and completed quest guard.
 
-Acceptance checks:
+Latest checks:
 
+- `npm test` passes.
 - `npm run typecheck` passes.
 - `npx expo-doctor` passes.
-- Web preview still opens at `http://localhost:8081`.
-- Commit and push to `main`.
+
+## Next Task: Choose Next MVP Phase
+
+Recommended options:
+
+- Review dashboard, companion, habits, rewards, and settings in web preview.
+- Add repository hydration tests for local persistence if we want more confidence before feature expansion.
+- Start a small Task 16 planning pass for next MVP phase: onboarding polish, stronger animation moments, persistence hardening, or backend sync planning.
 
 ## Later MVP Tasks
 
-- Add focused tests for XP, level, reminder parsing, and quest generation logic.
 - Persist streak and pet repository hydration.
 - Add backend sync planning after local MVP confidence is higher.
 

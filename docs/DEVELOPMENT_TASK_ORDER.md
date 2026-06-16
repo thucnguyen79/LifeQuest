@@ -137,9 +137,9 @@ Status: Done
 - Lottie/Reanimated details
 - Mobile responsive polish
 
-Status: In Review
+Status: Done
 
-Review note: Task 14B added reusable game UI primitives and applied them to dashboard, habits, rewards, and settings. Task 14C added `react-native-svg`, generated SVG game assets, and replaced placeholder letter runes across dashboard, habits, companion, rewards, settings, and empty states. Keep this task in review until the UI is accepted in browser/mobile preview.
+Completion note: Task 14B added reusable game UI primitives and applied them to dashboard, habits, rewards, and settings. Task 14C added `react-native-svg`, generated SVG game assets, and replaced placeholder letter runes across dashboard, habits, companion, rewards, settings, and empty states.
 
 ## 15. Add Tests
 
@@ -149,7 +149,9 @@ Review note: Task 14B added reusable game UI primitives and applied them to dash
 - Quest generation
 - Repository behavior where useful
 
-Status: Pending
+Status: Done
+
+Completion note: Added Vitest with focused coverage for level and pet XP rules, daily quest generation, and quest completion reward behavior.
 
 ## Build Rules
 
