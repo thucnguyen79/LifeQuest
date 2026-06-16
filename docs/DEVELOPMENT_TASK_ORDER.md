@@ -169,8 +169,20 @@ Completion note: Added web `petRepository`, native/web `streakSummaryRepository`
 
 - Daily streak rules that increase once per day
 - Missed quest behavior
-- Archive/edit reconciliation for today's pending quests
+- Daily reset logic for old pending quests
 - Reward claim flow
+- Level-up modal polish
+
+Status: Done
+
+Completion note: Added daily reset to mark old pending quests as `missed`, daily streak rules that advance once per date, daily chest claim state/repository wiring, reward claim UI, dashboard chest status, missed quest labels, level-up modal, and focused tests.
+
+## 18. Quest Reconciliation
+
+- Edit habit should update today's pending quest title/reward when safe
+- Archive habit should remove or miss today's pending quest predictably
+- Keep completed historical quests intact
+- Add tests for edit/archive reconciliation
 
 Status: Pending
 

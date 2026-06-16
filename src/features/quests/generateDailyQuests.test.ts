@@ -6,6 +6,13 @@ import type { Quest } from '@/data/models/quest';
 const mocks = vi.hoisted(() => ({
   activeHabits: [] as Habit[],
   quests: [] as Quest[],
+  markPendingBeforeDateAsMissed: vi.fn((dateKey: string) => {
+    mocks.quests = mocks.quests.map((quest) =>
+      quest.date < dateKey && quest.status === 'pending'
+        ? { ...quest, completedAt: undefined, status: 'missed' }
+        : quest,
+    );
+  }),
   upsert: vi.fn((quest: Quest) => {
     const index = mocks.quests.findIndex((existingQuest) => existingQuest.id === quest.id);
 
@@ -28,6 +35,7 @@ vi.mock('@/data/repositories/questRepository', () => ({
   questRepository: {
     listByDate: (dateKey: string) =>
       mocks.quests.filter((quest) => quest.date === dateKey),
+    markPendingBeforeDateAsMissed: mocks.markPendingBeforeDateAsMissed,
     upsert: mocks.upsert,
   },
 }));
@@ -55,6 +63,7 @@ describe('generateDailyQuests', () => {
   beforeEach(() => {
     mocks.activeHabits = [];
     mocks.quests = [];
+    mocks.markPendingBeforeDateAsMissed.mockClear();
     mocks.upsert.mockClear();
   });
 
@@ -104,5 +113,32 @@ describe('generateDailyQuests', () => {
       xpReward: 10,
     });
     expect(quests.map((quest) => quest.habitId)).toEqual(['daily-hard', 'tuesday-easy']);
+  });
+
+  it('marks old pending quests as missed during daily reset', () => {
+    mocks.activeHabits = [
+      createHabit({
+        id: 'today-habit',
+        title: 'Today habit',
+      }),
+    ];
+    mocks.quests = [
+      {
+        coinReward: 3,
+        date: '2026-06-15',
+        habitId: 'old-habit',
+        id: 'quest-old-habit-2026-06-15',
+        status: 'pending',
+        title: 'Old habit',
+        xpReward: 10,
+      },
+    ];
+
+    generateDailyQuests('2026-06-16');
+
+    expect(mocks.markPendingBeforeDateAsMissed).toHaveBeenCalledWith('2026-06-16');
+    expect(mocks.quests.find((quest) => quest.id === 'quest-old-habit-2026-06-15')?.status).toBe(
+      'missed',
+    );
   });
 });

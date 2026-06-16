@@ -28,6 +28,16 @@ function writeQuests(quests: Quest[]) {
 }
 
 export const questRepository = {
+  markPendingBeforeDateAsMissed(date: string) {
+    writeQuests(
+      readQuests().map((quest) =>
+        quest.date < date && quest.status === 'pending'
+          ? { ...quest, completedAt: undefined, status: 'missed' }
+          : quest,
+      ),
+    );
+  },
+
   listByDate(date: string) {
     return readQuests()
       .filter((quest) => quest.date === date)

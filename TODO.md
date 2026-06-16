@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Task 14 UI polish, Task 15 focused tests, and Task 16 persistence hardening are implemented.
+Tasks 14-17 are implemented through Gameplay Loop v2.
 
 Task 14B/14C UI pass:
 
@@ -33,6 +33,15 @@ Task 16 persistence hardening:
 - Reset local pet/streak data from Settings on native and web.
 - Added web repository tests for pet and streak summary persistence.
 
+Task 17 gameplay loop v2:
+
+- Daily reset marks old pending quests as `missed`.
+- Streak advances once per calendar day, not once per quest.
+- Daily chest unlocks after all today's quests are completed.
+- Rewards screen can claim the daily chest once per day for coin bonus.
+- Dashboard shows chest state, missed quest state, and a stronger level-up modal.
+- Added tests for daily reset, daily streak rules, and daily chest state.
+
 Latest checks:
 
 - `npm test` passes.
@@ -43,8 +52,8 @@ Latest checks:
 
 Recommended options:
 
-- Test refresh/reopen behavior after completing quests to confirm pet/streak remain visible.
-- Start Task 17 Gameplay Rules v2: daily streak rules, missed quests, archive/edit quest reconciliation, and reward claim flow.
+- Test the full loop: create quests, complete all, claim daily chest, refresh, confirm state remains.
+- Start Task 18 Quest Reconciliation: edit/archive habits and update today's pending quests predictably.
 - Or start UI/Animation v2: level-up modal, quest-complete feedback, and pet idle animation.
 
 ## Later MVP Tasks

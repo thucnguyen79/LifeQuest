@@ -27,6 +27,8 @@ function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
 }
 
 export function generateDailyQuests(dateKey = getTodayDateKey()) {
+  questRepository.markPendingBeforeDateAsMissed(dateKey);
+
   const activeHabits = habitRepository.listActive();
   const existingQuests = questRepository.listByDate(dateKey);
   const existingHabitIds = new Set(existingQuests.map((quest) => quest.habitId));

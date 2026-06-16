@@ -1,18 +1,13 @@
 import { getDatabase, initializeLocalDatabase } from '@/data/local/database';
 
-export type StreakSummary = {
-  currentStreak: number;
-  lastCompletedDate?: string;
-  longestStreak: number;
+export type DailyChestRecord = {
+  claimedDate?: string;
 };
 
-const metadataKey = 'streak_summary';
-const defaultStreakSummary: StreakSummary = {
-  currentStreak: 0,
-  longestStreak: 0,
-};
+const metadataKey = 'daily_chest';
+const defaultRecord: DailyChestRecord = {};
 
-export const streakSummaryRepository = {
+export const dailyChestRepository = {
   get() {
     initializeLocalDatabase();
 
@@ -21,17 +16,23 @@ export const streakSummaryRepository = {
       metadataKey,
     );
 
-    return row ? (JSON.parse(row.value) as StreakSummary) : defaultStreakSummary;
+    return row ? (JSON.parse(row.value) as DailyChestRecord) : defaultRecord;
   },
 
-  upsert(summary: StreakSummary) {
+  claim(dateKey: string) {
     initializeLocalDatabase();
+
+    const record: DailyChestRecord = {
+      claimedDate: dateKey,
+    };
 
     getDatabase().runSync(
       'INSERT OR REPLACE INTO app_metadata (key, value) VALUES (?, ?)',
       metadataKey,
-      JSON.stringify(summary),
+      JSON.stringify(record),
     );
+
+    return record;
   },
 
   reset() {

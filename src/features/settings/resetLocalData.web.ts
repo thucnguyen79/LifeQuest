@@ -4,6 +4,7 @@ const storageKeys = [
   'lifequest.quests',
   'lifequest.pet',
   'lifequest.streakSummary',
+  'lifequest.dailyChest',
 ];
 
 function getStorage() {

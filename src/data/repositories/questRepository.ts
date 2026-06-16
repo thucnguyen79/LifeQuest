@@ -26,6 +26,15 @@ function toQuest(row: QuestRow): Quest {
 }
 
 export const questRepository = {
+  markPendingBeforeDateAsMissed(date: string) {
+    initializeLocalDatabase();
+
+    getDatabase().runSync(
+      "UPDATE quests SET status = 'missed', completed_at = NULL WHERE date < ? AND status = 'pending'",
+      date,
+    );
+  },
+
   listByDate(date: string) {
     initializeLocalDatabase();
 

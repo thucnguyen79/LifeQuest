@@ -10,5 +10,6 @@ export function resetLocalData() {
     DELETE FROM habits;
     DELETE FROM players;
     DELETE FROM app_metadata WHERE key = 'streak_summary';
+    DELETE FROM app_metadata WHERE key = 'daily_chest';
   `);
 }

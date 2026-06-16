@@ -15,8 +15,8 @@ const rewardTracks = [
   {
     icon: 'chest',
     title: 'Daily Chest',
-    status: 'Preview',
-    body: 'Coins from quests will open lightweight daily reward moments after MVP polish.',
+    status: 'Live',
+    body: 'Clear every quest today to unlock a one-time coin chest.',
   },
   {
     icon: 'shield',
@@ -39,6 +39,8 @@ const rewardTracks = [
 
 export default function RewardsScreen() {
   const player = useLifeQuestStore((state) => state.player);
+  const dailyChest = useLifeQuestStore((state) => state.dailyChest);
+  const claimDailyChest = useLifeQuestStore((state) => state.claimDailyChest);
 
   if (!player) {
     return <Redirect href="/" />;
@@ -60,6 +62,47 @@ export default function RewardsScreen() {
           </View>
           <GameIcon name="chest" size={92} tone="gold" />
         </Animated.View>
+
+        <GamePanel accent tone="parchment" style={styles.claimCard}>
+          <View style={styles.claimHeader}>
+            <GameIcon
+              name="chest"
+              size={64}
+              tone={dailyChest.status === 'available' ? 'gold' : 'sky'}
+            />
+            <View style={styles.claimCopy}>
+              <Text style={styles.claimTitle}>Daily Chest</Text>
+              <Text style={styles.claimBody}>
+                {dailyChest.status === 'available'
+                  ? `Unlocked. Claim +${dailyChest.coinReward} coins.`
+                  : dailyChest.status === 'claimed'
+                    ? 'Claimed for today. Come back after tomorrow quests.'
+                    : `Clear ${dailyChest.totalQuestCount - dailyChest.completedQuestCount} more quest(s) today.`}
+              </Text>
+            </View>
+            <GameBadge
+              label={dailyChest.status}
+              tone={dailyChest.status === 'available' ? 'gold' : 'muted'}
+            />
+          </View>
+          <Pressable
+            disabled={dailyChest.status !== 'available'}
+            onPress={claimDailyChest}
+            style={[
+              styles.claimButton,
+              dailyChest.status !== 'available' ? styles.claimButtonDisabled : null,
+            ]}
+          >
+            <Text
+              style={[
+                styles.claimButtonText,
+                dailyChest.status !== 'available' ? styles.claimButtonTextDisabled : null,
+              ]}
+            >
+              {dailyChest.status === 'claimed' ? 'Claimed' : 'Claim Chest'}
+            </Text>
+          </Pressable>
+        </GamePanel>
 
         <View style={styles.trackList}>
           {rewardTracks.map((track, index) => (
@@ -182,6 +225,46 @@ const styles = StyleSheet.create({
   },
   trackList: {
     gap: spacing.md,
+  },
+  claimCard: {
+    gap: spacing.md,
+  },
+  claimHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  claimCopy: {
+    flex: 1,
+  },
+  claimTitle: {
+    color: colors.ink,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  claimBody: {
+    color: colors.muted,
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 2,
+  },
+  claimButton: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    justifyContent: 'center',
+    minHeight: 46,
+  },
+  claimButtonDisabled: {
+    backgroundColor: colors.border,
+  },
+  claimButtonText: {
+    color: colors.surface,
+    fontSize: 15,
+    fontWeight: '900',
+  },
+  claimButtonTextDisabled: {
+    color: colors.muted,
   },
   trackCard: {
     gap: spacing.sm,
