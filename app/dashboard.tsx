@@ -5,6 +5,7 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { EmptyState } from '@/core/components/EmptyState';
+import { LevelUpBurst, PetIdleAnimation, QuestCompleteBurst } from '@/core/components/GameAnimation';
 import { GameBadge } from '@/core/components/GameBadge';
 import { GameIcon } from '@/core/components/GameIcon';
 import type { GameIconName } from '@/core/components/GameIcon';
@@ -64,7 +65,7 @@ export default function DashboardScreen() {
       <Modal animationType="fade" transparent visible={showLevelUpModal}>
         <View style={styles.modalBackdrop}>
           <Animated.View entering={FadeInDown.duration(260)} style={styles.levelModal}>
-            <GameIcon name="spark" size={88} tone="gold" />
+            <LevelUpBurst size={116} />
             <Text style={styles.levelModalEyebrow}>Level Up</Text>
             <Text style={styles.levelModalTitle}>
               Lv {rewardFeedback?.previousLevel}
@@ -132,7 +133,11 @@ export default function DashboardScreen() {
           <Animated.View entering={FadeIn.duration(250)} style={styles.rewardCard}>
             <View style={styles.rewardCopy}>
               <Text style={styles.rewardEyebrow}>{rewardFeedback.title}</Text>
-              <Text style={styles.rewardTitle}>{rewardFeedback.xpGained > 0 ? `+${rewardFeedback.xpGained} XP earned` : `+${rewardFeedback.coinsGained} coins`}</Text>
+              <Text style={styles.rewardTitle}>
+                {rewardFeedback.xpGained > 0
+                  ? `+${rewardFeedback.xpGained} XP earned`
+                  : `+${rewardFeedback.coinsGained} coins`}
+              </Text>
               <Text style={styles.rewardBody}>
                 +{rewardFeedback.xpGained} XP / +{rewardFeedback.coinsGained} coins
               </Text>
@@ -160,7 +165,7 @@ export default function DashboardScreen() {
           <Pressable onPress={() => router.push('/companion')} style={styles.previewCard}>
             <View style={styles.previewHeader}>
               <Text style={styles.previewEyebrow}>Companion</Text>
-              <GameIcon name="petDragon" size={44} tone="mint" />
+              <PetIdleAnimation size={52} />
             </View>
             <Text style={styles.previewTitle}>{activePet.name}</Text>
             <Text style={styles.previewBody}>
@@ -218,6 +223,7 @@ export default function DashboardScreen() {
                 </View>
                 {quest.status === 'completed' ? (
                   <View style={[styles.questStatus, styles.questStatusCompleted]}>
+                    <QuestCompleteBurst size={30} />
                     <Text style={styles.questStatusText}>Done</Text>
                   </View>
                 ) : quest.status === 'missed' ? (
@@ -234,13 +240,22 @@ export default function DashboardScreen() {
           </View>
         )}
 
-        <View style={styles.navGrid}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Adventure Map</Text>
+          <GameBadge label="Travel" tone="muted" />
+        </View>
+        <View style={styles.mapPanel}>
+          <View style={styles.mapPath} />
           {navItems.map((item) => (
-            <Pressable key={item.route} onPress={() => router.push(item.route)} style={styles.navCard}>
-              <GameIcon name={item.icon} size={44} tone="gold" />
-              <View style={styles.navCopy}>
-                <Text style={styles.navLabel}>{item.label}</Text>
-                <Text style={styles.navMeta}>{item.meta}</Text>
+            <Pressable key={item.route} onPress={() => router.push(item.route)} style={styles.mapNode}>
+              <GameIcon
+                name={item.icon}
+                size={46}
+                tone={item.route === '/rewards' && dailyChest.status === 'available' ? 'gold' : 'mint'}
+              />
+              <View style={styles.mapCopy}>
+                <Text style={styles.mapLabel}>{item.label}</Text>
+                <Text style={styles.mapMeta}>{item.meta}</Text>
               </View>
             </Pressable>
           ))}
@@ -552,8 +567,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   questStatus: {
+    alignItems: 'center',
     backgroundColor: colors.goldSoft,
     borderRadius: 8,
+    flexDirection: 'row',
+    gap: 4,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
   },
@@ -604,6 +622,55 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 13,
     lineHeight: 18,
+    marginTop: 2,
+  },
+  mapPanel: {
+    backgroundColor: colors.panel,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    overflow: 'hidden',
+    padding: spacing.md,
+    position: 'relative',
+  },
+  mapPath: {
+    backgroundColor: colors.goldSoft,
+    height: 6,
+    left: spacing.lg,
+    opacity: 0.75,
+    position: 'absolute',
+    right: spacing.lg,
+    top: 54,
+  },
+  mapNode: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.gold,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexBasis: '48%',
+    flexDirection: 'row',
+    flexGrow: 1,
+    gap: spacing.sm,
+    minHeight: 86,
+    padding: spacing.sm,
+  },
+  mapCopy: {
+    flex: 1,
+  },
+  mapLabel: {
+    color: colors.ink,
+    fontSize: 15,
+    fontWeight: '900',
+  },
+  mapMeta: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '700',
+    lineHeight: 16,
     marginTop: 2,
   },
   navGrid: {

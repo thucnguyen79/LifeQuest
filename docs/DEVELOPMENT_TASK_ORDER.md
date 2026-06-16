@@ -177,7 +177,19 @@ Status: Done
 
 Completion note: Added daily reset to mark old pending quests as `missed`, daily streak rules that advance once per date, daily chest claim state/repository wiring, reward claim UI, dashboard chest status, missed quest labels, level-up modal, and focused tests.
 
-## 18. Quest Reconciliation
+## 18. UI/Animation v2
+
+- Lottie pet idle animation for native builds
+- Web-safe Reanimated fallback for browser preview
+- Level-up animation polish
+- Quest complete animation
+- Better RPG map/dashboard layout
+
+Status: Done
+
+Completion note: Added native Lottie JSON assets, web Reanimated/SVG animation fallback, animated pet idle state, animated level-up burst, quest complete sparkle, and Adventure Map dashboard section.
+
+## 19. Quest Reconciliation
 
 - Edit habit should update today's pending quest title/reward when safe
 - Archive habit should remove or miss today's pending quest predictably

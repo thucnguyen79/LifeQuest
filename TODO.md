@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-17 are implemented through Gameplay Loop v2.
+Tasks 14-18 are implemented through UI/Animation v2.
 
 Task 14B/14C UI pass:
 
@@ -42,19 +42,29 @@ Task 17 gameplay loop v2:
 - Dashboard shows chest state, missed quest state, and a stronger level-up modal.
 - Added tests for daily reset, daily streak rules, and daily chest state.
 
+Task 18 UI/Animation v2:
+
+- Added Lottie JSON assets for native pet idle and level-up burst.
+- Added web-safe Reanimated/SVG animation fallback for browser preview.
+- Companion pet now idles with a floating animation.
+- Level-up modal uses an animated burst instead of a static icon.
+- Completed quests show a small animated sparkle.
+- Dashboard shortcuts are now presented as an RPG-style Adventure Map.
+
 Latest checks:
 
 - `npm test` passes.
 - `npm run typecheck` passes.
 - `npx expo-doctor` passes.
+- Web bundle returns `200 OK`.
 
 ## Next Task: Choose Next MVP Phase
 
 Recommended options:
 
-- Test the full loop: create quests, complete all, claim daily chest, refresh, confirm state remains.
-- Start Task 18 Quest Reconciliation: edit/archive habits and update today's pending quests predictably.
-- Or start UI/Animation v2: level-up modal, quest-complete feedback, and pet idle animation.
+- Test UI/Animation v2 in Dashboard, Companion, and Rewards on web preview.
+- Start Task 19 Quest Reconciliation: edit/archive habits and update today's pending quests predictably.
+- Or start mobile build readiness: Expo Go/dev build, icon/splash, and notification QA.
 
 ## Later MVP Tasks
 

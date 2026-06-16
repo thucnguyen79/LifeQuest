@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
+import { PetIdleAnimation } from '@/core/components/GameAnimation';
 import { GameIcon } from '@/core/components/GameIcon';
 import type { GameIconName } from '@/core/components/GameIcon';
 import { ProgressBar } from '@/core/components/ProgressBar';
@@ -94,7 +95,7 @@ export default function CompanionScreen() {
         </View>
 
         <Animated.View entering={FadeInDown.duration(320)} style={styles.heroCard}>
-          <PetAvatar type={activePet.type} />
+          <PetAvatarMark type={activePet.type} />
           <View style={styles.heroCopy}>
             <Text style={styles.petName}>{petType.label}</Text>
             <Text style={styles.petMeta}>
@@ -188,10 +189,10 @@ type PetAvatarProps = {
   type: PetType;
 };
 
-function PetAvatar({ type }: PetAvatarProps) {
+function PetAvatarMark({ type }: PetAvatarProps) {
   return (
     <View style={styles.petVisual}>
-      <GameIcon name="petDragon" size={132} tone="mint" />
+      <PetIdleAnimation size={132} />
       <Text style={styles.petTypeMark}>{type.slice(0, 2).toUpperCase()}</Text>
     </View>
   );
@@ -258,84 +259,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
     width: 136,
-  },
-  petAura: {
-    backgroundColor: colors.goldSoft,
-    borderRadius: 80,
-    height: 104,
-    opacity: 0.25,
-    position: 'absolute',
-    width: 104,
-  },
-  petWingLeft: {
-    backgroundColor: colors.sky,
-    borderRadius: 8,
-    height: 42,
-    left: 18,
-    opacity: 0.9,
-    position: 'absolute',
-    top: 48,
-    transform: [{ rotate: '-22deg' }],
-    width: 42,
-  },
-  petWingRight: {
-    backgroundColor: colors.sky,
-    borderRadius: 8,
-    height: 42,
-    opacity: 0.9,
-    position: 'absolute',
-    right: 18,
-    top: 48,
-    transform: [{ rotate: '22deg' }],
-    width: 42,
-  },
-  petBody: {
-    alignItems: 'center',
-    backgroundColor: colors.mint,
-    borderColor: colors.surface,
-    borderRadius: 28,
-    borderWidth: 3,
-    height: 78,
-    justifyContent: 'center',
-    position: 'relative',
-    width: 78,
-  },
-  petHornLeft: {
-    backgroundColor: colors.gold,
-    borderRadius: 6,
-    height: 20,
-    left: 14,
-    position: 'absolute',
-    top: -12,
-    transform: [{ rotate: '-20deg' }],
-    width: 12,
-  },
-  petHornRight: {
-    backgroundColor: colors.gold,
-    borderRadius: 6,
-    height: 20,
-    position: 'absolute',
-    right: 14,
-    top: -12,
-    transform: [{ rotate: '20deg' }],
-    width: 12,
-  },
-  petFace: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  petEye: {
-    backgroundColor: colors.ink,
-    borderRadius: 6,
-    height: 10,
-    width: 10,
-  },
-  petMouth: {
-    backgroundColor: colors.ember,
-    borderRadius: 8,
-    height: 6,
-    marginTop: spacing.sm,
-    width: 24,
   },
   petTypeMark: {
     bottom: spacing.sm,
