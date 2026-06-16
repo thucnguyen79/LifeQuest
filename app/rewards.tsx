@@ -4,29 +4,38 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { GameBadge } from '@/core/components/GameBadge';
+import { GameIcon } from '@/core/components/GameIcon';
+import type { GameIconName } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
-import { RuneIcon } from '@/core/components/RuneIcon';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const rewardTracks = [
   {
+    icon: 'chest',
     title: 'Daily Chest',
     status: 'Preview',
     body: 'Coins from quests will open lightweight daily reward moments after MVP polish.',
   },
   {
+    icon: 'shield',
     title: 'Badge Rack',
     status: 'Locked',
     body: 'Streak and level badges will appear here after test coverage is in place.',
   },
   {
+    icon: 'spark',
     title: 'Cosmetic Shop',
     status: 'Later',
     body: 'Pet cosmetics and avatar themes stay out of scope until progression feels stable.',
   },
-];
+] satisfies Array<{
+  body: string;
+  icon: GameIconName;
+  status: string;
+  title: string;
+}>;
 
 export default function RewardsScreen() {
   const player = useLifeQuestStore((state) => state.player);
@@ -49,12 +58,7 @@ export default function RewardsScreen() {
             <Text style={styles.coinLabel}>Current Balance</Text>
             <Text style={styles.coinValue}>{player.coins}</Text>
           </View>
-          <View style={styles.chest}>
-            <View style={styles.chestLid} />
-            <View style={styles.chestLock}>
-              <Text style={styles.chestLockText}>$</Text>
-            </View>
-          </View>
+          <GameIcon name="chest" size={92} tone="gold" />
         </Animated.View>
 
         <View style={styles.trackList}>
@@ -65,7 +69,7 @@ export default function RewardsScreen() {
             >
               <GamePanel tone="parchment" style={styles.trackCard}>
                 <View style={styles.trackTopRow}>
-                  <RuneIcon label={String(index + 1)} size="sm" tone={index === 0 ? 'gold' : 'sky'} />
+                  <GameIcon name={track.icon} size={44} tone={index === 0 ? 'gold' : 'sky'} />
                   <Text style={styles.trackTitle}>{track.title}</Text>
                   <GameBadge
                     label={track.status}
@@ -74,9 +78,15 @@ export default function RewardsScreen() {
                 </View>
                 <Text style={styles.trackBody}>{track.body}</Text>
                 <View style={styles.slotRow}>
-                  <View style={styles.rewardSlot} />
-                  <View style={styles.rewardSlot} />
-                  <View style={styles.rewardSlot} />
+                  <View style={styles.rewardSlot}>
+                    <GameIcon name="coin" size={28} tone="gold" />
+                  </View>
+                  <View style={styles.rewardSlot}>
+                    <GameIcon name="flame" size={28} tone="sky" />
+                  </View>
+                  <View style={styles.rewardSlot}>
+                    <GameIcon name="petDragon" size={28} tone="mint" />
+                  </View>
                 </View>
               </GamePanel>
             </Animated.View>
@@ -199,6 +209,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   rewardSlot: {
+    alignItems: 'center',
     backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: 8,
@@ -206,6 +217,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flex: 1,
     height: 42,
+    justifyContent: 'center',
   },
   dashboardButton: {
     alignItems: 'center',

@@ -5,8 +5,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AppScreen } from '@/core/components/AppScreen';
 import { EmptyState } from '@/core/components/EmptyState';
 import { GameBadge } from '@/core/components/GameBadge';
+import { GameIcon } from '@/core/components/GameIcon';
+import type { GameIconName } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
-import { RuneIcon } from '@/core/components/RuneIcon';
 import {
   getHabitCategoryLabel,
   getHabitDifficultyLabel,
@@ -17,13 +18,13 @@ import type { Habit } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
-const categoryRune = {
-  deepWork: 'F',
-  fitness: 'S',
-  learning: 'I',
-  meditation: 'W',
-  social: 'C',
-} as const;
+const categoryIcon: Record<Habit['category'], GameIconName> = {
+  deepWork: 'focus',
+  fitness: 'shield',
+  learning: 'book',
+  meditation: 'moon',
+  social: 'spark',
+};
 
 export default function HabitsScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -51,7 +52,7 @@ export default function HabitsScreen() {
             <Text style={styles.body}>Active habits become daily quests and reminder sources.</Text>
           </View>
           <Pressable onPress={() => router.push('/habit-form')} style={styles.iconButton}>
-            <Text style={styles.iconButtonText}>+</Text>
+            <GameIcon name="habit" size={34} tone="mint" />
           </Pressable>
         </View>
 
@@ -59,8 +60,8 @@ export default function HabitsScreen() {
           <EmptyState
             actionLabel="Create Habit"
             body="Create one habit to turn real life into daily quests, XP, and pet bond progress."
-            mark="H"
             title="No quest sources yet"
+            visual={<GameIcon name="scroll" size={76} tone="dark" />}
             onAction={() => router.push('/habit-form')}
           />
         ) : (
@@ -68,7 +69,7 @@ export default function HabitsScreen() {
             {habits.map((habit) => (
               <GamePanel accent key={habit.id} tone="parchment" style={styles.habitCard}>
                 <View style={styles.habitTopRow}>
-                  <RuneIcon label={categoryRune[habit.category]} tone="mint" />
+                  <GameIcon name={categoryIcon[habit.category]} size={48} tone="mint" />
                   <View style={styles.habitCopy}>
                     <Text style={styles.habitTitle}>{habit.title}</Text>
                     <Text style={styles.habitMeta}>

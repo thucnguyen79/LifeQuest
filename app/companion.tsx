@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
+import { GameIcon } from '@/core/components/GameIcon';
+import type { GameIconName } from '@/core/components/GameIcon';
 import { ProgressBar } from '@/core/components/ProgressBar';
 import {
   calculatePetCurrentXp,
@@ -117,16 +119,30 @@ export default function CompanionScreen() {
         </View>
 
         <View style={styles.grid}>
-          <StatusCard accent="gold" label="Mood" title={petMood.label} body={petMood.body} />
-          <StatusCard accent="mint" label="Growth" title={petGrowth.label} body={petGrowth.next} />
+          <StatusCard
+            accent="gold"
+            body={petMood.body}
+            icon="spark"
+            label="Mood"
+            title={petMood.label}
+          />
+          <StatusCard
+            accent="mint"
+            body={petGrowth.next}
+            icon="shield"
+            label="Growth"
+            title={petGrowth.label}
+          />
           <StatusCard
             accent="sky"
+            icon="flame"
             label="Streak"
             title={`${streakSummary.currentStreak} days`}
             body={`Best streak: ${streakSummary.longestStreak} days`}
           />
           <StatusCard
             accent="ember"
+            icon="scroll"
             label="Today"
             title={`${completedQuestCount} quests`}
             body="Completed quests feed bond XP."
@@ -148,16 +164,20 @@ export default function CompanionScreen() {
 
 type StatusCardProps = {
   accent: 'ember' | 'gold' | 'mint' | 'sky';
+  icon: GameIconName;
   label: string;
   title: string;
   body: string;
 };
 
-function StatusCard({ accent, label, title, body }: StatusCardProps) {
+function StatusCard({ accent, body, icon, label, title }: StatusCardProps) {
   return (
     <View style={styles.statusCard}>
       <View style={[styles.statusAccent, styles[`${accent}Accent`]]} />
-      <Text style={styles.statusLabel}>{label}</Text>
+      <View style={styles.statusHeader}>
+        <Text style={styles.statusLabel}>{label}</Text>
+        <GameIcon name={icon} size={30} tone={accent === 'sky' ? 'sky' : accent === 'mint' ? 'mint' : 'gold'} />
+      </View>
       <Text style={styles.statusTitle}>{title}</Text>
       <Text style={styles.statusBody}>{body}</Text>
     </View>
@@ -171,18 +191,7 @@ type PetAvatarProps = {
 function PetAvatar({ type }: PetAvatarProps) {
   return (
     <View style={styles.petVisual}>
-      <View style={styles.petAura} />
-      <View style={styles.petWingLeft} />
-      <View style={styles.petWingRight} />
-      <View style={styles.petBody}>
-        <View style={styles.petHornLeft} />
-        <View style={styles.petHornRight} />
-        <View style={styles.petFace}>
-          <View style={styles.petEye} />
-          <View style={styles.petEye} />
-        </View>
-        <View style={styles.petMouth} />
-      </View>
+      <GameIcon name="petDragon" size={132} tone="mint" />
       <Text style={styles.petTypeMark}>{type.slice(0, 2).toUpperCase()}</Text>
     </View>
   );
@@ -430,6 +439,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '900',
     textTransform: 'uppercase',
+  },
+  statusHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   statusTitle: {
     color: colors.ink,

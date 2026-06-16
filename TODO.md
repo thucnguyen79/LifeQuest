@@ -6,18 +6,22 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 Goal: review the strengthened RPG UI polish pass and decide whether Task 14 is acceptable before starting tests.
 
-Current 14B pass:
+Current 14B/14C pass:
 
 - Added reusable game UI primitives: `GamePanel`, `RuneIcon`, `GameBadge`, and `EmptyState`.
 - Applied the primitives to dashboard, habits, rewards, and settings for a more consistent visual language.
 - Updated Rewards with a chest visual and reward slots.
 - Updated Habits with quest-source cards, category runes, and badge metadata.
+- Added `react-native-svg` and a generated SVG icon/asset set in `GameIcon`.
+- Replaced placeholder letter runes across dashboard, habits, companion, rewards, and settings with game-style SVG icons.
+- Updated empty states and companion pet visual to use generated SVG assets.
 - Updated Expo SDK 56 patch packages so `expo-doctor` passes with the current tooling.
 
 Scope:
 
 - Review dashboard, companion, habits, rewards, and settings in web preview.
 - Confirm RPG visual direction feels sufficiently different from the earlier plain card UI.
+- Review whether the generated SVG assets are strong enough for MVP, or whether Task 14D should introduce Lottie/Rive hero moments.
 - Check empty states, card hierarchy, and buttons on desktop-width preview and mobile-width preview.
 - Confirm Reanimated details are subtle and do not make layout unstable.
 - If the UI is accepted, mark Task 14 done again and move to Task 15 Add Tests.

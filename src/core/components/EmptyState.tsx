@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '@/core/theme/colors';
@@ -9,15 +10,16 @@ import { RuneIcon } from './RuneIcon';
 type EmptyStateProps = {
   actionLabel?: string;
   body: string;
-  mark: string;
+  mark?: string;
   onAction?: () => void;
   title: string;
+  visual?: ReactNode;
 };
 
-export function EmptyState({ actionLabel, body, mark, onAction, title }: EmptyStateProps) {
+export function EmptyState({ actionLabel, body, mark = '?', onAction, title, visual }: EmptyStateProps) {
   return (
     <GamePanel accent tone="parchment" style={styles.panel}>
-      <RuneIcon label={mark} size="lg" tone="dark" />
+      {visual ?? <RuneIcon label={mark} size="lg" tone="dark" />}
       <View style={styles.copy}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.body}>{body}</Text>

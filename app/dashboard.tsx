@@ -6,20 +6,30 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { AppScreen } from '@/core/components/AppScreen';
 import { EmptyState } from '@/core/components/EmptyState';
 import { GameBadge } from '@/core/components/GameBadge';
+import { GameIcon } from '@/core/components/GameIcon';
+import type { GameIconName } from '@/core/components/GameIcon';
 import { ProgressBar } from '@/core/components/ProgressBar';
-import { RuneIcon } from '@/core/components/RuneIcon';
 import { StatPill } from '@/core/components/StatPill';
 import { characterClasses } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
+import type { PlayerClass } from '@/data/models/player';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const navItems = [
-  { label: 'Habits', meta: 'Quest sources', route: '/habits', icon: '+' },
-  { label: 'Pet', meta: 'Bond growth', route: '/companion', icon: 'P' },
-  { label: 'Rewards', meta: 'Coins & badges', route: '/rewards', icon: '$' },
-  { label: 'Settings', meta: 'Preferences', route: '/settings', icon: '*' },
+  { label: 'Habits', meta: 'Quest sources', route: '/habits', icon: 'habit' },
+  { label: 'Pet', meta: 'Bond growth', route: '/companion', icon: 'petDragon' },
+  { label: 'Rewards', meta: 'Coins & badges', route: '/rewards', icon: 'chest' },
+  { label: 'Settings', meta: 'Preferences', route: '/settings', icon: 'gear' },
 ] as const;
+
+const classIcons: Record<PlayerClass, GameIconName> = {
+  creator: 'spark',
+  explorer: 'compass',
+  monk: 'moon',
+  scholar: 'book',
+  warrior: 'shield',
+};
 
 export default function DashboardScreen() {
   const player = useLifeQuestStore((state) => state.player);
@@ -62,7 +72,7 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeIn.duration(350)} style={styles.heroCard}>
           <View style={styles.avatarRow}>
             <View style={styles.avatar}>
-              <RuneIcon label={playerClass.icon} size="lg" tone="gold" />
+              <GameIcon name={classIcons[player.selectedClass]} size={84} tone="gold" />
             </View>
             <View style={styles.avatarInfo}>
               <Text style={styles.className}>{playerClass.name}</Text>
@@ -124,7 +134,7 @@ export default function DashboardScreen() {
           <Pressable onPress={() => router.push('/companion')} style={styles.previewCard}>
             <View style={styles.previewHeader}>
               <Text style={styles.previewEyebrow}>Companion</Text>
-              <RuneIcon label="P" size="sm" tone="mint" />
+              <GameIcon name="petDragon" size={44} tone="mint" />
             </View>
             <Text style={styles.previewTitle}>{activePet.name}</Text>
             <Text style={styles.previewBody}>
@@ -135,7 +145,7 @@ export default function DashboardScreen() {
           <View style={styles.previewCard}>
             <View style={styles.previewHeader}>
               <Text style={styles.previewEyebrow}>Streak</Text>
-              <RuneIcon label="S" size="sm" tone="gold" />
+              <GameIcon name="flame" size={44} tone="gold" />
             </View>
             <Text style={styles.previewTitle}>{streakSummary.currentStreak} days</Text>
             <Text style={styles.previewBody}>
@@ -161,8 +171,8 @@ export default function DashboardScreen() {
           <EmptyState
             actionLabel="Create Habit"
             body="Add one active habit to start generating daily quests."
-            mark="Q"
             title="Quest board is empty"
+            visual={<GameIcon name="scroll" size={76} tone="dark" />}
             onAction={() => router.push('/habits')}
           />
         ) : (
@@ -196,7 +206,7 @@ export default function DashboardScreen() {
         <View style={styles.navGrid}>
           {navItems.map((item) => (
             <Pressable key={item.route} onPress={() => router.push(item.route)} style={styles.navCard}>
-              <RuneIcon label={item.icon} size="sm" tone="gold" />
+              <GameIcon name={item.icon} size={44} tone="gold" />
               <View style={styles.navCopy}>
                 <Text style={styles.navLabel}>{item.label}</Text>
                 <Text style={styles.navMeta}>{item.meta}</Text>

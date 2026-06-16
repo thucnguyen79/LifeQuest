@@ -139,7 +139,7 @@ Status: Done
 
 Status: In Review
 
-Review note: Task 14B added reusable game UI primitives and applied them to dashboard, habits, rewards, and settings. Keep this task in review until the UI is accepted in browser/mobile preview.
+Review note: Task 14B added reusable game UI primitives and applied them to dashboard, habits, rewards, and settings. Task 14C added `react-native-svg`, generated SVG game assets, and replaced placeholder letter runes across dashboard, habits, companion, rewards, settings, and empty states. Keep this task in review until the UI is accepted in browser/mobile preview.
 
 ## 15. Add Tests
 

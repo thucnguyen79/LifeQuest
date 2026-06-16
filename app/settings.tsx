@@ -4,8 +4,8 @@ import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-nat
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { GameBadge } from '@/core/components/GameBadge';
+import { GameIcon } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
-import { RuneIcon } from '@/core/components/RuneIcon';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
@@ -43,7 +43,7 @@ export default function SettingsScreen() {
         </View>
 
         <GamePanel tone="surface" style={styles.card}>
-          <RuneIcon label="N" size="sm" tone="sky" />
+          <GameIcon name="bell" size={44} tone="sky" />
           <View style={styles.settingCopy}>
             <Text style={styles.settingTitle}>Daily reminders</Text>
             <Text style={styles.settingBody}>{notificationsMessage}</Text>
@@ -61,7 +61,7 @@ export default function SettingsScreen() {
         </GamePanel>
 
         <GamePanel tone="surface" style={styles.card}>
-          <RuneIcon label="S" size="sm" tone="gold" />
+          <GameIcon name="sound" size={44} tone="gold" />
           <View style={styles.settingCopy}>
             <Text style={styles.settingTitle}>Sound effects</Text>
             <Text style={styles.settingBody}>
@@ -78,18 +78,18 @@ export default function SettingsScreen() {
 
         <GamePanel tone="parchment" style={styles.cardStack}>
           <View style={styles.cardHeaderRow}>
-            <RuneIcon label="P" size="sm" tone="mint" />
+            <GameIcon name="privacy" size={44} tone="mint" />
             <Text style={styles.settingTitle}>Privacy</Text>
           </View>
-            <Text style={styles.settingBody}>
-              MVP data stays on this device. Backend sync and account privacy controls start after
-              the local MVP is stable.
-            </Text>
+          <Text style={styles.settingBody}>
+            MVP data stays on this device. Backend sync and account privacy controls start after
+            the local MVP is stable.
+          </Text>
         </GamePanel>
 
         <GamePanel tone="surface" style={[styles.cardStack, styles.dangerCard]}>
           <View style={styles.cardHeaderRow}>
-            <RuneIcon label="!" size="sm" tone="ember" />
+            <GameIcon name="reset" size={44} tone="gold" />
             <Text style={styles.dangerTitle}>Reset local data</Text>
           </View>
           <Text style={styles.settingBody}>
