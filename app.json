@@ -2,6 +2,7 @@
   "expo": {
     "name": "LifeQuest",
     "slug": "lifequest",
+    "owner": "thuc.nguyen",
     "scheme": "lifequest",
     "version": "1.0.0",
     "orientation": "portrait",

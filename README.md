@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Tasks 1-20 are implemented through mobile build readiness preparation.
+Tasks 1-21 are implemented through native development build setup.
 
 Implemented:
 
@@ -43,6 +43,7 @@ Implemented:
 - Quest reconciliation after habit edit/archive
 - Focused Vitest coverage for gameplay rules and repositories
 - Mobile-ready app icon, splash, adaptive icon, notification icon, package ids, and QA docs
+- Native development build configuration with `expo-dev-client` and EAS build profiles
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -51,7 +52,7 @@ Implemented:
 Not implemented yet:
 
 - Backend sync
-- Native dev build artifact
+- First EAS build artifact after Expo login/project link
 - RevenueCat/IAP
 
 ## Setup On A New Machine
@@ -92,8 +93,12 @@ Useful commands:
 npm run web
 npm run start:lan
 npm run start:tunnel
+npm run dev-client
 npm run android
 npm run ios
+npm run build:android:dev
+npm run build:ios:sim
+npm run build:ios:device
 npm run typecheck
 npm test
 npm run doctor
@@ -106,7 +111,8 @@ Notes:
 - On Windows, if another Expo server is already using `8081`, stop it or run Expo on another port.
 - Do not commit local `.expo/`, `node_modules/`, generated native `/android`, or `/ios` folders.
 - Mobile QA details are in [docs/MOBILE_TESTING.md](./docs/MOBILE_TESTING.md).
+- Native dev build steps are in [docs/NATIVE_BUILD.md](./docs/NATIVE_BUILD.md).
 
 ## Recommended Next Task
 
-Run the Task 20 mobile checklist on a physical device, then choose between native dev build setup, backend sync planning, or the next UI/gameplay polish pass. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Log in to Expo, run `npm run eas:init`, commit the generated EAS project id if added, and produce the first Android development build. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

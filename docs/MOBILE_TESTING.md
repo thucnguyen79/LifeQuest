@@ -8,6 +8,7 @@ Use this checklist when testing LifeQuest on a phone or when continuing from a n
 - Git
 - Expo Go installed on the phone for quick MVP testing
 - Phone and computer on the same Wi-Fi network for LAN mode
+- For installed native testing, create a development build using [NATIVE_BUILD.md](./NATIVE_BUILD.md)
 
 ## First Run
 
@@ -41,7 +42,7 @@ npm run start:tunnel
 
 ## Notification QA
 
-Expo web preview does not support local mobile notifications.
+Expo web preview does not support local mobile notifications. Expo Go can be used for quick checks, but the native development build is the preferred notification test target after Task 21.
 
 For phone testing:
 
@@ -81,4 +82,4 @@ Expo app config should include:
 
 - Backend sync is not implemented yet.
 - RevenueCat/IAP is not implemented yet.
-- Native dev build has not been produced in-repo; this task prepares config and QA workflow first.
+- Native dev build setup is configured in `eas.json`; the first EAS artifact requires Expo login/project linking.

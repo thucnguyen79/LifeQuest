@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-20 are implemented through Mobile Build Readiness preparation.
+Tasks 14-21 are implemented through Native Dev Build Setup preparation.
 
 Task 14B/14C UI pass:
 
@@ -70,20 +70,31 @@ Task 20 mobile build readiness:
 - Added `docs/MOBILE_TESTING.md` with Expo Go, notification QA, and build readiness checklist.
 - Updated README for current setup and mobile workflow.
 
+Task 21 native dev build setup:
+
+- Installed `expo-dev-client` for custom development builds.
+- Added `eas.json` with Android development APK, iOS simulator, iOS device, preview, and production profiles.
+- Added EAS helper scripts for login check, project init, Android dev build, iOS simulator build, and iOS device build.
+- Set Expo owner to `thuc.nguyen` in app config.
+- Added `docs/NATIVE_BUILD.md` with new-machine setup, EAS login/init, build commands, and native QA checklist.
+- First cloud build artifact is intentionally pending until Expo login/project linking is completed locally.
+
 Latest checks:
 
 - `npm test` passes.
 - `npm run typecheck` passes.
 - `npx expo-doctor` passes.
+- Native config commands are added; EAS project linking/build artifact still requires Expo login.
 - Web bundle returns `200 OK`.
 
-## Next Task: Choose Next MVP Phase
+## Next Task: First EAS Build Artifact
 
-Recommended options:
+Recommended next steps:
 
-- Run the mobile checklist in `docs/MOBILE_TESTING.md` on a physical device.
-- Start Task 21 Native Dev Build Setup if we want an installable Android/iOS development build artifact.
-- Or start backend sync planning after local MVP confidence is higher.
+- Run `npx eas-cli login` for Expo account `thuc.nguyen`.
+- Run `npm run eas:init` and commit `extra.eas.projectId` if EAS adds it to `app.json`.
+- Run `npm run build:android:dev` to produce the first Android development APK.
+- Install the APK, run `npm run dev-client`, and test notifications/gameplay from the installed build.
 
 ## Later MVP Tasks
 
