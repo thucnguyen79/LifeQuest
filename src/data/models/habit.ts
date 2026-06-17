@@ -2,7 +2,11 @@ export type HabitCategory = 'fitness' | 'learning' | 'deepWork' | 'meditation' |
 
 export type HabitDifficulty = 'easy' | 'medium' | 'hard';
 
+export type HabitEnergy = 'light' | 'medium' | 'heavy';
+
 export type HabitFrequencyType = 'daily' | 'selectedDays';
+
+export type HabitPriority = 'low' | 'normal' | 'high';
 
 export type Weekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -14,6 +18,10 @@ export type Habit = {
   frequencyType: HabitFrequencyType;
   selectedWeekdays: Weekday[];
   targetCount?: number;
+  priority: HabitPriority;
+  energy: HabitEnergy;
+  estimatedMinutes?: number;
+  bonusObjective?: string;
   reminderTime?: string;
   isActive: boolean;
   createdAt: string;

@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   habitById: undefined as Habit | undefined,
   playerUpsert: vi.fn(),
   questById: undefined as Quest | undefined,
+  updateProgress: vi.fn(),
   updateStatus: vi.fn(),
 }));
 
@@ -26,6 +27,7 @@ vi.mock('@/data/repositories/playerRepository', () => ({
 vi.mock('@/data/repositories/questRepository', () => ({
   questRepository: {
     getById: () => mocks.questById,
+    updateProgress: mocks.updateProgress,
     updateStatus: mocks.updateStatus,
   },
 }));
@@ -60,9 +62,11 @@ function createHabit(overrides: Partial<Habit> = {}): Habit {
     category: 'learning',
     createdAt: now,
     difficulty: 'medium',
+    energy: 'medium',
     frequencyType: 'daily',
     id: 'habit-1',
     isActive: true,
+    priority: 'normal',
     selectedWeekdays: [],
     title: 'Read',
     updatedAt: now,
@@ -74,9 +78,13 @@ function createQuest(overrides: Partial<Quest> = {}): Quest {
   return {
     coinReward: 6,
     date: '2026-06-16',
+    energy: 'medium',
     habitId: 'habit-1',
     id: 'quest-1',
+    priority: 'normal',
+    progressCount: 0,
     status: 'pending',
+    targetCount: 1,
     title: 'Read',
     xpReward: 20,
     ...overrides,
@@ -88,6 +96,7 @@ describe('completeQuest', () => {
     mocks.habitById = undefined;
     mocks.questById = undefined;
     mocks.playerUpsert.mockClear();
+    mocks.updateProgress.mockClear();
     mocks.updateStatus.mockClear();
   });
 
@@ -99,13 +108,16 @@ describe('completeQuest', () => {
     const result = completeQuest(player, 'quest-1');
 
     expect(result).not.toBeNull();
-    expect(result?.leveledUp).toBe(true);
-    expect(result?.classBonusLabels).toEqual([]);
-    expect(result?.coinsGained).toBe(6);
-    expect(result?.xpGained).toBe(20);
-    expect(result?.previousLevel).toBe(1);
-    expect(result?.newLevel).toBe(2);
-    expect(result?.player).toEqual({
+    if (!result?.completed) {
+      throw new Error('Expected quest to complete');
+    }
+    expect(result.leveledUp).toBe(true);
+    expect(result.classBonusLabels).toEqual([]);
+    expect(result.coinsGained).toBe(6);
+    expect(result.xpGained).toBe(20);
+    expect(result.previousLevel).toBe(1);
+    expect(result.newLevel).toBe(2);
+    expect(result.player).toEqual({
       ...player,
       coins: 10,
       currentXp: 10,
@@ -115,14 +127,35 @@ describe('completeQuest', () => {
       totalXp: 110,
       updatedAt: expect.any(String),
     });
-    expect(result?.quest.status).toBe('completed');
-    expect(result?.quest.completedAt).toEqual(expect.any(String));
+    expect(result.quest.status).toBe('completed');
+    expect(result.quest.progressCount).toBe(1);
+    expect(result.quest.completedAt).toEqual(expect.any(String));
     expect(mocks.updateStatus).toHaveBeenCalledWith(
       'quest-1',
       'completed',
       expect.any(String),
     );
-    expect(mocks.playerUpsert).toHaveBeenCalledWith(result?.player);
+    expect(mocks.updateProgress).toHaveBeenCalledWith('quest-1', 1);
+    expect(mocks.playerUpsert).toHaveBeenCalledWith(result.player);
+  });
+
+  it('advances progress without rewards until target count is reached', () => {
+    const player = createPlayer({ currentXp: 0, totalXp: 0 });
+    mocks.habitById = createHabit();
+    mocks.questById = createQuest({ progressCount: 1, targetCount: 3 });
+
+    const result = completeQuest(player, 'quest-1');
+
+    expect(result).not.toBeNull();
+    expect(result?.completed).toBe(false);
+    expect(result?.quest.progressCount).toBe(2);
+    expect(result?.quest.status).toBe('pending');
+    expect(result?.player).toBe(player);
+    expect(result?.xpGained).toBe(0);
+    expect(result?.coinsGained).toBe(0);
+    expect(mocks.updateProgress).toHaveBeenCalledWith('quest-1', 2);
+    expect(mocks.updateStatus).not.toHaveBeenCalled();
+    expect(mocks.playerUpsert).not.toHaveBeenCalled();
   });
 
   it('applies Warrior XP bonuses for Fitness and Hard quests', () => {
@@ -132,11 +165,14 @@ describe('completeQuest', () => {
 
     const result = completeQuest(player, 'quest-1');
 
-    expect(result?.xpGained).toBe(43);
-    expect(result?.coinsGained).toBe(10);
-    expect(result?.classBonusLabels).toEqual(['Warrior Fitness XP', 'Warrior Hard XP']);
-    expect(result?.player.totalXp).toBe(43);
-    expect(result?.player.strength).toBe(2);
+    if (!result?.completed) {
+      throw new Error('Expected quest to complete');
+    }
+    expect(result.xpGained).toBe(43);
+    expect(result.coinsGained).toBe(10);
+    expect(result.classBonusLabels).toEqual(['Warrior Fitness XP', 'Warrior Hard XP']);
+    expect(result.player.totalXp).toBe(43);
+    expect(result.player.strength).toBe(2);
   });
 
   it('applies Scholar coin bonus for Learning quests', () => {
@@ -146,11 +182,14 @@ describe('completeQuest', () => {
 
     const result = completeQuest(player, 'quest-1');
 
-    expect(result?.xpGained).toBe(20);
-    expect(result?.coinsGained).toBe(7);
-    expect(result?.classBonusLabels).toEqual(['Scholar Learning Coins']);
-    expect(result?.player.coins).toBe(11);
-    expect(result?.player.intelligence).toBe(2);
+    if (!result?.completed) {
+      throw new Error('Expected quest to complete');
+    }
+    expect(result.xpGained).toBe(20);
+    expect(result.coinsGained).toBe(7);
+    expect(result.classBonusLabels).toEqual(['Scholar Learning Coins']);
+    expect(result.player.coins).toBe(11);
+    expect(result.player.intelligence).toBe(2);
   });
 
   it('applies Creator XP bonus for Deep Work quests', () => {
@@ -160,11 +199,14 @@ describe('completeQuest', () => {
 
     const result = completeQuest(player, 'quest-1');
 
-    expect(result?.xpGained).toBe(22);
-    expect(result?.coinsGained).toBe(6);
-    expect(result?.classBonusLabels).toEqual(['Creator Deep Work XP']);
-    expect(result?.player.totalXp).toBe(22);
-    expect(result?.player.focus).toBe(2);
+    if (!result?.completed) {
+      throw new Error('Expected quest to complete');
+    }
+    expect(result.xpGained).toBe(22);
+    expect(result.coinsGained).toBe(6);
+    expect(result.classBonusLabels).toEqual(['Creator Deep Work XP']);
+    expect(result.player.totalXp).toBe(22);
+    expect(result.player.focus).toBe(2);
   });
 
   it('does not reward quests that are already completed', () => {
@@ -174,6 +216,7 @@ describe('completeQuest', () => {
     const result = completeQuest(createPlayer(), 'quest-1');
 
     expect(result).toBeNull();
+    expect(mocks.updateProgress).not.toHaveBeenCalled();
     expect(mocks.updateStatus).not.toHaveBeenCalled();
     expect(mocks.playerUpsert).not.toHaveBeenCalled();
   });

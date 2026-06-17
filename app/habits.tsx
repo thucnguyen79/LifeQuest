@@ -11,6 +11,8 @@ import { GamePanel } from '@/core/components/GamePanel';
 import {
   getHabitCategoryLabel,
   getHabitDifficultyLabel,
+  getHabitEnergyLabel,
+  getHabitPriorityLabel,
 } from '@/core/constants/habitOptions';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
@@ -104,8 +106,16 @@ export default function HabitsScreen() {
                     label={`Target ${habit.targetCount ? `${habit.targetCount}x` : 'none'}`}
                     tone="muted"
                   />
+                  <GameBadge label={getHabitPriorityLabel(habit.priority ?? 'normal')} tone="muted" />
+                  <GameBadge label={getHabitEnergyLabel(habit.energy ?? 'medium')} tone="muted" />
+                  {habit.estimatedMinutes ? (
+                    <GameBadge label={`${habit.estimatedMinutes} min`} tone="muted" />
+                  ) : null}
                   <GameBadge label={`Reminder ${habit.reminderTime ?? 'none'}`} tone="muted" />
                 </View>
+                {habit.bonusObjective ? (
+                  <Text style={styles.bonusObjective}>Bonus: {habit.bonusObjective}</Text>
+                ) : null}
 
                 <View style={styles.actions}>
                   <Pressable
@@ -205,6 +215,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
+  },
+  bonusObjective: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: '800',
+    lineHeight: 18,
   },
   actions: {
     flexDirection: 'row',

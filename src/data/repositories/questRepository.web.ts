@@ -19,7 +19,15 @@ function readQuests() {
   }
 
   const value = storage.getItem(storageKey);
-  return value ? (JSON.parse(value) as Quest[]) : [];
+  const quests = value ? (JSON.parse(value) as Quest[]) : [];
+  return quests.map((quest) => ({
+    ...quest,
+    bonusCompleted: quest.bonusCompleted ?? false,
+    energy: quest.energy ?? 'medium',
+    priority: quest.priority ?? 'normal',
+    progressCount: quest.progressCount ?? (quest.status === 'completed' ? quest.targetCount ?? 1 : 0),
+    targetCount: quest.targetCount ?? 1,
+  }));
 }
 
 function writeQuests(quests: Quest[]) {
@@ -62,6 +70,12 @@ export const questRepository = {
       readQuests().map((quest) =>
         quest.id === id ? { ...quest, status, completedAt } : quest,
       ),
+    );
+  },
+
+  updateProgress(id: string, progressCount: number) {
+    writeQuests(
+      readQuests().map((quest) => (quest.id === id ? { ...quest, progressCount } : quest)),
     );
   },
 

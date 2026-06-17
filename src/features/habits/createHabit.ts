@@ -2,7 +2,9 @@ import type {
   Habit,
   HabitCategory,
   HabitDifficulty,
+  HabitEnergy,
   HabitFrequencyType,
+  HabitPriority,
   Weekday,
 } from '@/data/models/habit';
 
@@ -14,6 +16,10 @@ type CreateHabitInput = {
   frequencyType: HabitFrequencyType;
   selectedWeekdays: Weekday[];
   targetCount?: number;
+  priority?: HabitPriority;
+  energy?: HabitEnergy;
+  estimatedMinutes?: number;
+  bonusObjective?: string;
   reminderTime?: string;
   createdAt?: string;
   isActive?: boolean;
@@ -35,6 +41,10 @@ export function createHabit(input: CreateHabitInput): Habit {
     selectedWeekdays:
       input.frequencyType === 'selectedDays' ? input.selectedWeekdays : [],
     targetCount: input.targetCount,
+    priority: input.priority ?? 'normal',
+    energy: input.energy ?? 'medium',
+    estimatedMinutes: input.estimatedMinutes,
+    bonusObjective: input.bonusObjective?.trim() || undefined,
     reminderTime: input.reminderTime?.trim() || undefined,
     isActive: input.isActive ?? true,
     createdAt: input.createdAt ?? now,

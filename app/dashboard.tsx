@@ -227,9 +227,22 @@ export default function DashboardScreen() {
               >
                 <View style={styles.questCopy}>
                   <Text style={styles.questTitle}>{quest.title}</Text>
+                  <Text style={styles.questProgress}>
+                    Progress {quest.progressCount ?? 0}/{quest.targetCount ?? 1}
+                  </Text>
                   <Text style={styles.questReward}>
                     +{quest.xpReward} XP / +{quest.coinReward} coins
                   </Text>
+                  <View style={styles.questMetaRow}>
+                    <GameBadge label={quest.priority ?? 'normal'} tone="muted" />
+                    <GameBadge label={quest.energy ?? 'medium'} tone="muted" />
+                    {quest.estimatedMinutes ? (
+                      <GameBadge label={`${quest.estimatedMinutes} min`} tone="muted" />
+                    ) : null}
+                  </View>
+                  {quest.bonusObjective ? (
+                    <Text style={styles.questBonus}>Bonus: {quest.bonusObjective}</Text>
+                  ) : null}
                 </View>
                 {quest.status === 'completed' ? (
                   <View style={[styles.questStatus, styles.questStatusCompleted]}>
@@ -242,7 +255,11 @@ export default function DashboardScreen() {
                   </View>
                 ) : (
                   <Pressable onPress={() => completeQuest(quest.id)} style={styles.completeButton}>
-                    <Text style={styles.completeButtonText}>Complete</Text>
+                    <Text adjustsFontSizeToFit numberOfLines={1} style={styles.completeButtonText}>
+                      {(quest.progressCount ?? 0) + 1 >= (quest.targetCount ?? 1)
+                        ? 'Complete'
+                        : 'Add Progress'}
+                    </Text>
                   </Pressable>
                 )}
               </Animated.View>
@@ -588,6 +605,25 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 13,
     marginTop: 4,
+  },
+  questProgress: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: '900',
+    marginTop: 4,
+  },
+  questMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    marginTop: spacing.sm,
+  },
+  questBonus: {
+    color: colors.ink,
+    fontSize: 12,
+    fontWeight: '800',
+    lineHeight: 17,
+    marginTop: spacing.xs,
   },
   questStatus: {
     alignItems: 'center',

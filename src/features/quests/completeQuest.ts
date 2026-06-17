@@ -8,6 +8,7 @@ import { getClassRewardModifiers } from '@/features/classes/classSkills';
 
 type CompleteQuestResult = {
   classBonusLabels: string[];
+  completed: boolean;
   coinsGained: number;
   player: Player;
   quest: Quest;
@@ -15,6 +16,14 @@ type CompleteQuestResult = {
   newLevel: number;
   leveledUp: boolean;
   xpGained: number;
+};
+
+type QuestProgressResult = {
+  completed: false;
+  coinsGained: 0;
+  player: Player;
+  quest: Quest;
+  xpGained: 0;
 };
 
 function applyQuestRewards(player: Player, quest: Quest): {
@@ -47,26 +56,54 @@ function applyQuestRewards(player: Player, quest: Quest): {
   };
 }
 
-export function completeQuest(player: Player, questId: string): CompleteQuestResult | null {
+export function completeQuest(
+  player: Player,
+  questId: string,
+): CompleteQuestResult | QuestProgressResult | null {
   const quest = questRepository.getById(questId);
 
   if (!quest || quest.status !== 'pending') {
     return null;
   }
 
+  const targetCount = Math.max(quest.targetCount ?? 1, 1);
+  const nextProgressCount = Math.min((quest.progressCount ?? 0) + 1, targetCount);
+
+  if (nextProgressCount < targetCount) {
+    const updatedQuest: Quest = {
+      ...quest,
+      progressCount: nextProgressCount,
+      targetCount,
+    };
+
+    questRepository.updateProgress(quest.id, nextProgressCount);
+
+    return {
+      completed: false,
+      coinsGained: 0,
+      player,
+      quest: updatedQuest,
+      xpGained: 0,
+    };
+  }
+
   const completedAt = new Date().toISOString();
   const completedQuest: Quest = {
     ...quest,
+    progressCount: targetCount,
+    targetCount,
     status: 'completed',
     completedAt,
   };
   const rewardResult = applyQuestRewards(player, quest);
 
   questRepository.updateStatus(quest.id, 'completed', completedAt);
+  questRepository.updateProgress(quest.id, targetCount);
   playerRepository.upsert(rewardResult.player);
 
   return {
     classBonusLabels: rewardResult.classBonusLabels,
+    completed: true,
     coinsGained: rewardResult.coinsGained,
     player: rewardResult.player,
     quest: completedQuest,

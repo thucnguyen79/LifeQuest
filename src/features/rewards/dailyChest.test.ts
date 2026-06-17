@@ -9,9 +9,13 @@ function createQuest(status: Quest['status']): Quest {
   return {
     coinReward: 3,
     date: '2026-06-16',
+    energy: 'medium',
     habitId: `habit-${status}`,
     id: `quest-${status}`,
+    priority: 'normal',
+    progressCount: status === 'completed' ? 1 : 0,
     status,
+    targetCount: 1,
     title: status,
     xpReward: 10,
   };

@@ -49,9 +49,11 @@ function createHabit(overrides: Partial<Habit>): Habit {
     category: 'fitness',
     createdAt,
     difficulty: 'easy',
+    energy: 'medium',
     frequencyType: 'daily',
     id: 'habit-1',
     isActive: true,
+    priority: 'normal',
     selectedWeekdays: [],
     title: 'Base habit',
     updatedAt: createdAt,
@@ -94,6 +96,10 @@ describe('generateDailyQuests', () => {
         date: '2026-06-16',
         habitId: 'daily-hard',
         id: 'quest-daily-hard-2026-06-16',
+        targetCount: 1,
+        progressCount: 0,
+        priority: 'normal',
+        energy: 'medium',
         status: 'pending',
         title: 'Train',
         xpReward: 35,
@@ -108,6 +114,13 @@ describe('generateDailyQuests', () => {
       date: '2026-06-16',
       habitId: 'tuesday-easy',
       id: 'quest-tuesday-easy-2026-06-16',
+      targetCount: 1,
+      progressCount: 0,
+      priority: 'normal',
+      energy: 'medium',
+      estimatedMinutes: undefined,
+      bonusObjective: undefined,
+      bonusCompleted: false,
       status: 'pending',
       title: 'Read',
       xpReward: 10,
@@ -128,6 +141,10 @@ describe('generateDailyQuests', () => {
         date: '2026-06-15',
         habitId: 'old-habit',
         id: 'quest-old-habit-2026-06-15',
+        targetCount: 1,
+        progressCount: 0,
+        priority: 'normal',
+        energy: 'medium',
         status: 'pending',
         title: 'Old habit',
         xpReward: 10,
@@ -140,5 +157,30 @@ describe('generateDailyQuests', () => {
     expect(mocks.quests.find((quest) => quest.id === 'quest-old-habit-2026-06-15')?.status).toBe(
       'missed',
     );
+  });
+
+  it('copies target count and quest quality metadata from habit', () => {
+    mocks.activeHabits = [
+      createHabit({
+        bonusObjective: 'No phone while reading',
+        energy: 'heavy',
+        estimatedMinutes: 30,
+        id: 'quality-habit',
+        priority: 'high',
+        targetCount: 3,
+        title: 'Read deeply',
+      }),
+    ];
+
+    const quests = generateDailyQuests('2026-06-16');
+
+    expect(quests[0]).toMatchObject({
+      bonusObjective: 'No phone while reading',
+      energy: 'heavy',
+      estimatedMinutes: 30,
+      priority: 'high',
+      progressCount: 0,
+      targetCount: 3,
+    });
   });
 });

@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Tasks 1-25 are implemented through Class Skills v1.
+Tasks 1-26 are implemented through Quest Quality v1.
 
 Implemented:
 
@@ -47,6 +47,7 @@ Implemented:
 - First Android EAS development build artifact
 - In-app LifeQuest Codex guide explaining current gameplay and upcoming systems
 - Active class passives for Warrior, Scholar, Creator, and Explorer, plus Monk streak shield foundation
+- Quest progress, priority, energy, estimated time, and bonus objective metadata
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -118,4 +119,4 @@ Notes:
 
 ## Recommended Next Task
 
-Continue with Quest Quality v1: true quest progress from target count, priority, energy, estimated time, and bonus objectives. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue with Adventure Map v1: daily zone selection, map node progress, and zone identity tied to class/stat gameplay. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

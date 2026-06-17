@@ -1,7 +1,9 @@
 import type {
   HabitCategory,
   HabitDifficulty,
+  HabitEnergy,
   HabitFrequencyType,
+  HabitPriority,
   Weekday,
 } from '@/data/models/habit';
 
@@ -33,6 +35,24 @@ export const habitFrequencyOptions: Array<{
   { value: 'selectedDays', label: 'Selected Days' },
 ];
 
+export const habitPriorityOptions: Array<{
+  value: HabitPriority;
+  label: string;
+}> = [
+  { value: 'low', label: 'Low' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'high', label: 'High' },
+];
+
+export const habitEnergyOptions: Array<{
+  value: HabitEnergy;
+  label: string;
+}> = [
+  { value: 'light', label: 'Light' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'heavy', label: 'Heavy' },
+];
+
 export const weekdayOptions: Array<{
   value: Weekday;
   label: string;
@@ -52,4 +72,12 @@ export function getHabitCategoryLabel(category: HabitCategory) {
 
 export function getHabitDifficultyLabel(difficulty: HabitDifficulty) {
   return habitDifficultyOptions.find((option) => option.value === difficulty)?.label ?? difficulty;
+}
+
+export function getHabitPriorityLabel(priority: HabitPriority) {
+  return habitPriorityOptions.find((option) => option.value === priority)?.label ?? priority;
+}
+
+export function getHabitEnergyLabel(energy: HabitEnergy) {
+  return habitEnergyOptions.find((option) => option.value === energy)?.label ?? energy;
 }

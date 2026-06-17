@@ -19,7 +19,12 @@ function readHabits() {
   }
 
   const value = storage.getItem(storageKey);
-  return value ? (JSON.parse(value) as Habit[]) : [];
+  const habits = value ? (JSON.parse(value) as Habit[]) : [];
+  return habits.map((habit) => ({
+    ...habit,
+    energy: habit.energy ?? 'medium',
+    priority: habit.priority ?? 'normal',
+  }));
 }
 
 function writeHabits(habits: Habit[]) {

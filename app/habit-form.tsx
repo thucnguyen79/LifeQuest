@@ -7,7 +7,9 @@ import { PrimaryButton } from '@/core/components/PrimaryButton';
 import {
   habitCategoryOptions,
   habitDifficultyOptions,
+  habitEnergyOptions,
   habitFrequencyOptions,
+  habitPriorityOptions,
   weekdayOptions,
 } from '@/core/constants/habitOptions';
 import { colors } from '@/core/theme/colors';
@@ -16,7 +18,9 @@ import type {
   Habit,
   HabitCategory,
   HabitDifficulty,
+  HabitEnergy,
   HabitFrequencyType,
+  HabitPriority,
   Weekday,
 } from '@/data/models/habit';
 import { habitRepository } from '@/data/repositories/habitRepository';
@@ -34,9 +38,13 @@ export default function HabitFormScreen() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<HabitCategory>('fitness');
   const [difficulty, setDifficulty] = useState<HabitDifficulty>('easy');
+  const [priority, setPriority] = useState<HabitPriority>('normal');
+  const [energy, setEnergy] = useState<HabitEnergy>('medium');
   const [frequencyType, setFrequencyType] = useState<HabitFrequencyType>('daily');
   const [selectedWeekdays, setSelectedWeekdays] = useState<Weekday[]>([]);
   const [targetCount, setTargetCount] = useState('');
+  const [estimatedMinutes, setEstimatedMinutes] = useState('');
+  const [bonusObjective, setBonusObjective] = useState('');
   const [reminderTime, setReminderTime] = useState('');
 
   useEffect(() => {
@@ -47,22 +55,39 @@ export default function HabitFormScreen() {
     setTitle(editingHabit.title);
     setCategory(editingHabit.category);
     setDifficulty(editingHabit.difficulty);
+    setPriority(editingHabit.priority ?? 'normal');
+    setEnergy(editingHabit.energy ?? 'medium');
     setFrequencyType(editingHabit.frequencyType);
     setSelectedWeekdays(editingHabit.selectedWeekdays);
     setTargetCount(editingHabit.targetCount ? String(editingHabit.targetCount) : '');
+    setEstimatedMinutes(
+      editingHabit.estimatedMinutes ? String(editingHabit.estimatedMinutes) : '',
+    );
+    setBonusObjective(editingHabit.bonusObjective ?? '');
     setReminderTime(editingHabit.reminderTime ?? '');
   }, [editingHabit]);
 
   const normalizedTitle = title.trim();
   const normalizedReminderTime = reminderTime.trim();
+  const normalizedBonusObjective = bonusObjective.trim();
   const parsedTargetCount = targetCount.trim() ? Number.parseInt(targetCount, 10) : undefined;
+  const parsedEstimatedMinutes = estimatedMinutes.trim()
+    ? Number.parseInt(estimatedMinutes, 10)
+    : undefined;
   const hasValidTitle = normalizedTitle.length >= 2;
   const hasValidTargetCount =
     parsedTargetCount === undefined || (!Number.isNaN(parsedTargetCount) && parsedTargetCount > 0);
+  const hasValidEstimatedMinutes =
+    parsedEstimatedMinutes === undefined ||
+    (!Number.isNaN(parsedEstimatedMinutes) && parsedEstimatedMinutes > 0);
   const hasValidWeekdays = frequencyType === 'daily' || selectedWeekdays.length > 0;
   const hasValidReminderTime = isValidReminderTime(reminderTime);
   const canSave =
-    hasValidTitle && hasValidTargetCount && hasValidWeekdays && hasValidReminderTime;
+    hasValidTitle &&
+    hasValidTargetCount &&
+    hasValidEstimatedMinutes &&
+    hasValidWeekdays &&
+    hasValidReminderTime;
 
   const toggleWeekday = (weekday: Weekday) => {
     setSelectedWeekdays((current) =>
@@ -82,9 +107,13 @@ export default function HabitFormScreen() {
       title: normalizedTitle,
       category,
       difficulty,
+      priority,
+      energy,
       frequencyType,
       selectedWeekdays,
       targetCount: parsedTargetCount,
+      estimatedMinutes: parsedEstimatedMinutes,
+      bonusObjective: normalizedBonusObjective || undefined,
       reminderTime: normalizedReminderTime || undefined,
       createdAt: editingHabit?.createdAt,
       isActive: editingHabit?.isActive ?? true,
@@ -146,6 +175,20 @@ export default function HabitFormScreen() {
         />
 
         <OptionGroup
+          label="Priority"
+          options={habitPriorityOptions}
+          selectedValue={priority}
+          onSelect={setPriority}
+        />
+
+        <OptionGroup
+          label="Energy"
+          options={habitEnergyOptions}
+          selectedValue={energy}
+          onSelect={setEnergy}
+        />
+
+        <OptionGroup
           label="Frequency"
           options={habitFrequencyOptions}
           selectedValue={frequencyType}
@@ -192,6 +235,20 @@ export default function HabitFormScreen() {
             />
           </View>
           <View style={styles.gridField}>
+            <Text style={styles.label}>Estimated min</Text>
+            <TextInput
+              keyboardType="number-pad"
+              onChangeText={setEstimatedMinutes}
+              placeholder="Optional"
+              placeholderTextColor={colors.muted}
+              style={styles.input}
+              value={estimatedMinutes}
+            />
+          </View>
+        </View>
+
+        <View style={styles.fieldGrid}>
+          <View style={styles.gridField}>
             <Text style={styles.label}>Reminder</Text>
             <TextInput
               onChangeText={setReminderTime}
@@ -201,10 +258,24 @@ export default function HabitFormScreen() {
               value={reminderTime}
             />
           </View>
+          <View style={styles.gridField}>
+            <Text style={styles.label}>Bonus objective</Text>
+            <TextInput
+              maxLength={64}
+              onChangeText={setBonusObjective}
+              placeholder="Optional"
+              placeholderTextColor={colors.muted}
+              style={styles.input}
+              value={bonusObjective}
+            />
+          </View>
         </View>
 
         {!hasValidTargetCount ? (
           <Text style={styles.errorText}>Target count must be a positive number.</Text>
+        ) : null}
+        {!hasValidEstimatedMinutes ? (
+          <Text style={styles.errorText}>Estimated minutes must be a positive number.</Text>
         ) : null}
         {!hasValidWeekdays ? (
           <Text style={styles.errorText}>Choose at least one weekday.</Text>

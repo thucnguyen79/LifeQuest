@@ -15,6 +15,8 @@ function isHabitDueOnDate(habit: Habit, dateKey: string) {
 }
 
 function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
+  const targetCount = Math.max(habit.targetCount ?? 1, 1);
+
   return {
     id: `quest-${habit.id}-${dateKey}`,
     habitId: habit.id,
@@ -22,6 +24,13 @@ function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
     date: dateKey,
     xpReward: xpRewardByDifficulty[habit.difficulty],
     coinReward: coinRewardByDifficulty[habit.difficulty],
+    targetCount,
+    progressCount: 0,
+    priority: habit.priority ?? 'normal',
+    energy: habit.energy ?? 'medium',
+    estimatedMinutes: habit.estimatedMinutes,
+    bonusObjective: habit.bonusObjective,
+    bonusCompleted: false,
     status: 'pending',
   };
 }

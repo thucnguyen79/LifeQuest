@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const databaseName = 'lifequest.db';
-const schemaVersion = 1;
+const schemaVersion = 2;
 
 let database: SQLite.SQLiteDatabase | null = null;
 let initialized = false;
@@ -53,6 +53,10 @@ export function initializeLocalDatabase() {
       frequency_type TEXT NOT NULL,
       selected_weekdays TEXT NOT NULL,
       target_count INTEGER,
+      priority TEXT NOT NULL DEFAULT 'normal',
+      energy TEXT NOT NULL DEFAULT 'medium',
+      estimated_minutes INTEGER,
+      bonus_objective TEXT,
       reminder_time TEXT,
       is_active INTEGER NOT NULL,
       created_at TEXT NOT NULL,
@@ -66,6 +70,13 @@ export function initializeLocalDatabase() {
       date TEXT NOT NULL,
       xp_reward INTEGER NOT NULL,
       coin_reward INTEGER NOT NULL,
+      target_count INTEGER NOT NULL DEFAULT 1,
+      progress_count INTEGER NOT NULL DEFAULT 0,
+      priority TEXT NOT NULL DEFAULT 'normal',
+      energy TEXT NOT NULL DEFAULT 'medium',
+      estimated_minutes INTEGER,
+      bonus_objective TEXT,
+      bonus_completed INTEGER NOT NULL DEFAULT 0,
       status TEXT NOT NULL,
       completed_at TEXT,
       FOREIGN KEY (habit_id) REFERENCES habits (id) ON DELETE CASCADE
@@ -92,6 +103,56 @@ export function initializeLocalDatabase() {
       growth_stage TEXT NOT NULL
     );
   `);
+
+  const habitColumns = db.getAllSync<{ name: string }>('PRAGMA table_info(habits)');
+  const habitColumnNames = new Set(habitColumns.map((column) => column.name));
+
+  if (!habitColumnNames.has('priority')) {
+    db.execSync("ALTER TABLE habits ADD COLUMN priority TEXT NOT NULL DEFAULT 'normal'");
+  }
+
+  if (!habitColumnNames.has('energy')) {
+    db.execSync("ALTER TABLE habits ADD COLUMN energy TEXT NOT NULL DEFAULT 'medium'");
+  }
+
+  if (!habitColumnNames.has('estimated_minutes')) {
+    db.execSync('ALTER TABLE habits ADD COLUMN estimated_minutes INTEGER');
+  }
+
+  if (!habitColumnNames.has('bonus_objective')) {
+    db.execSync('ALTER TABLE habits ADD COLUMN bonus_objective TEXT');
+  }
+
+  const questColumns = db.getAllSync<{ name: string }>('PRAGMA table_info(quests)');
+  const questColumnNames = new Set(questColumns.map((column) => column.name));
+
+  if (!questColumnNames.has('target_count')) {
+    db.execSync('ALTER TABLE quests ADD COLUMN target_count INTEGER NOT NULL DEFAULT 1');
+  }
+
+  if (!questColumnNames.has('progress_count')) {
+    db.execSync('ALTER TABLE quests ADD COLUMN progress_count INTEGER NOT NULL DEFAULT 0');
+  }
+
+  if (!questColumnNames.has('priority')) {
+    db.execSync("ALTER TABLE quests ADD COLUMN priority TEXT NOT NULL DEFAULT 'normal'");
+  }
+
+  if (!questColumnNames.has('energy')) {
+    db.execSync("ALTER TABLE quests ADD COLUMN energy TEXT NOT NULL DEFAULT 'medium'");
+  }
+
+  if (!questColumnNames.has('estimated_minutes')) {
+    db.execSync('ALTER TABLE quests ADD COLUMN estimated_minutes INTEGER');
+  }
+
+  if (!questColumnNames.has('bonus_objective')) {
+    db.execSync('ALTER TABLE quests ADD COLUMN bonus_objective TEXT');
+  }
+
+  if (!questColumnNames.has('bonus_completed')) {
+    db.execSync('ALTER TABLE quests ADD COLUMN bonus_completed INTEGER NOT NULL DEFAULT 0');
+  }
 
   db.runSync(
     'INSERT OR REPLACE INTO app_metadata (key, value) VALUES (?, ?)',

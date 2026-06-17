@@ -3,7 +3,9 @@ import type {
   Habit,
   HabitCategory,
   HabitDifficulty,
+  HabitEnergy,
   HabitFrequencyType,
+  HabitPriority,
   Weekday,
 } from '@/data/models/habit';
 
@@ -15,6 +17,10 @@ type HabitRow = {
   frequency_type: HabitFrequencyType;
   selected_weekdays: string;
   target_count: number | null;
+  priority: HabitPriority;
+  energy: HabitEnergy;
+  estimated_minutes: number | null;
+  bonus_objective: string | null;
   reminder_time: string | null;
   is_active: number;
   created_at: string;
@@ -38,6 +44,10 @@ function toHabit(row: HabitRow): Habit {
     frequencyType: row.frequency_type,
     selectedWeekdays: parseWeekdays(row.selected_weekdays),
     targetCount: row.target_count ?? undefined,
+    priority: row.priority ?? 'normal',
+    energy: row.energy ?? 'medium',
+    estimatedMinutes: row.estimated_minutes ?? undefined,
+    bonusObjective: row.bonus_objective ?? undefined,
     reminderTime: row.reminder_time ?? undefined,
     isActive: row.is_active === 1,
     createdAt: row.created_at,
@@ -82,11 +92,15 @@ export const habitRepository = {
         frequency_type,
         selected_weekdays,
         target_count,
+        priority,
+        energy,
+        estimated_minutes,
+        bonus_objective,
         reminder_time,
         is_active,
         created_at,
         updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       habit.id,
       habit.title,
@@ -95,6 +109,10 @@ export const habitRepository = {
       habit.frequencyType,
       JSON.stringify(habit.selectedWeekdays),
       habit.targetCount ?? null,
+      habit.priority,
+      habit.energy,
+      habit.estimatedMinutes ?? null,
+      habit.bonusObjective ?? null,
       habit.reminderTime ?? null,
       habit.isActive ? 1 : 0,
       habit.createdAt,

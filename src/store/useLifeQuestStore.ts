@@ -129,6 +129,15 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         return state;
       }
 
+      if (!result.completed) {
+        const dailyQuests = generateDailyQuests();
+
+        return {
+          dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player),
+          dailyQuests,
+        };
+      }
+
       const streakResult = advanceDailyStreak(state.streakSummary, result.quest.date);
       const nextPetXp = state.activePet.xp + result.xpGained;
       const nextPet: Pet = {

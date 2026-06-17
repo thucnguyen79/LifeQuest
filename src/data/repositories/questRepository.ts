@@ -1,5 +1,5 @@
 import { getDatabase, initializeLocalDatabase } from '@/data/local/database';
-import type { Quest, QuestStatus } from '@/data/models/quest';
+import type { Quest, QuestEnergy, QuestPriority, QuestStatus } from '@/data/models/quest';
 
 type QuestRow = {
   id: string;
@@ -8,6 +8,13 @@ type QuestRow = {
   date: string;
   xp_reward: number;
   coin_reward: number;
+  target_count: number;
+  progress_count: number;
+  priority: QuestPriority;
+  energy: QuestEnergy;
+  estimated_minutes: number | null;
+  bonus_objective: string | null;
+  bonus_completed: number;
   status: QuestStatus;
   completed_at: string | null;
 };
@@ -20,6 +27,13 @@ function toQuest(row: QuestRow): Quest {
     date: row.date,
     xpReward: row.xp_reward,
     coinReward: row.coin_reward,
+    targetCount: row.target_count ?? 1,
+    progressCount: row.progress_count ?? 0,
+    priority: row.priority ?? 'normal',
+    energy: row.energy ?? 'medium',
+    estimatedMinutes: row.estimated_minutes ?? undefined,
+    bonusObjective: row.bonus_objective ?? undefined,
+    bonusCompleted: row.bonus_completed === 1,
     status: row.status,
     completedAt: row.completed_at ?? undefined,
   };
@@ -62,9 +76,16 @@ export const questRepository = {
         date,
         xp_reward,
         coin_reward,
+        target_count,
+        progress_count,
+        priority,
+        energy,
+        estimated_minutes,
+        bonus_objective,
+        bonus_completed,
         status,
         completed_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       quest.id,
       quest.habitId,
@@ -72,9 +93,22 @@ export const questRepository = {
       quest.date,
       quest.xpReward,
       quest.coinReward,
+      quest.targetCount,
+      quest.progressCount,
+      quest.priority,
+      quest.energy,
+      quest.estimatedMinutes ?? null,
+      quest.bonusObjective ?? null,
+      quest.bonusCompleted ? 1 : 0,
       quest.status,
       quest.completedAt ?? null,
     );
+  },
+
+  updateProgress(id: string, progressCount: number) {
+    initializeLocalDatabase();
+
+    getDatabase().runSync('UPDATE quests SET progress_count = ? WHERE id = ?', progressCount, id);
   },
 
   updateStatus(id: string, status: QuestStatus, completedAt?: string) {

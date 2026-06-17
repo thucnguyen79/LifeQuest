@@ -276,6 +276,18 @@ Completion note: Added centralized class skill definitions, applied Warrior/Scho
 - Replace instant completion with progress-based completion where applicable
 - Bonus objective should affect XP/coins/boss/chest later
 
+Status: Done
+
+Completion note: Added habit/quest quality metadata, SQLite v2 migrations, web localStorage normalization, progress-based quest advancement, Dashboard progress and metadata display, habit form/list fields, and focused tests for progress advancement and metadata generation.
+
+## 27. Adventure Map v1
+
+- Let the player choose one daily zone
+- Start with Forest of Focus, Scholar Library, Strength Arena, Calm Temple, and Explorer Trail
+- Convert quest progress/completion into map node progress
+- Clear enough nodes to unlock the next reward/boss layer
+- Show daily zone state on Dashboard
+
 Status: Pending
 
 ## Build Rules

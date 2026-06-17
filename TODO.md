@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-25 are implemented through Class Skills v1.
+Tasks 14-26 are implemented through Quest Quality v1.
 
 Task 14B/14C UI pass:
 
@@ -112,6 +112,18 @@ Task 25 class skills v1:
 - Dashboard and Codex show active class passive effects.
 - Added focused tests for class modifiers, quest reward application, and Explorer chest bonus.
 
+Task 26 quest quality v1:
+
+- Added habit quality fields: priority, energy, estimated minutes, and bonus objective.
+- Added quest progress fields: target count, progress count, priority, energy, estimated minutes, and bonus objective.
+- Native SQLite schema now migrates existing installs to v2 and includes v2 columns for fresh installs.
+- Web repositories normalize old localStorage data with default quality/progress fields.
+- Daily quest generation and habit reconciliation copy target/quality metadata from habits into quests.
+- Dashboard quest cards now show progress `x/n`, quality metadata, and bonus objective text.
+- Quest action now increments progress first; rewards are granted only when target progress is reached.
+- Habit form and habit list expose the new quality fields.
+- Added focused tests for progress-only quest advancement and quest metadata generation.
+
 Latest checks:
 
 - `npm test` passes.
@@ -121,13 +133,13 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Quest Quality v1
+## Next Task: Adventure Map v1
 
 Recommended next steps:
 
-- Add true quest progress from target count.
-- Add priority, energy, estimated time, and bonus objective fields.
-- Update quest completion from single-tap complete to progress-based completion.
+- Let the player choose a daily zone.
+- Convert quest completion/progress into map node clearing.
+- Connect zones to class/stat identity before adding Daily Boss.
 
 ## Later MVP Tasks
 
