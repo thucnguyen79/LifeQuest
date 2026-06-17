@@ -15,6 +15,7 @@ import { characterClasses } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { PlayerClass } from '@/data/models/player';
+import { classSkillInfo } from '@/features/classes/classSkills';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const navItems = [
@@ -55,6 +56,7 @@ export default function DashboardScreen() {
   }
 
   const playerClass = characterClasses[player.selectedClass];
+  const classSkill = classSkillInfo[player.selectedClass];
   const completedQuestCount = dailyQuests.filter((quest) => quest.status === 'completed').length;
   const missedQuestCount = dailyQuests.filter((quest) => quest.status === 'missed').length;
   const totalQuestCount = dailyQuests.length;
@@ -103,6 +105,9 @@ export default function DashboardScreen() {
             <View style={styles.avatarInfo}>
               <Text style={styles.className}>{playerClass.name}</Text>
               <Text style={styles.classCopy}>Character growth powered by today&apos;s quests.</Text>
+              <Text style={styles.classPassive}>
+                {classSkill.name}: {classSkill.activeEffect}
+              </Text>
             </View>
           </View>
           <View style={styles.heroProgress}>
@@ -367,6 +372,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 2,
+  },
+  classPassive: {
+    color: colors.mint,
+    fontSize: 12,
+    fontWeight: '800',
+    lineHeight: 17,
+    marginTop: spacing.xs,
   },
   heroProgress: {
     backgroundColor: colors.surface,

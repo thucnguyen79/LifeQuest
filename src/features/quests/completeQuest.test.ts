@@ -100,6 +100,9 @@ describe('completeQuest', () => {
 
     expect(result).not.toBeNull();
     expect(result?.leveledUp).toBe(true);
+    expect(result?.classBonusLabels).toEqual([]);
+    expect(result?.coinsGained).toBe(6);
+    expect(result?.xpGained).toBe(20);
     expect(result?.previousLevel).toBe(1);
     expect(result?.newLevel).toBe(2);
     expect(result?.player).toEqual({
@@ -120,6 +123,48 @@ describe('completeQuest', () => {
       expect.any(String),
     );
     expect(mocks.playerUpsert).toHaveBeenCalledWith(result?.player);
+  });
+
+  it('applies Warrior XP bonuses for Fitness and Hard quests', () => {
+    const player = createPlayer({ selectedClass: 'warrior', totalXp: 0, currentXp: 0 });
+    mocks.habitById = createHabit({ category: 'fitness', difficulty: 'hard' });
+    mocks.questById = createQuest({ coinReward: 10, xpReward: 35 });
+
+    const result = completeQuest(player, 'quest-1');
+
+    expect(result?.xpGained).toBe(43);
+    expect(result?.coinsGained).toBe(10);
+    expect(result?.classBonusLabels).toEqual(['Warrior Fitness XP', 'Warrior Hard XP']);
+    expect(result?.player.totalXp).toBe(43);
+    expect(result?.player.strength).toBe(2);
+  });
+
+  it('applies Scholar coin bonus for Learning quests', () => {
+    const player = createPlayer({ selectedClass: 'scholar', totalXp: 0, currentXp: 0 });
+    mocks.habitById = createHabit({ category: 'learning', difficulty: 'medium' });
+    mocks.questById = createQuest({ coinReward: 6, xpReward: 20 });
+
+    const result = completeQuest(player, 'quest-1');
+
+    expect(result?.xpGained).toBe(20);
+    expect(result?.coinsGained).toBe(7);
+    expect(result?.classBonusLabels).toEqual(['Scholar Learning Coins']);
+    expect(result?.player.coins).toBe(11);
+    expect(result?.player.intelligence).toBe(2);
+  });
+
+  it('applies Creator XP bonus for Deep Work quests', () => {
+    const player = createPlayer({ selectedClass: 'creator', totalXp: 0, currentXp: 0 });
+    mocks.habitById = createHabit({ category: 'deepWork', difficulty: 'medium' });
+    mocks.questById = createQuest({ coinReward: 6, xpReward: 20 });
+
+    const result = completeQuest(player, 'quest-1');
+
+    expect(result?.xpGained).toBe(22);
+    expect(result?.coinsGained).toBe(6);
+    expect(result?.classBonusLabels).toEqual(['Creator Deep Work XP']);
+    expect(result?.player.totalXp).toBe(22);
+    expect(result?.player.focus).toBe(2);
   });
 
   it('does not reward quests that are already completed', () => {

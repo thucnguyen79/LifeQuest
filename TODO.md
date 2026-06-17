@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-24 are implemented through the in-app LifeQuest Codex guide.
+Tasks 14-25 are implemented through Class Skills v1.
 
 Task 14B/14C UI pass:
 
@@ -99,6 +99,19 @@ Task 24 game guide / codex:
 - Added coming gameplay explanations for Reward Shop, Adventure Map, Class Skills, Daily Boss, Chest Rarity, and Achievements.
 - Linked the guide from Dashboard Adventure Map and Settings.
 
+Task 25 class skills v1:
+
+- Added centralized class skill definitions in `classSkills`.
+- Warrior now gains bonus XP from Fitness quests and Hard quests.
+- Scholar now gains bonus coins from Learning quests.
+- Creator now gains bonus XP from Deep Work quests.
+- Explorer now gains bonus coins from Daily Chest rewards.
+- Monk has a streak shield foundation definition for the upcoming inventory/streak-freeze pass.
+- Quest completion now reports actual XP/coins gained after class bonuses.
+- Pet bond XP now uses actual quest XP gained after class modifiers.
+- Dashboard and Codex show active class passive effects.
+- Added focused tests for class modifiers, quest reward application, and Explorer chest bonus.
+
 Latest checks:
 
 - `npm test` passes.
@@ -108,13 +121,13 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Class Skills v1
+## Next Task: Quest Quality v1
 
 Recommended next steps:
 
-- Add class passive calculations to quest completion and chest logic.
-- Show current class passive on Dashboard and Guide.
-- Add focused tests for Warrior, Scholar, Monk, Creator, and Explorer bonuses.
+- Add true quest progress from target count.
+- Add priority, energy, estimated time, and bonus objective fields.
+- Update quest completion from single-tap complete to progress-based completion.
 
 ## Later MVP Tasks
 

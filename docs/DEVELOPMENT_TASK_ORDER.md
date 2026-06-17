@@ -264,6 +264,18 @@ Completion note: Added `app/guide.tsx`, linked it from Dashboard Adventure Map a
 - Explorer: chest bonus foundation
 - Add tests for class reward modifiers
 
+Status: Done
+
+Completion note: Added centralized class skill definitions, applied Warrior/Scholar/Creator quest reward modifiers, added Explorer Daily Chest coin bonus, exposed active passives in Dashboard/Codex, routed pet XP through actual XP gained, and added focused tests for class skill math and reward application.
+
+## 26. Quest Quality v1
+
+- Habit target count should become true quest progress
+- Quest progress should show `0/n`, `1/n`, `n/n`
+- Add priority, energy, estimated time, and bonus objective metadata
+- Replace instant completion with progress-based completion where applicable
+- Bonus objective should affect XP/coins/boss/chest later
+
 Status: Pending
 
 ## Build Rules

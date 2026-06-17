@@ -1,5 +1,7 @@
 import type { Quest } from '@/data/models/quest';
+import type { Player } from '@/data/models/player';
 import type { DailyChestRecord } from '@/data/repositories/dailyChestRepository';
+import { getDailyChestCoinRewardForClass } from '@/features/classes/classSkills';
 
 export const dailyChestCoinReward = 15;
 
@@ -17,6 +19,7 @@ export function getDailyChestState(
   date: string,
   quests: Quest[],
   record: DailyChestRecord,
+  player?: Player | null,
 ): DailyChestState {
   const totalQuestCount = quests.length;
   const completedQuestCount = quests.filter((quest) => quest.status === 'completed').length;
@@ -25,7 +28,7 @@ export function getDailyChestState(
     record.claimedDate === date ? 'claimed' : allQuestsDone ? 'available' : 'locked';
 
   return {
-    coinReward: dailyChestCoinReward,
+    coinReward: getDailyChestCoinRewardForClass(dailyChestCoinReward, player),
     completedQuestCount,
     date,
     status,

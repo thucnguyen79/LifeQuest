@@ -9,6 +9,7 @@ import { GamePanel } from '@/core/components/GamePanel';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { PlayerClass } from '@/data/models/player';
+import { classSkillInfo } from '@/features/classes/classSkills';
 
 type ClassGuide = {
   bestFor: string;
@@ -31,40 +32,40 @@ const classGuides: Record<PlayerClass, ClassGuide> = {
     currentBonus: '+2 Strength at character creation.',
     icon: 'classWarrior',
     name: 'Warrior',
-    passive: 'Coming next: bonus XP and boss damage from Fitness and Hard quests.',
-    risk: 'Can feel punishing if the player over-commits to difficult quests.',
+    passive: classSkillInfo.warrior.activeEffect,
+    risk: classSkillInfo.warrior.futureTradeoff,
   },
   scholar: {
     bestFor: 'Reading, study, courses, research, and knowledge habits.',
     currentBonus: '+2 Intelligence at character creation.',
     icon: 'classScholar',
     name: 'Scholar',
-    passive: 'Coming next: bonus coins and knowledge rewards from Learning quests.',
-    risk: 'Progress is steady, but less explosive than combat-focused classes.',
+    passive: classSkillInfo.scholar.activeEffect,
+    risk: classSkillInfo.scholar.futureTradeoff,
   },
   monk: {
     bestFor: 'Meditation, reflection, journaling, calm routines.',
     currentBonus: '+2 Wisdom at character creation.',
     icon: 'classMonk',
     name: 'Monk',
-    passive: 'Coming next: streak shield and reduced missed-quest pressure.',
-    risk: 'Grows slower, but protects long-term consistency.',
+    passive: classSkillInfo.monk.activeEffect,
+    risk: classSkillInfo.monk.futureTradeoff,
   },
   creator: {
     bestFor: 'Deep work, writing, design, coding, and project building.',
     currentBonus: '+2 Focus at character creation.',
     icon: 'classCreator',
     name: 'Creator',
-    passive: 'Coming next: Flow combo bonus from consecutive Deep Work quests.',
-    risk: 'Deep work is powerful but easy to interrupt, so missed combos matter.',
+    passive: classSkillInfo.creator.activeEffect,
+    risk: classSkillInfo.creator.futureTradeoff,
   },
   explorer: {
     bestFor: 'Social habits, new experiences, outdoor actions, connection.',
     currentBonus: '+2 Charisma at character creation.',
     icon: 'classExplorer',
     name: 'Explorer',
-    passive: 'Coming next: better chest rewards from diverse quest categories.',
-    risk: 'Needs varied habits to shine; repeating one category gives fewer bonuses.',
+    passive: classSkillInfo.explorer.activeEffect,
+    risk: classSkillInfo.explorer.futureTradeoff,
   },
 };
 
