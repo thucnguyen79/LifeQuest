@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-19 are implemented through Quest Reconciliation.
+Tasks 14-20 are implemented through Mobile Build Readiness preparation.
 
 Task 14B/14C UI pass:
 
@@ -60,6 +60,16 @@ Task 19 quest reconciliation:
 - Habit form and habit archive actions refresh Dashboard quest/chest state.
 - Added focused tests for edit/archive reconciliation.
 
+Task 20 mobile build readiness:
+
+- Replaced default Expo icon/splash assets with LifeQuest-branded app assets.
+- Added Android adaptive icon foreground/background/monochrome assets.
+- Added Android notification icon.
+- Configured splash screen, iOS bundle identifier, Android package, and notification plugin metadata.
+- Added mobile start scripts for LAN/tunnel and `npm run doctor`.
+- Added `docs/MOBILE_TESTING.md` with Expo Go, notification QA, and build readiness checklist.
+- Updated README for current setup and mobile workflow.
+
 Latest checks:
 
 - `npm test` passes.
@@ -71,8 +81,8 @@ Latest checks:
 
 Recommended options:
 
-- Test Task 19 manually: edit pending habit title/difficulty, archive pending habit, verify Dashboard updates.
-- Start Task 20 Mobile Build Readiness: Expo Go/dev build, icon/splash, and notification QA.
+- Run the mobile checklist in `docs/MOBILE_TESTING.md` on a physical device.
+- Start Task 21 Native Dev Build Setup if we want an installable Android/iOS development build artifact.
 - Or start backend sync planning after local MVP confidence is higher.
 
 ## Later MVP Tasks

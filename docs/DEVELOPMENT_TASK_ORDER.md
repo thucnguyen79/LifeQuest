@@ -208,6 +208,18 @@ Completion note: Added `reconcileHabitQuestForDate`, repository removal by quest
 - Mobile responsive pass on real device dimensions
 - Document mobile setup for continuing on another machine
 
+Status: Done
+
+Completion note: Added LifeQuest-branded app icon/splash/adaptive/notification assets, configured iOS/Android package ids, splash and notification plugin metadata, added LAN/tunnel/doctor scripts, refreshed README, and added `docs/MOBILE_TESTING.md` for device QA.
+
+## 21. Native Dev Build Setup
+
+- Decide EAS local/cloud build workflow
+- Add EAS project/build profile if needed
+- Produce first Android development build
+- Verify notification behavior in installed build
+- Document build handoff steps
+
 Status: Pending
 
 ## Build Rules

@@ -1,0 +1,84 @@
+# LifeQuest Mobile Testing
+
+Use this checklist when testing LifeQuest on a phone or when continuing from a new machine.
+
+## Prerequisites
+
+- Node.js 22.13.0 or newer
+- Git
+- Expo Go installed on the phone for quick MVP testing
+- Phone and computer on the same Wi-Fi network for LAN mode
+
+## First Run
+
+```bash
+npm install
+npm run typecheck
+npm test
+npm run doctor
+npm run start:lan
+```
+
+Scan the QR code with Expo Go.
+
+If LAN discovery fails:
+
+```bash
+npm run start:tunnel
+```
+
+## Mobile Smoke Test
+
+1. Open the app in Expo Go.
+2. Reset local data from Settings if previous test data exists.
+3. Create a new player.
+4. Create 3 daily hard habits.
+5. Open Dashboard and complete all generated quests.
+6. Confirm level-up modal appears.
+7. Open Rewards and claim Daily Chest.
+8. Open Companion and confirm pet XP/streak are visible.
+9. Close/reopen Expo Go and confirm local progress persists.
+
+## Notification QA
+
+Expo web preview does not support local mobile notifications.
+
+For phone testing:
+
+1. Create a habit with a reminder time a few minutes in the future.
+2. Open Settings.
+3. Enable Daily reminders.
+4. Grant notification permission when prompted.
+5. Keep the app backgrounded and wait for the scheduled reminder.
+6. Confirm the notification title/body point back to LifeQuest.
+
+Known MVP behavior:
+
+- Notifications are scheduled from active habits with valid `HH:mm` reminder times.
+- Notification channel is configured as `habit-reminders`.
+- Sound effects are still a placeholder toggle.
+
+## Build Readiness Checks
+
+Run these before creating a dev build or handing the repo to another machine:
+
+```bash
+npm run typecheck
+npm test
+npm run doctor
+```
+
+Expo app config should include:
+
+- iOS bundle identifier: `com.thucnguyen79.lifequest`
+- Android package: `com.thucnguyen79.lifequest`
+- App icon: `assets/icon.png`
+- Splash icon: `assets/splash-icon.png`
+- Android adaptive icon assets
+- Android notification icon: `assets/notification-icon.png`
+
+## Current Limits
+
+- Backend sync is not implemented yet.
+- RevenueCat/IAP is not implemented yet.
+- Native dev build has not been produced in-repo; this task prepares config and QA workflow first.

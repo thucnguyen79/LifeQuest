@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Paused on Task 14 review after adding a stronger 14B UI pass with reusable game UI primitives. Continue reviewing the polish before moving to tests.
+Tasks 1-20 are implemented through mobile build readiness preparation.
 
 Implemented:
 
@@ -38,6 +38,11 @@ Implemented:
 - Settings screen with notifications, sound placeholder, privacy copy, and guarded reset
 - Rewards vault screen with coin balance and future reward tracks
 - UI polish pass for dashboard, habits, rewards, and navigation cards
+- SVG game assets and UI animation pass with Reanimated web fallback and Lottie native assets
+- Daily reset logic, missed quests, daily streak rules, and Daily Chest claim flow
+- Quest reconciliation after habit edit/archive
+- Focused Vitest coverage for gameplay rules and repositories
+- Mobile-ready app icon, splash, adaptive icon, notification icon, package ids, and QA docs
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -45,9 +50,9 @@ Implemented:
 
 Not implemented yet:
 
-- Persistent streak and pet repository hydration
-- Full UI wiring for local persistence beyond player creation
 - Backend sync
+- Native dev build artifact
+- RevenueCat/IAP
 
 ## Setup On A New Machine
 
@@ -64,6 +69,8 @@ git clone https://github.com/thucnguyen79/LifeQuest.git
 cd LifeQuest
 npm install
 npm run typecheck
+npm test
+npm run doctor
 npm start
 ```
 
@@ -83,10 +90,13 @@ Useful commands:
 
 ```bash
 npm run web
+npm run start:lan
+npm run start:tunnel
 npm run android
 npm run ios
 npm run typecheck
-npx expo-doctor
+npm test
+npm run doctor
 ```
 
 Notes:
@@ -95,7 +105,8 @@ Notes:
 - `react`, `react-dom`, and `react-native-web` versions are intentionally pinned to avoid web preview peer dependency drift.
 - On Windows, if another Expo server is already using `8081`, stop it or run Expo on another port.
 - Do not commit local `.expo/`, `node_modules/`, generated native `/android`, or `/ios` folders.
+- Mobile QA details are in [docs/MOBILE_TESTING.md](./docs/MOBILE_TESTING.md).
 
 ## Recommended Next Task
 
-Continue Task 14 UI review and polish validation. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Run the Task 20 mobile checklist on a physical device, then choose between native dev build setup, backend sync planning, or the next UI/gameplay polish pass. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
