@@ -229,7 +229,19 @@ Completion note: Installed `expo-dev-client`, added EAS build profiles for Andro
 - Finish Android development build `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`
 - Install and test native notification/gameplay behavior
 
-Status: In Progress
+Status: Done
+
+Completion note: First Android development build completed successfully on EAS. Build link: `https://expo.dev/accounts/thuc.nguyen/projects/lifequest/builds/7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
+
+## 23. Native Device QA
+
+- Install the Android development APK
+- Start Metro with `npm run dev-client`
+- Verify onboarding and local persistence
+- Verify habit reminder notification behavior from installed build
+- Verify gameplay loop from onboarding through level-up and Daily Chest
+
+Status: Pending
 
 ## Build Rules
 

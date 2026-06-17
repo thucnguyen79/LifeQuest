@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-21 are implemented through Native Dev Build Setup preparation.
+Tasks 14-22 are implemented through the first Android EAS development build artifact.
 
 Task 14B/14C UI pass:
 
@@ -79,7 +79,15 @@ Task 21 native dev build setup:
 - Linked the app to EAS project `@thuc.nguyen/lifequest`.
 - Set EAS app version source to `remote` to match current EAS CLI guidance.
 - Added `docs/NATIVE_BUILD.md` with new-machine setup, EAS login/init, build commands, and native QA checklist.
-- First Android cloud build was started from EAS after Expo login; artifact completion is pending EAS build result.
+- First Android cloud build completed successfully on EAS.
+
+Task 22 first EAS build artifact:
+
+- Created EAS project `@thuc.nguyen/lifequest`.
+- Generated Android credentials/keystore on Expo servers.
+- Produced the first Android development APK with build ID `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
+- Build link: `https://expo.dev/accounts/thuc.nguyen/projects/lifequest/builds/7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
+- Native device QA is the remaining follow-up: install APK, run dev client server, and verify gameplay/notifications.
 
 Latest checks:
 
@@ -87,14 +95,16 @@ Latest checks:
 - `npm run typecheck` passes.
 - `npx expo-doctor` passes.
 - Native config commands are added and EAS project linking is complete.
+- Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Finish First EAS Build Artifact
+## Next Task: Native Device QA
 
 Recommended next steps:
 
-- Wait for Android development build `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
-- Install the APK, run `npm run dev-client`, and test notifications/gameplay from the installed build.
+- Install Android development build `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
+- Run `npm run dev-client`.
+- Test onboarding, habit creation, quest completion, Daily Chest, persistence, and local notifications from the installed build.
 
 ## Later MVP Tasks
 

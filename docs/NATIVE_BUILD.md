@@ -57,6 +57,13 @@ npm run build:android:dev
 
 Install the APK from the EAS build link on an Android device.
 
+First successful Android development build:
+
+- Build ID: `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`
+- Build link: `https://expo.dev/accounts/thuc.nguyen/projects/lifequest/builds/7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`
+- Status: finished
+- Created from commit `646fe7b`
+
 Start the Metro server for the installed dev client:
 
 ```bash
