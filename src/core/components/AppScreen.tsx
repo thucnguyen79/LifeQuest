@@ -1,5 +1,13 @@
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors } from '@/core/theme/colors';
@@ -14,14 +22,20 @@ type AppScreenProps = {
 export function AppScreen({ children, canGoBack = false, style }: AppScreenProps) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={[styles.container, style]}>
-        {canGoBack ? (
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <Text style={styles.backButtonText}>Back</Text>
-          </Pressable>
-        ) : null}
-        {children}
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'android' ? 'height' : undefined}
+        enabled={Platform.OS !== 'web'}
+        style={styles.keyboard}
+      >
+        <View style={[styles.container, style]}>
+          {canGoBack ? (
+            <Pressable onPress={() => router.back()} style={styles.backButton}>
+              <Text style={styles.backButtonText}>Back</Text>
+            </Pressable>
+          ) : null}
+          {children}
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -29,6 +43,9 @@ export function AppScreen({ children, canGoBack = false, style }: AppScreenProps
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: colors.background,
+    flex: 1,
+  },
+  keyboard: {
     flex: 1,
   },
   container: {

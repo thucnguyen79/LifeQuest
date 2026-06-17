@@ -83,9 +83,11 @@ export default function DashboardScreen() {
       </Modal>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerCopy}>
             <Text style={styles.eyebrow}>Daily Adventure</Text>
-            <Text style={styles.title}>Welcome, {player.name}</Text>
+            <Text adjustsFontSizeToFit numberOfLines={2} style={styles.title}>
+              Welcome, {player.name}
+            </Text>
           </View>
           <View style={styles.levelBadge}>
             <Text style={styles.levelText}>Lv {player.level}</Text>
@@ -299,9 +301,14 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   header: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flexDirection: 'row',
+    gap: spacing.sm,
     justifyContent: 'space-between',
+  },
+  headerCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   eyebrow: {
     color: colors.accent,
@@ -318,6 +325,7 @@ const styles = StyleSheet.create({
   levelBadge: {
     backgroundColor: colors.panelDeep,
     borderRadius: 8,
+    flexShrink: 0,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },

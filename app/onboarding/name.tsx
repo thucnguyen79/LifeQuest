@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { PrimaryButton } from '@/core/components/PrimaryButton';
@@ -27,7 +27,12 @@ export default function PlayerNameScreen() {
 
   return (
     <AppScreen canGoBack>
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <View>
           <Text style={styles.eyebrow}>Create Player</Text>
           <Text style={styles.title}>Name your adventurer</Text>
@@ -51,17 +56,16 @@ export default function PlayerNameScreen() {
         </View>
 
         <PrimaryButton label="Choose Class" onPress={continueToClassSelection} />
-      </View>
+      </ScrollView>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     gap: spacing.xl,
-    justifyContent: 'space-between',
-    paddingBottom: spacing.md,
+    minHeight: '100%',
+    paddingBottom: spacing.xl * 3,
   },
   eyebrow: {
     color: colors.accent,

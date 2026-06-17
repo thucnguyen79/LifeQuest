@@ -99,7 +99,12 @@ export default function HabitFormScreen() {
 
   return (
     <AppScreen canGoBack>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <View>
           <Text style={styles.eyebrow}>{editingHabit ? 'Edit Habit' : 'Create Habit'}</Text>
           <Text style={styles.title}>Build a quest source</Text>
@@ -258,7 +263,7 @@ function OptionGroup<T extends string>({
 const styles = StyleSheet.create({
   content: {
     gap: spacing.lg,
-    paddingBottom: spacing.xl,
+    paddingBottom: spacing.xl * 3,
   },
   eyebrow: {
     color: colors.accent,
