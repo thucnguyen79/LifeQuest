@@ -21,6 +21,7 @@ const navItems = [
   { label: 'Habits', meta: 'Quest sources', route: '/habits', icon: 'habit' },
   { label: 'Pet', meta: 'Bond growth', route: '/companion', icon: 'petDragon' },
   { label: 'Rewards', meta: 'Coins & badges', route: '/rewards', icon: 'chest' },
+  { label: 'Codex', meta: 'How to play', route: '/guide', icon: 'book' },
   { label: 'Settings', meta: 'Preferences', route: '/settings', icon: 'gear' },
 ] as const;
 

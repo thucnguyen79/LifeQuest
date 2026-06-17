@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-22 are implemented through the first Android EAS development build artifact.
+Tasks 14-24 are implemented through the in-app LifeQuest Codex guide.
 
 Task 14B/14C UI pass:
 
@@ -90,6 +90,15 @@ Task 22 first EAS build artifact:
 - Build link: `https://expo.dev/accounts/thuc.nguyen/projects/lifequest/builds/7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
 - Native device QA is the remaining follow-up: install APK, run dev client server, and verify gameplay/notifications.
 
+Task 24 game guide / codex:
+
+- Added an in-app `LifeQuest Codex` guide screen.
+- Documented the current MVP loop: habit sources, daily quests, rewards, and pet growth.
+- Added class identity cards for Warrior, Scholar, Monk, Creator, and Explorer.
+- Marked current class bonuses separately from upcoming passive skills/trade-offs.
+- Added coming gameplay explanations for Reward Shop, Adventure Map, Class Skills, Daily Boss, Chest Rarity, and Achievements.
+- Linked the guide from Dashboard Adventure Map and Settings.
+
 Latest checks:
 
 - `npm test` passes.
@@ -99,13 +108,13 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Native Device QA
+## Next Task: Class Skills v1
 
 Recommended next steps:
 
-- Install Android development build `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
-- Run `npm run dev-client`.
-- Test onboarding, habit creation, quest completion, Daily Chest, persistence, and local notifications from the installed build.
+- Add class passive calculations to quest completion and chest logic.
+- Show current class passive on Dashboard and Guide.
+- Add focused tests for Warrior, Scholar, Monk, Creator, and Explorer bonuses.
 
 ## Later MVP Tasks
 

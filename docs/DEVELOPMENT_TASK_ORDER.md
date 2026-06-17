@@ -243,6 +243,29 @@ Completion note: First Android development build completed successfully on EAS. 
 
 Status: Pending
 
+## 24. Game Guide / LifeQuest Codex
+
+- Add an in-app guide that explains the core loop
+- Explain current class bonuses and future class passives
+- Explain stats, quests, XP, coins, streak, pet, rewards, and chest basics
+- Preview upcoming systems: shop, adventure map, boss, chest rarity, and achievements
+- Link guide from Dashboard and Settings
+
+Status: Done
+
+Completion note: Added `app/guide.tsx`, linked it from Dashboard Adventure Map and Settings, and documented both current MVP gameplay and planned v3 systems without implying unimplemented systems are already live.
+
+## 25. Class Skills v1
+
+- Warrior: bonus XP from Fitness and Hard quests
+- Scholar: bonus coins from Learning quests
+- Monk: streak shield foundation
+- Creator: Deep Work combo foundation
+- Explorer: chest bonus foundation
+- Add tests for class reward modifiers
+
+Status: Pending
+
 ## Build Rules
 
 - Do not build all features at once.

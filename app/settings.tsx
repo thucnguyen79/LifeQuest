@@ -76,6 +76,19 @@ export default function SettingsScreen() {
           <Switch value={soundEnabled} onValueChange={toggleSound} />
         </GamePanel>
 
+        <Pressable onPress={() => router.replace('/guide')}>
+          <GamePanel tone="surface" style={styles.card}>
+            <GameIcon name="book" size={44} tone="mint" />
+            <View style={styles.settingCopy}>
+              <Text style={styles.settingTitle}>Game guide</Text>
+              <Text style={styles.settingBody}>
+                Learn classes, stats, quests, rewards, pet growth, and upcoming gameplay systems.
+              </Text>
+              <GameBadge label="Codex" tone="gold" style={styles.settingBadge} />
+            </View>
+          </GamePanel>
+        </Pressable>
+
         <GamePanel tone="parchment" style={styles.cardStack}>
           <View style={styles.cardHeaderRow}>
             <GameIcon name="privacy" size={44} tone="mint" />
