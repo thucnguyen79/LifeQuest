@@ -14,6 +14,7 @@ Task 14B/14C UI pass:
 - Updated Habits with quest-source cards, category runes, and badge metadata.
 - Added `react-native-svg` and a generated SVG icon/asset set in `GameIcon`.
 - Replaced placeholder letter runes across dashboard, habits, companion, rewards, and settings with game-style SVG icons.
+- Replaced class letter placeholders with character-style SVG avatars for Warrior, Scholar, Monk, Creator, and Explorer.
 - Updated empty states and companion pet visual to use generated SVG assets.
 - Updated Expo SDK 56 patch packages so `expo-doctor` passes with the current tooling.
 

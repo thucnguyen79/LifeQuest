@@ -2,6 +2,8 @@ import { Redirect, router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/core/components/AppScreen';
+import { GameIcon } from '@/core/components/GameIcon';
+import type { GameIconName } from '@/core/components/GameIcon';
 import { characterClasses } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
@@ -11,6 +13,14 @@ import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 const classes = Object.entries(characterClasses) as Array<
   [PlayerClass, (typeof characterClasses)[PlayerClass]]
 >;
+
+const classIcons: Record<PlayerClass, GameIconName> = {
+  creator: 'classCreator',
+  explorer: 'classExplorer',
+  monk: 'classMonk',
+  scholar: 'classScholar',
+  warrior: 'classWarrior',
+};
 
 export default function ClassSelectionScreen() {
   const draftPlayerName = useLifeQuestStore((state) => state.draftPlayerName);
@@ -43,7 +53,7 @@ export default function ClassSelectionScreen() {
           {classes.map(([key, classMeta]) => (
             <Pressable key={key} onPress={() => selectClass(key)} style={styles.classCard}>
               <View style={styles.icon}>
-                <Text style={styles.iconText}>{classMeta.icon}</Text>
+                <GameIcon name={classIcons[key]} size={68} tone="gold" />
               </View>
               <View style={styles.classCopy}>
                 <Text style={styles.className}>{classMeta.name}</Text>
@@ -96,16 +106,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     alignItems: 'center',
-    backgroundColor: colors.goldSoft,
     borderRadius: 8,
-    height: 56,
+    height: 72,
     justifyContent: 'center',
-    width: 56,
-  },
-  iconText: {
-    color: colors.ink,
-    fontSize: 24,
-    fontWeight: '900',
+    width: 72,
   },
   classCopy: {
     flex: 1,

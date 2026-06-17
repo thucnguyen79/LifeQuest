@@ -8,6 +8,11 @@ import { colors } from '@/core/theme/colors';
 export type GameIconName =
   | 'bell'
   | 'book'
+  | 'classCreator'
+  | 'classExplorer'
+  | 'classMonk'
+  | 'classScholar'
+  | 'classWarrior'
   | 'chest'
   | 'coin'
   | 'compass'
@@ -140,6 +145,93 @@ function ChestIcon({ palette }: IconProps) {
       <Path d="M31 18h5v33h-5z" fill={palette.light} opacity="0.85" />
       <Rect fill={palette.dark} height="13" rx="3" width="14" x="25" y="31" />
       <Circle cx="32" cy="37" fill={palette.accent} r="2.4" />
+    </>
+  );
+}
+
+function ClassWarriorIcon({ palette }: IconProps) {
+  return (
+    <>
+      <BaseTile palette={palette} />
+      <Path d="M19 31c0-11 6-18 13-18s13 7 13 18v14H19z" fill={palette.dark} />
+      <Path d="M20 25h24c-2-8-6-12-12-12s-10 4-12 12z" fill={palette.mid} />
+      <Path d="M18 27h28" stroke={palette.accent} strokeLinecap="round" strokeWidth="5" />
+      <Path d="M23 34c0-6 4-10 9-10s9 4 9 10v9c0 5-4 9-9 9s-9-4-9-9z" fill={palette.light} />
+      <Circle cx="28" cy="38" fill={palette.dark} r="2.4" />
+      <Circle cx="36" cy="38" fill={palette.dark} r="2.4" />
+      <Path d="M29 45h6" stroke={palette.mid} strokeLinecap="round" strokeWidth="3" />
+      <Path d="M13 50h38c-3-7-10-11-19-11S16 43 13 50z" fill={palette.mid} />
+      <Path d="M32 39v11" stroke={palette.accent} strokeLinecap="round" strokeWidth="4" />
+    </>
+  );
+}
+
+function ClassScholarIcon({ palette }: IconProps) {
+  return (
+    <>
+      <BaseTile palette={palette} />
+      <Path d="M17 50c3-8 9-12 15-12s12 4 15 12z" fill={palette.mid} />
+      <Circle cx="32" cy="29" fill={palette.light} r="13" />
+      <Path d="M20 26c2-8 7-13 14-13 7 0 11 5 12 13-6-3-13-4-26 0z" fill={palette.dark} />
+      <Circle cx="27" cy="31" fill="none" r="4" stroke={palette.dark} strokeWidth="3" />
+      <Circle cx="37" cy="31" fill="none" r="4" stroke={palette.dark} strokeWidth="3" />
+      <Path d="M31 31h2M28 39h8" stroke={palette.mid} strokeLinecap="round" strokeWidth="3" />
+      <Path d="M17 41c5-2 10 0 15 4 5-4 10-6 15-4v12c-5-2-10 0-15 4-5-4-10-6-15-4z" fill={palette.light} />
+      <Path d="M32 45v12" stroke={palette.dark} strokeLinecap="round" strokeWidth="3" />
+      <Path d="M22 47h6M36 47h6" stroke={palette.accent} strokeLinecap="round" strokeWidth="3" />
+    </>
+  );
+}
+
+function ClassMonkIcon({ palette }: IconProps) {
+  return (
+    <>
+      <BaseTile palette={palette} />
+      <Circle cx="32" cy="20" fill="none" r="9" stroke={palette.accent} strokeWidth="3" />
+      <Path d="M18 50c1-13 6-22 14-22s13 9 14 22z" fill={palette.mid} />
+      <Path d="M23 32c2-9 6-14 9-14s7 5 9 14c-5-3-13-3-18 0z" fill={palette.dark} />
+      <Circle cx="32" cy="32" fill={palette.light} r="12" />
+      <Circle cx="27" cy="33" fill={palette.dark} r="2.2" />
+      <Circle cx="37" cy="33" fill={palette.dark} r="2.2" />
+      <Path d="M28 41c3 2 5 2 8 0" fill="none" stroke={palette.mid} strokeLinecap="round" strokeWidth="3" />
+      <Path d="M18 50h28" stroke={palette.dark} strokeLinecap="round" strokeWidth="5" />
+      <Path d="M24 49c4-5 12-5 16 0" fill="none" stroke={palette.accent} strokeLinecap="round" strokeWidth="4" />
+    </>
+  );
+}
+
+function ClassCreatorIcon({ palette }: IconProps) {
+  return (
+    <>
+      <BaseTile palette={palette} />
+      <Path d="M16 51c3-8 9-13 16-13s13 5 16 13z" fill={palette.mid} />
+      <Circle cx="32" cy="31" fill={palette.light} r="12" />
+      <Path d="M20 26c4-9 14-14 25-6-1 7-8 8-16 8-3 0-6 0-9-2z" fill={palette.dark} />
+      <Path d="M23 20c7-8 17-8 23 0-7-2-15-1-23 0z" fill={palette.accent} />
+      <Circle cx="28" cy="34" fill={palette.dark} r="2.2" />
+      <Circle cx="37" cy="34" fill={palette.dark} r="2.2" />
+      <Path d="M29 41h7" stroke={palette.mid} strokeLinecap="round" strokeWidth="3" />
+      <Path d="M43 34 55 46" stroke={palette.dark} strokeLinecap="round" strokeWidth="5" />
+      <Path d="M40 38 47 31l8 8-7 7z" fill={palette.accent} />
+      <Path d="M48 45 44 49" stroke={palette.light} strokeLinecap="round" strokeWidth="3" />
+    </>
+  );
+}
+
+function ClassExplorerIcon({ palette }: IconProps) {
+  return (
+    <>
+      <BaseTile palette={palette} />
+      <Path d="M16 51c3-9 9-14 16-14s13 5 16 14z" fill={palette.mid} />
+      <Circle cx="32" cy="30" fill={palette.light} r="12" />
+      <Path d="M19 27c2-9 7-14 13-14s11 5 13 14z" fill={palette.dark} />
+      <Path d="M17 27h30" stroke={palette.accent} strokeLinecap="round" strokeWidth="5" />
+      <Path d="M25 18c4-5 10-5 14 0" fill="none" stroke={palette.mid} strokeLinecap="round" strokeWidth="4" />
+      <Circle cx="28" cy="33" fill={palette.dark} r="2.2" />
+      <Circle cx="37" cy="33" fill={palette.dark} r="2.2" />
+      <Path d="M29 41h7" stroke={palette.mid} strokeLinecap="round" strokeWidth="3" />
+      <Circle cx="45" cy="44" fill={palette.light} r="8" stroke={palette.dark} strokeWidth="3" />
+      <Path d="M49 40 46 46l-6 3 3-6z" fill={palette.accent} />
     </>
   );
 }
@@ -307,6 +399,11 @@ function SparkIcon({ palette }: IconProps) {
 const iconMap: Record<GameIconName, (props: IconProps) => ReactNode> = {
   bell: BellIcon,
   book: BookIcon,
+  classCreator: ClassCreatorIcon,
+  classExplorer: ClassExplorerIcon,
+  classMonk: ClassMonkIcon,
+  classScholar: ClassScholarIcon,
+  classWarrior: ClassWarriorIcon,
   chest: ChestIcon,
   coin: CoinIcon,
   compass: CompassIcon,

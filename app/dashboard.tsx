@@ -25,11 +25,11 @@ const navItems = [
 ] as const;
 
 const classIcons: Record<PlayerClass, GameIconName> = {
-  creator: 'spark',
-  explorer: 'compass',
-  monk: 'moon',
-  scholar: 'book',
-  warrior: 'shield',
+  creator: 'classCreator',
+  explorer: 'classExplorer',
+  monk: 'classMonk',
+  scholar: 'classScholar',
+  warrior: 'classWarrior',
 };
 
 export default function DashboardScreen() {
@@ -108,17 +108,19 @@ export default function DashboardScreen() {
           <View style={styles.heroMetaRow}>
             <View style={styles.heroChip}>
               <Text style={styles.heroChipLabel}>Coins</Text>
-              <Text style={styles.heroChipValue}>{player.coins}</Text>
+              <Text adjustsFontSizeToFit numberOfLines={1} style={styles.heroChipValue}>
+                {player.coins}
+              </Text>
             </View>
             <View style={styles.heroChip}>
               <Text style={styles.heroChipLabel}>Quests</Text>
-              <Text style={styles.heroChipValue}>
+              <Text adjustsFontSizeToFit numberOfLines={1} style={styles.heroChipValue}>
                 {completedQuestCount}/{totalQuestCount}
               </Text>
             </View>
             <View style={styles.heroChip}>
               <Text style={styles.heroChipLabel}>Chest</Text>
-              <Text style={styles.heroChipValue}>
+              <Text adjustsFontSizeToFit numberOfLines={1} style={styles.heroChipValue}>
                 {dailyChest.status === 'available'
                   ? 'Ready'
                   : dailyChest.status === 'claimed'
@@ -386,7 +388,7 @@ const styles = StyleSheet.create({
   },
   heroChipValue: {
     color: colors.surface,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '900',
     marginTop: 2,
   },
