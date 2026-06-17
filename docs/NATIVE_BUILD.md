@@ -8,6 +8,7 @@ This guide is for creating installable native development builds with EAS Build.
 - `eas.json` with Android APK, iOS simulator, iOS device, preview, and production profiles.
 - EAS scripts in `package.json`.
 - Expo app owner set to `thuc.nguyen`.
+- EAS project linked to `@thuc.nguyen/lifequest`.
 
 The repo does not store Expo login credentials or build tokens.
 
@@ -38,13 +39,13 @@ npx eas-cli login
 npm run eas:whoami
 ```
 
-Initialize or link the EAS project:
+Initialize or link the EAS project if `app.json` does not already contain `extra.eas.projectId`:
 
 ```bash
 npm run eas:init
 ```
 
-`eas:init` may add `extra.eas.projectId` to `app.json`. Commit that value after the first successful project link so other machines use the same EAS project.
+The current linked EAS project is `@thuc.nguyen/lifequest`.
 
 ## Android Development Build
 

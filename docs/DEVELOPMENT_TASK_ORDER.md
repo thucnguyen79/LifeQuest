@@ -222,17 +222,14 @@ Completion note: Added LifeQuest-branded app icon/splash/adaptive/notification a
 
 Status: Done
 
-Completion note: Installed `expo-dev-client`, added EAS build profiles for Android APK, iOS simulator, iOS physical device, preview, and production, set Expo owner to `thuc.nguyen`, added EAS build scripts, and documented native build handoff in `docs/NATIVE_BUILD.md`. First hosted EAS artifact remains a follow-up because it requires Expo login/project linking outside source control.
+Completion note: Installed `expo-dev-client`, added EAS build profiles for Android APK, iOS simulator, iOS physical device, preview, and production, set Expo owner to `thuc.nguyen`, linked EAS project `@thuc.nguyen/lifequest`, added EAS build scripts, and documented native build handoff in `docs/NATIVE_BUILD.md`.
 
 ## 22. First EAS Build Artifact
 
-- Log in to Expo account `thuc.nguyen`
-- Link/create the EAS project with `npm run eas:init`
-- Commit generated `extra.eas.projectId` if added
-- Produce first Android development APK
+- Finish Android development build `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`
 - Install and test native notification/gameplay behavior
 
-Status: Pending
+Status: In Progress
 
 ## Build Rules
 

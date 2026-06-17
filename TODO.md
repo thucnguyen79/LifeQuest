@@ -76,24 +76,24 @@ Task 21 native dev build setup:
 - Added `eas.json` with Android development APK, iOS simulator, iOS device, preview, and production profiles.
 - Added EAS helper scripts for login check, project init, Android dev build, iOS simulator build, and iOS device build.
 - Set Expo owner to `thuc.nguyen` in app config.
+- Linked the app to EAS project `@thuc.nguyen/lifequest`.
+- Set EAS app version source to `remote` to match current EAS CLI guidance.
 - Added `docs/NATIVE_BUILD.md` with new-machine setup, EAS login/init, build commands, and native QA checklist.
-- First cloud build artifact is intentionally pending until Expo login/project linking is completed locally.
+- First Android cloud build was started from EAS after Expo login; artifact completion is pending EAS build result.
 
 Latest checks:
 
 - `npm test` passes.
 - `npm run typecheck` passes.
 - `npx expo-doctor` passes.
-- Native config commands are added; EAS project linking/build artifact still requires Expo login.
+- Native config commands are added and EAS project linking is complete.
 - Web bundle returns `200 OK`.
 
-## Next Task: First EAS Build Artifact
+## Next Task: Finish First EAS Build Artifact
 
 Recommended next steps:
 
-- Run `npx eas-cli login` for Expo account `thuc.nguyen`.
-- Run `npm run eas:init` and commit `extra.eas.projectId` if EAS adds it to `app.json`.
-- Run `npm run build:android:dev` to produce the first Android development APK.
+- Wait for Android development build `7af0ba3f-4cc8-4b65-b7d3-19fce4b9a2df`.
 - Install the APK, run `npm run dev-client`, and test notifications/gameplay from the installed build.
 
 ## Later MVP Tasks
