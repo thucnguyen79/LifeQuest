@@ -35,7 +35,7 @@ export default function SettingsScreen() {
   };
 
   return (
-    <AppScreen canGoBack>
+    <AppScreen backTo="/dashboard" canGoBack>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.eyebrow}>Settings</Text>

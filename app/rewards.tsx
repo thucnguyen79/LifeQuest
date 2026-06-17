@@ -47,7 +47,7 @@ export default function RewardsScreen() {
   }
 
   return (
-    <AppScreen canGoBack>
+    <AppScreen backTo="/dashboard" canGoBack>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.eyebrow}>Rewards</Text>

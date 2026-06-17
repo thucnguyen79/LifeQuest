@@ -59,7 +59,7 @@ export default function HabitsScreen() {
   };
 
   return (
-    <AppScreen canGoBack>
+    <AppScreen backTo="/dashboard" canGoBack>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View style={styles.headerCopy}>
@@ -67,7 +67,7 @@ export default function HabitsScreen() {
             <Text style={styles.title}>Quest sources</Text>
             <Text style={styles.body}>Active habits become daily quests and reminder sources.</Text>
           </View>
-          <Pressable onPress={() => router.push('/habit-form')} style={styles.iconButton}>
+          <Pressable onPress={() => router.replace('/habit-form')} style={styles.iconButton}>
             <GameIcon name="habit" size={34} tone="mint" />
           </Pressable>
         </View>
@@ -78,7 +78,7 @@ export default function HabitsScreen() {
             body="Create one habit to turn real life into daily quests, XP, and pet bond progress."
             title="No quest sources yet"
             visual={<GameIcon name="scroll" size={76} tone="dark" />}
-            onAction={() => router.push('/habit-form')}
+            onAction={() => router.replace('/habit-form')}
           />
         ) : (
           <View style={styles.list}>
@@ -110,7 +110,7 @@ export default function HabitsScreen() {
                 <View style={styles.actions}>
                   <Pressable
                     onPress={() =>
-                      router.push({ pathname: '/habit-form', params: { id: habit.id } })
+                      router.replace({ pathname: '/habit-form', params: { id: habit.id } })
                     }
                     style={styles.secondaryButton}
                   >

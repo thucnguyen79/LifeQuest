@@ -86,7 +86,7 @@ export default function CompanionScreen() {
   const completedQuestCount = dailyQuests.filter((quest) => quest.status === 'completed').length;
 
   return (
-    <AppScreen canGoBack>
+    <AppScreen backTo="/dashboard" canGoBack>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.eyebrow}>Companion</Text>

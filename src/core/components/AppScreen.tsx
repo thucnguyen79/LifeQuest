@@ -16,10 +16,20 @@ import { spacing } from '@/core/theme/spacing';
 type AppScreenProps = {
   children: React.ReactNode;
   canGoBack?: boolean;
+  backTo?: Parameters<typeof router.replace>[0];
   style?: ViewStyle;
 };
 
-export function AppScreen({ children, canGoBack = false, style }: AppScreenProps) {
+export function AppScreen({ children, canGoBack = false, backTo, style }: AppScreenProps) {
+  const goBack = () => {
+    if (backTo) {
+      router.replace(backTo);
+      return;
+    }
+
+    router.back();
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -29,7 +39,7 @@ export function AppScreen({ children, canGoBack = false, style }: AppScreenProps
       >
         <View style={[styles.container, style]}>
           {canGoBack ? (
-            <Pressable onPress={() => router.back()} style={styles.backButton}>
+            <Pressable onPress={goBack} style={styles.backButton}>
               <Text style={styles.backButtonText}>Back</Text>
             </Pressable>
           ) : null}

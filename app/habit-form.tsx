@@ -98,7 +98,7 @@ export default function HabitFormScreen() {
   };
 
   return (
-    <AppScreen canGoBack>
+    <AppScreen backTo="/habits" canGoBack>
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardDismissMode="on-drag"
