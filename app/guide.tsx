@@ -101,7 +101,7 @@ const currentLoop: GuideCard[] = [
     title: 'Use Reward Shop',
   },
   {
-    body: 'Mochi grows through bond XP. Streak and quest completion are the foundation for future pet moods.',
+    body: 'Mochi grows through bond XP. Feed Pet Food from Companion or finish quests to keep care moving.',
     icon: 'petDragon',
     title: 'Grow Your Companion',
   },

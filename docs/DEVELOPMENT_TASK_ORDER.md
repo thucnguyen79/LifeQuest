@@ -321,6 +321,17 @@ Completion note: Added Reward Shop cards in Rewards, Pet Food/Streak Freeze/Ques
 - Show relevant inventory beside pet actions
 - Add one small animation/state change after feeding
 
+Status: Done
+
+Completion note: Added Pet Care controls to the Companion screen, displayed Pet Food inventory and feed effect, wired Feed Mochi to the existing shop item action, added Happy/Hungry/Sleepy/Resting care-state helper and tests, and verified mobile layout.
+
+## 31. Shop Item Effects v1
+
+- Make Quest Reroll affect one pending quest
+- Make Streak Freeze interact with missed-day streak protection
+- Keep each item effect small and testable
+- Surface usable item actions in the relevant screen, not only in Rewards
+
 Status: Pending
 
 ## Build Rules

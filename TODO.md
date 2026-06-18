@@ -130,6 +130,7 @@ Task 26 quest quality v1:
 - Existing daily quests reconcile category metadata from their source habits so old local data does not stay stuck on placeholder categories.
 - Daily Boss v1 is implemented with boss HP from today's quest load, quest progress damage, Adventure Map gate locking, and Boss Chest bonus coins.
 - Reward Shop v1 is implemented with Pet Food, Streak Freeze, and Quest Reroll purchases, local inventory persistence, and Pet Food feeding Mochi for bond XP.
+- Pet Interaction v1 is implemented with Companion-screen feeding controls, Pet Food inventory display, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states.
 
 Latest checks:
 
@@ -140,14 +141,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Pet Interaction v1
+## Next Task: Shop Item Effects v1
 
 Recommended next steps:
 
-- Move pet feeding/action controls into the Companion screen.
-- Add clearer pet hunger/happy/sleepy states.
-- Show item inventory where pet actions are used.
-- Add one small animation/state change after feeding.
+- Make Quest Reroll affect one pending quest.
+- Make Streak Freeze interact with missed-day streak protection.
+- Keep each item effect small and testable.
+- Surface usable item actions in the relevant screen, not only in Rewards.
 
 ## Later MVP Tasks
 

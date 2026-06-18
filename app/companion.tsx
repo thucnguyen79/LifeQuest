@@ -1,9 +1,10 @@
 import { Redirect } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { AppScreen } from '@/core/components/AppScreen';
 import { PetIdleAnimation } from '@/core/components/GameAnimation';
+import { GameBadge } from '@/core/components/GameBadge';
 import { GameIcon } from '@/core/components/GameIcon';
 import type { GameIconName } from '@/core/components/GameIcon';
 import { ProgressBar } from '@/core/components/ProgressBar';
@@ -13,6 +14,8 @@ import {
 } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
+import { getPetCareState } from '@/features/pets/petCare';
+import { petFoodBondXp } from '@/features/shop/shopItems';
 import type { PetGrowthStage, PetMood, PetType } from '@/data/models/pet';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
@@ -72,8 +75,10 @@ const growthCopy: Record<PetGrowthStage, { label: string; next: string }> = {
 export default function CompanionScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const activePet = useLifeQuestStore((state) => state.activePet);
+  const shopInventory = useLifeQuestStore((state) => state.shopInventory);
   const streakSummary = useLifeQuestStore((state) => state.streakSummary);
   const dailyQuests = useLifeQuestStore((state) => state.dailyQuests);
+  const useShopItem = useLifeQuestStore((state) => state.useShopItem);
 
   if (!player) {
     return <Redirect href="/" />;
@@ -84,6 +89,9 @@ export default function CompanionScreen() {
   const petGrowth = growthCopy[activePet.growthStage];
   const currentBondXp = calculatePetCurrentXp(activePet.xp);
   const completedQuestCount = dailyQuests.filter((quest) => quest.status === 'completed').length;
+  const pendingQuestCount = dailyQuests.filter((quest) => quest.status === 'pending').length;
+  const petFoodCount = shopInventory.petFood;
+  const careState = getPetCareState(activePet, petFoodCount, pendingQuestCount);
 
   return (
     <AppScreen backTo="/dashboard" canGoBack>
@@ -118,6 +126,43 @@ export default function CompanionScreen() {
             max={petXpPerLevel}
           />
         </View>
+
+        <Animated.View entering={FadeInDown.delay(80).duration(280)} style={styles.careCard}>
+          <View style={styles.careHeader}>
+            <GameIcon name="petDragon" size={58} tone="mint" />
+            <View style={styles.careCopy}>
+              <View style={styles.careTitleRow}>
+                <Text style={styles.careTitle}>Pet Care</Text>
+                <GameBadge label={careState.label} tone={careState.tone} />
+              </View>
+              <Text style={styles.careBody}>{careState.body}</Text>
+            </View>
+          </View>
+          <View style={styles.inventoryRow}>
+            <View style={styles.inventoryPill}>
+              <Text style={styles.inventoryLabel}>Pet Food</Text>
+              <Text style={styles.inventoryValue}>{petFoodCount}</Text>
+            </View>
+            <View style={styles.inventoryPill}>
+              <Text style={styles.inventoryLabel}>Feed Effect</Text>
+              <Text style={styles.inventoryValue}>+{petFoodBondXp} XP</Text>
+            </View>
+          </View>
+          <Pressable
+            disabled={petFoodCount <= 0}
+            onPress={() => useShopItem('petFood')}
+            style={[styles.feedButton, petFoodCount <= 0 ? styles.feedButtonDisabled : null]}
+          >
+            <Text
+              style={[
+                styles.feedButtonText,
+                petFoodCount <= 0 ? styles.feedButtonTextDisabled : null,
+              ]}
+            >
+              {petFoodCount > 0 ? 'Feed Mochi' : 'Buy Pet Food in Rewards'}
+            </Text>
+          </Pressable>
+        </Animated.View>
 
         <View style={styles.grid}>
           <StatusCard
@@ -304,6 +349,84 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: spacing.md,
     padding: spacing.lg,
+  },
+  careCard: {
+    backgroundColor: colors.panel,
+    borderColor: colors.gold,
+    borderLeftWidth: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  careHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  careCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  careTitleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+  },
+  careTitle: {
+    color: colors.ink,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  careBody: {
+    color: colors.muted,
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 4,
+  },
+  inventoryRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  inventoryPill: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 58,
+    padding: spacing.sm,
+  },
+  inventoryLabel: {
+    color: colors.accent,
+    fontSize: 11,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  inventoryValue: {
+    color: colors.ink,
+    fontSize: 18,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  feedButton: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    justifyContent: 'center',
+    minHeight: 46,
+  },
+  feedButtonDisabled: {
+    backgroundColor: colors.border,
+  },
+  feedButtonText: {
+    color: colors.surface,
+    fontSize: 15,
+    fontWeight: '900',
+  },
+  feedButtonTextDisabled: {
+    color: colors.muted,
   },
   sectionHeader: {
     alignItems: 'baseline',

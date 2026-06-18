@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Tasks 1-29 are implemented through Reward Shop v1.
+Tasks 1-30 are implemented through Pet Interaction v1.
 
 Implemented:
 
@@ -53,6 +53,7 @@ Implemented:
 - Adventure Map Scout/Trial/Gate/Boss node layers and Matched/Base/Bonus progress stats
 - Daily Boss HP, quest damage, Adventure Map boss gate, and Boss Chest bonus coins
 - Reward Shop with Pet Food, Streak Freeze, Quest Reroll, local inventory, and Pet Food bond XP effect
+- Companion-screen Pet Care controls with Pet Food inventory, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -124,4 +125,4 @@ Notes:
 
 ## Recommended Next Task
 
-Continue with Pet Interaction v1: feeding controls on the Companion screen, clearer pet mood states, and inventory-driven pet actions. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue with Shop Item Effects v1: make Quest Reroll and Streak Freeze affect gameplay in small, testable ways. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
