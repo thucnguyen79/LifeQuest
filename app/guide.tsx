@@ -81,6 +81,11 @@ const currentLoop: GuideCard[] = [
     title: 'Clear Daily Quests',
   },
   {
+    body: 'Choose a daily zone. Quest progress clears map nodes and unlocks the next reward layer.',
+    icon: 'compass',
+    title: 'Advance The Map',
+  },
+  {
     body: 'Clear all quests to unlock the Daily Chest. Claim it from Rewards for bonus coins.',
     icon: 'chest',
     title: 'Claim Rewards',
@@ -97,11 +102,6 @@ const comingSystems: GuideCard[] = [
     body: 'Coins will buy pet food, skins, class badges, profile frames, streak freezes, and quest rerolls.',
     icon: 'coin',
     title: 'Reward Shop',
-  },
-  {
-    body: 'Choose a zone each day, clear map nodes with quests, and unlock better chest outcomes.',
-    icon: 'compass',
-    title: 'Adventure Map',
   },
   {
     body: 'Each class gains passive advantages and later skill points from level-ups.',
@@ -142,13 +142,13 @@ export default function GuideScreen() {
           <View style={styles.heroCopy}>
             <Text style={styles.heroTitle}>Core Loop</Text>
             <Text style={styles.heroBody}>
-              Pick a class, create habit sources, finish today&apos;s quests, claim rewards, and
+              Pick a class, create habit sources, finish today's quests, claim rewards, and
               return tomorrow stronger.
             </Text>
           </View>
         </GamePanel>
 
-        <SectionTitle badge="MVP" title="Today&apos;s Gameplay" />
+        <SectionTitle badge="MVP" title="Today's Gameplay" />
         <View style={styles.grid}>
           {currentLoop.map((item) => (
             <GuideInfoCard key={item.title} item={item} />

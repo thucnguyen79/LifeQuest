@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const databaseName = 'lifequest.db';
-const schemaVersion = 2;
+const schemaVersion = 3;
 
 let database: SQLite.SQLiteDatabase | null = null;
 let initialized = false;
@@ -101,6 +101,15 @@ export function initializeLocalDatabase() {
       xp INTEGER NOT NULL,
       mood TEXT NOT NULL,
       growth_stage TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS daily_adventures (
+      date TEXT PRIMARY KEY NOT NULL,
+      zone_id TEXT NOT NULL,
+      node_progress INTEGER NOT NULL,
+      node_target INTEGER NOT NULL,
+      cleared INTEGER NOT NULL,
+      updated_at TEXT NOT NULL
     );
   `);
 

@@ -7,6 +7,7 @@ export function resetLocalData() {
     DELETE FROM pets;
     DELETE FROM streaks;
     DELETE FROM quests;
+    DELETE FROM daily_adventures;
     DELETE FROM habits;
     DELETE FROM players;
     DELETE FROM app_metadata WHERE key = 'streak_summary';

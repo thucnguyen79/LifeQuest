@@ -123,6 +123,9 @@ Task 26 quest quality v1:
 - Quest action now increments progress first; rewards are granted only when target progress is reached.
 - Habit form and habit list expose the new quality fields.
 - Added focused tests for progress-only quest advancement and quest metadata generation.
+- Adventure Map v1 is implemented with daily zone selection, persisted zone state, and quest progress converted into map node progress.
+- Dashboard now shows the active daily zone, node progress, route cleared state, and zone selector chips.
+- Added SQLite/localStorage repositories for daily adventure state and focused tests for default zone/progress rules.
 
 Latest checks:
 
@@ -133,13 +136,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Adventure Map v1
+## Next Task: Daily Boss v1
 
 Recommended next steps:
 
-- Let the player choose a daily zone.
-- Convert quest completion/progress into map node clearing.
-- Connect zones to class/stat identity before adding Daily Boss.
+- Add one daily boss with HP derived from today's quest load.
+- Convert quest progress/completion into boss damage.
+- Let cleared Adventure Map nodes unlock the boss/reward layer.
+- Upgrade daily chest copy/reward tier when the boss is defeated.
 
 ## Later MVP Tasks
 

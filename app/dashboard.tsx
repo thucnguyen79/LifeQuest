@@ -11,6 +11,7 @@ import { GameIcon } from '@/core/components/GameIcon';
 import type { GameIconName } from '@/core/components/GameIcon';
 import { ProgressBar } from '@/core/components/ProgressBar';
 import { StatPill } from '@/core/components/StatPill';
+import { adventureZoneList, getAdventureZone } from '@/core/constants/adventureZones';
 import { characterClasses } from '@/core/constants/gameRules';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
@@ -40,9 +41,11 @@ export default function DashboardScreen() {
   const activePet = useLifeQuestStore((state) => state.activePet);
   const streakSummary = useLifeQuestStore((state) => state.streakSummary);
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
+  const dailyAdventure = useLifeQuestStore((state) => state.dailyAdventure);
   const rewardFeedback = useLifeQuestStore((state) => state.rewardFeedback);
   const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const completeQuest = useLifeQuestStore((state) => state.completeQuest);
+  const selectDailyAdventureZone = useLifeQuestStore((state) => state.selectDailyAdventureZone);
   const dismissRewardFeedback = useLifeQuestStore((state) => state.dismissRewardFeedback);
 
   useFocusEffect(
@@ -62,6 +65,8 @@ export default function DashboardScreen() {
   const totalQuestCount = dailyQuests.length;
   const allQuestsDone = totalQuestCount > 0 && completedQuestCount === totalQuestCount;
   const showLevelUpModal = rewardFeedback?.type === 'levelUp';
+  const activeZone = getAdventureZone(dailyAdventure.zoneId);
+  const mapNodesRemaining = Math.max(dailyAdventure.nodeTarget - dailyAdventure.nodeProgress, 0);
 
   return (
     <AppScreen>
@@ -104,7 +109,7 @@ export default function DashboardScreen() {
             </View>
             <View style={styles.avatarInfo}>
               <Text style={styles.className}>{playerClass.name}</Text>
-              <Text style={styles.classCopy}>Character growth powered by today&apos;s quests.</Text>
+              <Text style={styles.classCopy}>Character growth powered by today's quests.</Text>
               <Text style={styles.classPassive}>
                 {classSkill.name}: {classSkill.activeEffect}
               </Text>
@@ -269,7 +274,56 @@ export default function DashboardScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Adventure Map</Text>
-          <GameBadge label="Travel" tone="muted" />
+          <GameBadge label={dailyAdventure.cleared ? 'Route cleared' : 'Daily zone'} tone="gold" />
+        </View>
+        <View style={styles.zonePanel}>
+          <View style={styles.zoneHeader}>
+            <GameIcon name={activeZone.icon} size={64} tone={activeZone.tone} />
+            <View style={styles.zoneCopy}>
+              <Text style={styles.zoneEyebrow}>{activeZone.mapTheme}</Text>
+              <Text style={styles.zoneTitle}>{activeZone.name}</Text>
+              <Text style={styles.zoneBody}>{activeZone.description}</Text>
+            </View>
+          </View>
+          <View style={styles.zoneProgressPanel}>
+            <ProgressBar
+              current={dailyAdventure.nodeProgress}
+              label={`${dailyAdventure.nodeProgress}/${dailyAdventure.nodeTarget} map nodes cleared`}
+              max={dailyAdventure.nodeTarget}
+            />
+            <Text style={styles.zoneHint}>
+              {dailyAdventure.cleared
+                ? 'Boss layer unlocked for the next gameplay task.'
+                : `${mapNodesRemaining} node${mapNodesRemaining === 1 ? '' : 's'} until the reward layer unlocks.`}
+            </Text>
+          </View>
+          <View style={styles.zoneGrid}>
+            {adventureZoneList.map((zone) => {
+              const selected = zone.id === dailyAdventure.zoneId;
+
+              return (
+                <Pressable
+                  key={zone.id}
+                  onPress={() => selectDailyAdventureZone(zone.id)}
+                  style={[styles.zoneChip, selected ? styles.zoneChipSelected : null]}
+                >
+                  <GameIcon name={zone.icon} size={36} tone={selected ? zone.tone : 'plain'} />
+                  <Text
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                    style={[styles.zoneChipText, selected ? styles.zoneChipTextSelected : null]}
+                  >
+                    {zone.shortName}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Travel Routes</Text>
+          <GameBadge label="Shortcuts" tone="muted" />
         </View>
         <View style={styles.mapPanel}>
           <View style={styles.mapPath} />
@@ -682,6 +736,84 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     marginTop: 2,
+  },
+  zonePanel: {
+    backgroundColor: colors.panelDeep,
+    borderColor: colors.accent,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  zoneHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  zoneCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  zoneEyebrow: {
+    color: colors.gold,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  zoneTitle: {
+    color: colors.surface,
+    fontSize: 22,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  zoneBody: {
+    color: colors.goldSoft,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  zoneProgressPanel: {
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  zoneHint: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '800',
+    lineHeight: 17,
+  },
+  zoneGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  zoneChip: {
+    alignItems: 'center',
+    backgroundColor: '#17362E',
+    borderColor: '#285A4E',
+    borderRadius: 8,
+    borderWidth: 1,
+    flexBasis: '30%',
+    flexDirection: 'row',
+    flexGrow: 1,
+    gap: spacing.xs,
+    minHeight: 54,
+    padding: spacing.sm,
+  },
+  zoneChipSelected: {
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+  },
+  zoneChipText: {
+    color: colors.surface,
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  zoneChipTextSelected: {
+    color: colors.ink,
   },
   mapPanel: {
     backgroundColor: colors.panel,

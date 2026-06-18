@@ -48,7 +48,7 @@
     "build:ios:sim": "npx eas-cli build --platform ios --profile development",
     "build:ios:device": "npx eas-cli build --platform ios --profile development-device",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "node --experimental-require-module ./node_modules/vitest/vitest.mjs run"
   },
   "private": true
 }

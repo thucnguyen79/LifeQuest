@@ -3,13 +3,20 @@ import { create } from 'zustand';
 import { calculatePetGrowthStage, calculatePetLevel } from '@/core/constants/gameRules';
 import { playerRepository } from '@/data/repositories/playerRepository';
 import { dailyChestRepository } from '@/data/repositories/dailyChestRepository';
+import { dailyAdventureRepository } from '@/data/repositories/dailyAdventureRepository';
 import { petRepository } from '@/data/repositories/petRepository';
 import { streakSummaryRepository } from '@/data/repositories/streakSummaryRepository';
+import type { AdventureZoneId, DailyAdventure } from '@/data/models/adventure';
 import type { Pet } from '@/data/models/pet';
 import type { ReminderPermissionStatus } from '@/features/notifications/habitReminders';
 import { syncHabitReminderNotifications } from '@/features/notifications/habitReminders';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
+import {
+  createDailyAdventure,
+  getDefaultAdventureZone,
+  syncDailyAdventureProgress,
+} from '@/features/adventure/dailyAdventure';
 import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
 import { getTodayDateKey } from '@/features/quests/dateUtils';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
@@ -42,6 +49,7 @@ type LifeQuestState = {
   player: Player | null;
   activePet: Pet;
   streakSummary: StreakSummary;
+  dailyAdventure: DailyAdventure;
   dailyChest: DailyChestState;
   rewardFeedback: RewardFeedback | null;
   draftPlayerName: string;
@@ -49,6 +57,7 @@ type LifeQuestState = {
   hydrateFromLocal: () => void;
   generateTodayQuests: () => void;
   completeQuest: (questId: string) => void;
+  selectDailyAdventureZone: (zoneId: AdventureZoneId) => void;
   claimDailyChest: () => void;
   dismissRewardFeedback: () => void;
   setDraftPlayerName: (name: string) => void;
@@ -77,6 +86,29 @@ function createDailyChestState(
   return getDailyChestState(date, quests, dailyChestRepository.get(), player);
 }
 
+function createInitialDailyAdventureState() {
+  return createDailyAdventure(getTodayDateKey(), 'explorerTrail');
+}
+
+function createDailyAdventureState(
+  quests: Quest[] = [],
+  date = getTodayDateKey(),
+  player?: Player | null,
+  zoneId?: AdventureZoneId,
+) {
+  const savedAdventure = dailyAdventureRepository.getByDate(date);
+  const baseAdventure =
+    savedAdventure ??
+    createDailyAdventure(date, zoneId ?? getDefaultAdventureZone(player), quests);
+  const dailyAdventure = syncDailyAdventureProgress(
+    zoneId ? { ...baseAdventure, zoneId } : baseAdventure,
+    quests,
+  );
+
+  dailyAdventureRepository.upsert(dailyAdventure);
+  return dailyAdventure;
+}
+
 export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   isHydrated: false,
   notificationsEnabled: false,
@@ -91,6 +123,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     currentStreak: 0,
     longestStreak: 0,
   },
+  dailyAdventure: createInitialDailyAdventureState(),
   dailyChest: createDailyChestState(),
   rewardFeedback: null,
   draftPlayerName: '',
@@ -100,9 +133,11 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     const activePet = petRepository.getActive() ?? initialPet;
     const streakSummary = streakSummaryRepository.get();
     const dailyQuests = generateDailyQuests();
+    const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), player);
 
     set({
       activePet,
+      dailyAdventure,
       dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), player),
       dailyQuests,
       isHydrated: true,
@@ -113,6 +148,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   generateTodayQuests: () => {
     const dailyQuests = generateDailyQuests();
     set((state) => ({
+      dailyAdventure: createDailyAdventureState(dailyQuests, getTodayDateKey(), state.player),
       dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player),
       dailyQuests,
     }));
@@ -133,6 +169,11 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         const dailyQuests = generateDailyQuests();
 
         return {
+          dailyAdventure: createDailyAdventureState(
+            dailyQuests,
+            getTodayDateKey(),
+            state.player,
+          ),
           dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player),
           dailyQuests,
         };
@@ -155,6 +196,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
 
       return {
         player: result.player,
+        dailyAdventure: createDailyAdventureState(dailyQuests, getTodayDateKey(), result.player),
         dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), result.player),
         dailyQuests,
         streakSummary: nextStreakSummary,
@@ -175,6 +217,16 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         },
       };
     });
+  },
+  selectDailyAdventureZone: (zoneId: AdventureZoneId) => {
+    set((state) => ({
+      dailyAdventure: createDailyAdventureState(
+        state.dailyQuests,
+        getTodayDateKey(),
+        state.player,
+        zoneId,
+      ),
+    }));
   },
   claimDailyChest: () => {
     set((state) => {
@@ -218,12 +270,14 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     playerRepository.upsert(player);
     petRepository.upsert(initialPet);
     dailyChestRepository.reset();
+    dailyAdventureRepository.reset();
     streakSummaryRepository.upsert({
       currentStreak: 0,
       longestStreak: 0,
     });
     set({
       activePet: initialPet,
+      dailyAdventure: createDailyAdventureState([], getTodayDateKey(), player),
       dailyChest: createDailyChestState([], getTodayDateKey(), player),
       draftPlayerName: '',
       player,
@@ -278,6 +332,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       soundEnabled: true,
       player: null,
       activePet: initialPet,
+      dailyAdventure: createInitialDailyAdventureState(),
       dailyChest: createDailyChestState(),
       streakSummary: {
         currentStreak: 0,

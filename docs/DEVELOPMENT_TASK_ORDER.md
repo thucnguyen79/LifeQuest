@@ -288,6 +288,17 @@ Completion note: Added habit/quest quality metadata, SQLite v2 migrations, web l
 - Clear enough nodes to unlock the next reward/boss layer
 - Show daily zone state on Dashboard
 
+Status: Done
+
+Completion note: Added persisted daily adventure state for SQLite and web localStorage, default zone by player class, Dashboard daily zone selector, map node progress from quest progress/completion, route cleared state, reset handling, and focused tests.
+
+## 28. Daily Boss v1
+
+- Add one daily boss with HP based on today's quest load
+- Convert quest progress/completion into boss damage
+- Use Adventure Map route-cleared state to unlock the boss/reward layer
+- Defeating the boss should improve daily reward/chest presentation
+
 Status: Pending
 
 ## Build Rules
