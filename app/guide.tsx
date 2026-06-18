@@ -86,7 +86,12 @@ const currentLoop: GuideCard[] = [
     title: 'Advance The Map',
   },
   {
-    body: 'Clear all quests to unlock the Daily Chest. Claim it from Rewards for bonus coins.',
+    body: 'Clear the route to open the boss gate. Quest progress damages the daily boss.',
+    icon: 'flame',
+    title: 'Defeat Daily Boss',
+  },
+  {
+    body: 'Clear quests to unlock the chest. Defeat the boss first to upgrade it into a Boss Chest.',
     icon: 'chest',
     title: 'Claim Rewards',
   },
@@ -107,11 +112,6 @@ const comingSystems: GuideCard[] = [
     body: 'Each class gains passive advantages and later skill points from level-ups.',
     icon: 'shield',
     title: 'Class Skills',
-  },
-  {
-    body: 'Quest completion will damage a daily boss. Defeating it upgrades the chest tier.',
-    icon: 'flame',
-    title: 'Daily Boss',
   },
   {
     body: 'Chests will roll Common, Rare, or Epic rewards. Streaks and class bonuses improve odds.',

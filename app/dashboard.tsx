@@ -56,6 +56,7 @@ export default function DashboardScreen() {
   const streakSummary = useLifeQuestStore((state) => state.streakSummary);
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
   const dailyAdventure = useLifeQuestStore((state) => state.dailyAdventure);
+  const dailyBoss = useLifeQuestStore((state) => state.dailyBoss);
   const rewardFeedback = useLifeQuestStore((state) => state.rewardFeedback);
   const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const completeQuest = useLifeQuestStore((state) => state.completeQuest);
@@ -86,6 +87,12 @@ export default function DashboardScreen() {
     dailyAdventure.zoneId,
   );
   const mapNodesRemaining = Math.max(dailyAdventure.nodeTarget - dailyAdventure.nodeProgress, 0);
+  const bossBadgeLabel =
+    dailyBoss.status === 'defeated'
+      ? 'Defeated'
+      : dailyBoss.status === 'active'
+        ? 'In battle'
+        : 'Locked';
 
   return (
     <AppScreen>
@@ -314,7 +321,7 @@ export default function DashboardScreen() {
             />
             <Text style={styles.zoneHint}>
               {dailyAdventure.cleared
-                ? 'Boss gate is open. Task 28 will turn this into a daily boss fight.'
+                ? `${dailyBoss.name} is waiting at the boss gate.`
                 : `${mapNodesRemaining} node${mapNodesRemaining === 1 ? '' : 's'} until the boss gate opens.`}
             </Text>
             <View style={styles.zoneStatRow}>
@@ -387,6 +394,48 @@ export default function DashboardScreen() {
         </View>
 
         <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Daily Boss</Text>
+          <GameBadge
+            label={bossBadgeLabel}
+            tone={dailyBoss.status === 'defeated' ? 'gold' : dailyBoss.status === 'active' ? 'accent' : 'muted'}
+          />
+        </View>
+        <View
+          style={[
+            styles.bossPanel,
+            dailyBoss.status === 'defeated' ? styles.bossPanelDefeated : null,
+          ]}
+        >
+          <GameIcon
+            name={dailyBoss.status === 'defeated' ? 'chest' : 'flame'}
+            size={64}
+            tone={dailyBoss.status === 'defeated' ? 'gold' : dailyBoss.status === 'active' ? 'mint' : 'plain'}
+          />
+          <View style={styles.bossCopy}>
+            <Text style={styles.bossEyebrow}>{activeZone.shortName} encounter</Text>
+            <Text style={styles.bossTitle}>{dailyBoss.name}</Text>
+            <Text style={styles.bossBody}>
+              {dailyBoss.status === 'locked'
+                ? 'Clear the Adventure Map route to open the boss gate.'
+                : dailyBoss.status === 'defeated'
+                  ? `Defeated. Boss Chest bonus unlocked: +${dailyBoss.chestBonusCoins} coins.`
+                  : 'Quest progress deals damage. Complete every target to finish the fight.'}
+            </Text>
+            <View style={styles.bossProgress}>
+              <ProgressBar
+                current={dailyBoss.damage}
+                label={
+                  dailyBoss.maxHp > 0
+                    ? `${dailyBoss.damage}/${dailyBoss.maxHp} damage / ${dailyBoss.currentHp} HP left`
+                    : 'Create quests to summon a daily boss'
+                }
+                max={dailyBoss.maxHp}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Travel Routes</Text>
           <GameBadge label="Shortcuts" tone="muted" />
         </View>
@@ -410,10 +459,14 @@ export default function DashboardScreen() {
         <Pressable onPress={() => router.push('/rewards')} style={styles.chestPanel}>
           <GameIcon name="chest" size={52} tone={dailyChest.status === 'available' ? 'gold' : 'sky'} />
           <View style={styles.chestCopy}>
-            <Text style={styles.chestTitle}>Daily Chest</Text>
+            <Text style={styles.chestTitle}>
+              {dailyChest.tier === 'boss' ? 'Boss Chest' : 'Daily Chest'}
+            </Text>
             <Text style={styles.chestBody}>
               {dailyChest.status === 'available'
-                ? `Ready to claim +${dailyChest.coinReward} coins`
+                ? dailyChest.tier === 'boss'
+                  ? `Ready to claim +${dailyChest.coinReward} coins, including +${dailyChest.bossBonusCoins} boss bonus`
+                  : `Ready to claim +${dailyChest.coinReward} coins`
                 : dailyChest.status === 'claimed'
                   ? 'Claimed for today'
                   : `${dailyChest.completedQuestCount}/${dailyChest.totalQuestCount} quests cleared`}
@@ -801,6 +854,47 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     marginTop: 2,
+  },
+  bossPanel: {
+    alignItems: 'center',
+    backgroundColor: colors.panelDeep,
+    borderColor: colors.accent,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  bossPanelDefeated: {
+    borderColor: colors.gold,
+  },
+  bossCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  bossEyebrow: {
+    color: colors.gold,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  bossTitle: {
+    color: colors.surface,
+    fontSize: 20,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  bossBody: {
+    color: colors.goldSoft,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  bossProgress: {
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    marginTop: spacing.sm,
+    padding: spacing.sm,
   },
   zonePanel: {
     backgroundColor: colors.panelDeep,

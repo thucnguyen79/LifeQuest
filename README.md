@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Tasks 1-27 are implemented through Adventure Map v1.
+Tasks 1-28 are implemented through Daily Boss v1.
 
 Implemented:
 
@@ -51,6 +51,7 @@ Implemented:
 - Adventure Map daily zone selection with Forest of Focus, Scholar Library, Strength Arena, Calm Temple, and Explorer Trail
 - Map node progress generated from quest progress and completion, with zone focus bonuses for matching quest categories
 - Adventure Map Scout/Trial/Gate/Boss node layers and Matched/Base/Bonus progress stats
+- Daily Boss HP, quest damage, Adventure Map boss gate, and Boss Chest bonus coins
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview
@@ -122,4 +123,4 @@ Notes:
 
 ## Recommended Next Task
 
-Continue with Daily Boss v1: boss HP, quest damage, and chest/reward upgrade hooks tied to Adventure Map progress. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue with Reward Shop v1: coin shop items, local inventory, and one small gameplay effect. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

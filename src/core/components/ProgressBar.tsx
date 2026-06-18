@@ -10,7 +10,7 @@ type ProgressBarProps = {
 };
 
 export function ProgressBar({ current, max, label }: ProgressBarProps) {
-  const progress = Math.min(Math.max(current / max, 0), 1);
+  const progress = max <= 0 ? 0 : Math.min(Math.max(current / max, 0), 1);
 
   return (
     <View style={styles.wrapper}>

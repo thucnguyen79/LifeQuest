@@ -299,6 +299,17 @@ Completion note: Added persisted daily adventure state for SQLite and web localS
 - Use Adventure Map route-cleared state to unlock the boss/reward layer
 - Defeating the boss should improve daily reward/chest presentation
 
+Status: Done
+
+Completion note: Added derived Daily Boss state, boss HP based on quest target load, quest progress/completion damage, Adventure Map gate locking, Dashboard boss panel, Rewards Boss Chest copy, and boss chest bonus coins when the boss is defeated.
+
+## 29. Reward Shop v1
+
+- Add a small coin shop in Rewards
+- Start with streak freeze, pet food, and quest reroll placeholder items
+- Persist purchased inventory locally
+- Make at least one item affect gameplay in a small, testable way
+
 Status: Pending
 
 ## Build Rules

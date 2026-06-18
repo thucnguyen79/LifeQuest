@@ -16,7 +16,7 @@ const rewardTracks = [
     icon: 'chest',
     title: 'Daily Chest',
     status: 'Live',
-    body: 'Clear every quest today to unlock a one-time coin chest.',
+    body: 'Clear every quest today to unlock the chest. Defeat the boss first to upgrade its coin reward.',
   },
   {
     icon: 'shield',
@@ -40,6 +40,7 @@ const rewardTracks = [
 export default function RewardsScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
+  const dailyBoss = useLifeQuestStore((state) => state.dailyBoss);
   const claimDailyChest = useLifeQuestStore((state) => state.claimDailyChest);
 
   if (!player) {
@@ -71,10 +72,14 @@ export default function RewardsScreen() {
               tone={dailyChest.status === 'available' ? 'gold' : 'sky'}
             />
             <View style={styles.claimCopy}>
-              <Text style={styles.claimTitle}>Daily Chest</Text>
+              <Text style={styles.claimTitle}>
+                {dailyChest.tier === 'boss' ? 'Boss Chest' : 'Daily Chest'}
+              </Text>
               <Text style={styles.claimBody}>
                 {dailyChest.status === 'available'
-                  ? `Unlocked. Claim +${dailyChest.coinReward} coins.`
+                  ? dailyChest.tier === 'boss'
+                    ? `${dailyBoss.name} defeated. Claim +${dailyChest.coinReward} coins, including +${dailyChest.bossBonusCoins} boss bonus.`
+                    : `Unlocked. Claim +${dailyChest.coinReward} coins.`
                   : dailyChest.status === 'claimed'
                     ? 'Claimed for today. Come back after tomorrow quests.'
                     : `Clear ${dailyChest.totalQuestCount - dailyChest.completedQuestCount} more quest(s) today.`}

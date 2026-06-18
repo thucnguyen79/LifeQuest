@@ -128,6 +128,7 @@ Task 26 quest quality v1:
 - Added SQLite/localStorage repositories for daily adventure state and focused tests for default zone/progress rules.
 - Adventure Map v1.1 adds quest category badges, zone focus bonuses, Matched/Base/Bonus progress stats, and Scout/Trial/Gate/Boss node layers.
 - Existing daily quests reconcile category metadata from their source habits so old local data does not stay stuck on placeholder categories.
+- Daily Boss v1 is implemented with boss HP from today's quest load, quest progress damage, Adventure Map gate locking, and Boss Chest bonus coins.
 
 Latest checks:
 
@@ -138,14 +139,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Daily Boss v1
+## Next Task: Reward Shop v1
 
 Recommended next steps:
 
-- Add one daily boss with HP derived from today's quest load.
-- Convert quest progress/completion into boss damage.
-- Let cleared Adventure Map nodes unlock the boss/reward layer.
-- Upgrade daily chest copy/reward tier when the boss is defeated.
+- Add a small coin shop in Rewards.
+- Start with streak freeze, pet food, and quest reroll placeholders.
+- Persist purchased inventory locally.
+- Make at least one item affect gameplay in a small, testable way.
 
 ## Later MVP Tasks
 

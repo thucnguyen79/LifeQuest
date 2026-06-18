@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { Player } from '@/data/models/player';
 import type { Quest } from '@/data/models/quest';
+import type { DailyBossState } from '@/features/boss/dailyBoss';
 
 import { dailyChestCoinReward, getDailyChestState } from './dailyChest';
 
@@ -42,6 +43,20 @@ function createPlayer(selectedClass: Player['selectedClass']): Player {
   };
 }
 
+function createBoss(overrides: Partial<DailyBossState> = {}): DailyBossState {
+  return {
+    chestBonusCoins: 10,
+    currentHp: 0,
+    damage: 20,
+    date: '2026-06-16',
+    maxHp: 20,
+    name: 'Forest Warden',
+    status: 'defeated',
+    zoneName: 'Forest of Focus',
+    ...overrides,
+  };
+}
+
 describe('getDailyChestState', () => {
   it('locks until every quest for the day is completed', () => {
     expect(
@@ -51,10 +66,13 @@ describe('getDailyChestState', () => {
         {},
       ),
     ).toEqual({
+      bossBonusCoins: 0,
+      bossDefeated: false,
       coinReward: dailyChestCoinReward,
       completedQuestCount: 1,
       date: '2026-06-16',
       status: 'locked',
+      tier: 'daily',
       totalQuestCount: 2,
     });
   });
@@ -99,5 +117,22 @@ describe('getDailyChestState', () => {
         createPlayer('warrior'),
       ).coinReward,
     ).toBe(dailyChestCoinReward);
+  });
+
+  it('upgrades to a boss chest when the daily boss is defeated', () => {
+    const chest = getDailyChestState(
+      '2026-06-16',
+      [createQuest('completed')],
+      {},
+      createPlayer('warrior'),
+      createBoss(),
+    );
+
+    expect(chest).toMatchObject({
+      bossBonusCoins: 10,
+      bossDefeated: true,
+      coinReward: dailyChestCoinReward + 10,
+      tier: 'boss',
+    });
   });
 });

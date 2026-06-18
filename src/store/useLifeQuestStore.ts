@@ -17,6 +17,8 @@ import {
   getDefaultAdventureZone,
   syncDailyAdventureProgress,
 } from '@/features/adventure/dailyAdventure';
+import { getDailyBossState } from '@/features/boss/dailyBoss';
+import type { DailyBossState } from '@/features/boss/dailyBoss';
 import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
 import { getTodayDateKey } from '@/features/quests/dateUtils';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
@@ -50,6 +52,7 @@ type LifeQuestState = {
   activePet: Pet;
   streakSummary: StreakSummary;
   dailyAdventure: DailyAdventure;
+  dailyBoss: DailyBossState;
   dailyChest: DailyChestState;
   rewardFeedback: RewardFeedback | null;
   draftPlayerName: string;
@@ -82,8 +85,9 @@ function createDailyChestState(
   quests: Quest[] = [],
   date = getTodayDateKey(),
   player?: Player | null,
+  boss?: DailyBossState,
 ) {
-  return getDailyChestState(date, quests, dailyChestRepository.get(), player);
+  return getDailyChestState(date, quests, dailyChestRepository.get(), player, boss);
 }
 
 function createInitialDailyAdventureState() {
@@ -109,6 +113,14 @@ function createDailyAdventureState(
   return dailyAdventure;
 }
 
+function createDailyBossState(
+  quests: Quest[] = [],
+  date = getTodayDateKey(),
+  adventure = createInitialDailyAdventureState(),
+) {
+  return getDailyBossState(date, quests, adventure);
+}
+
 export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   isHydrated: false,
   notificationsEnabled: false,
@@ -124,6 +136,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     longestStreak: 0,
   },
   dailyAdventure: createInitialDailyAdventureState(),
+  dailyBoss: createDailyBossState(),
   dailyChest: createDailyChestState(),
   rewardFeedback: null,
   draftPlayerName: '',
@@ -134,11 +147,13 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     const streakSummary = streakSummaryRepository.get();
     const dailyQuests = generateDailyQuests();
     const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), player);
+    const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
 
     set({
       activePet,
       dailyAdventure,
-      dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), player),
+      dailyBoss,
+      dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), player, dailyBoss),
       dailyQuests,
       isHydrated: true,
       player,
@@ -147,11 +162,17 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   },
   generateTodayQuests: () => {
     const dailyQuests = generateDailyQuests();
-    set((state) => ({
-      dailyAdventure: createDailyAdventureState(dailyQuests, getTodayDateKey(), state.player),
-      dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player),
-      dailyQuests,
-    }));
+    set((state) => {
+      const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), state.player);
+      const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
+
+      return {
+        dailyAdventure,
+        dailyBoss,
+        dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player, dailyBoss),
+        dailyQuests,
+      };
+    });
   },
   completeQuest: (questId: string) => {
     set((state) => {
@@ -167,14 +188,17 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
 
       if (!result.completed) {
         const dailyQuests = generateDailyQuests();
+        const dailyAdventure = createDailyAdventureState(
+          dailyQuests,
+          getTodayDateKey(),
+          state.player,
+        );
+        const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
 
         return {
-          dailyAdventure: createDailyAdventureState(
-            dailyQuests,
-            getTodayDateKey(),
-            state.player,
-          ),
-          dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player),
+          dailyAdventure,
+          dailyBoss,
+          dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player, dailyBoss),
           dailyQuests,
         };
       }
@@ -190,14 +214,17 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       };
       const nextStreakSummary = streakResult.summary;
       const dailyQuests = generateDailyQuests();
+      const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), result.player);
+      const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
 
       petRepository.upsert(nextPet);
       streakSummaryRepository.upsert(nextStreakSummary);
 
       return {
         player: result.player,
-        dailyAdventure: createDailyAdventureState(dailyQuests, getTodayDateKey(), result.player),
-        dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), result.player),
+        dailyAdventure,
+        dailyBoss,
+        dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), result.player, dailyBoss),
         dailyQuests,
         streakSummary: nextStreakSummary,
         activePet: nextPet,
@@ -219,14 +246,26 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     });
   },
   selectDailyAdventureZone: (zoneId: AdventureZoneId) => {
-    set((state) => ({
-      dailyAdventure: createDailyAdventureState(
+    set((state) => {
+      const dailyAdventure = createDailyAdventureState(
         state.dailyQuests,
         getTodayDateKey(),
         state.player,
         zoneId,
-      ),
-    }));
+      );
+      const dailyBoss = createDailyBossState(state.dailyQuests, getTodayDateKey(), dailyAdventure);
+
+      return {
+        dailyAdventure,
+        dailyBoss,
+        dailyChest: createDailyChestState(
+          state.dailyQuests,
+          getTodayDateKey(),
+          state.player,
+          dailyBoss,
+        ),
+      };
+    });
   },
   claimDailyChest: () => {
     set((state) => {
@@ -245,6 +284,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         state.dailyQuests,
         state.dailyChest.date,
         nextPlayer,
+        state.dailyBoss,
       );
 
       playerRepository.upsert(nextPlayer);
@@ -256,7 +296,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
           coinsGained: state.dailyChest.coinReward,
           id: `daily-chest-${state.dailyChest.date}`,
           leveledUp: false,
-          title: 'Daily Chest Claimed',
+          title: state.dailyChest.tier === 'boss' ? 'Boss Chest Claimed' : 'Daily Chest Claimed',
           type: 'chest',
           xpGained: 0,
         },
@@ -275,10 +315,14 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       currentStreak: 0,
       longestStreak: 0,
     });
+    const dailyAdventure = createDailyAdventureState([], getTodayDateKey(), player);
+    const dailyBoss = createDailyBossState([], getTodayDateKey(), dailyAdventure);
+
     set({
       activePet: initialPet,
-      dailyAdventure: createDailyAdventureState([], getTodayDateKey(), player),
-      dailyChest: createDailyChestState([], getTodayDateKey(), player),
+      dailyAdventure,
+      dailyBoss,
+      dailyChest: createDailyChestState([], getTodayDateKey(), player, dailyBoss),
       draftPlayerName: '',
       player,
       streakSummary: {
@@ -333,6 +377,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       player: null,
       activePet: initialPet,
       dailyAdventure: createInitialDailyAdventureState(),
+      dailyBoss: createDailyBossState(),
       dailyChest: createDailyChestState(),
       streakSummary: {
         currentStreak: 0,
