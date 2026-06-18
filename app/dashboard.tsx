@@ -175,13 +175,17 @@ export default function DashboardScreen() {
             <View style={styles.rewardCopy}>
               <Text style={styles.rewardEyebrow}>{rewardFeedback.title}</Text>
               <Text style={styles.rewardTitle}>
-                {rewardFeedback.xpGained > 0
+                {rewardFeedback.body
+                  ? rewardFeedback.body
+                  : rewardFeedback.xpGained > 0
                   ? `+${rewardFeedback.xpGained} XP earned`
                   : `+${rewardFeedback.coinsGained} coins`}
               </Text>
-              <Text style={styles.rewardBody}>
-                +{rewardFeedback.xpGained} XP / +{rewardFeedback.coinsGained} coins
-              </Text>
+              {rewardFeedback.type === 'shop' ? null : (
+                <Text style={styles.rewardBody}>
+                  +{rewardFeedback.xpGained} XP / +{rewardFeedback.coinsGained} coins
+                </Text>
+              )}
             </View>
             <Pressable onPress={dismissRewardFeedback} style={styles.rewardDismiss}>
               <Text style={styles.rewardDismissText}>OK</Text>

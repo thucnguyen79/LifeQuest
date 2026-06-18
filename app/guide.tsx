@@ -96,6 +96,11 @@ const currentLoop: GuideCard[] = [
     title: 'Claim Rewards',
   },
   {
+    body: 'Spend coins on Pet Food, Streak Freeze, and Quest Reroll inventory. Pet Food can feed Mochi now.',
+    icon: 'coin',
+    title: 'Use Reward Shop',
+  },
+  {
     body: 'Mochi grows through bond XP. Streak and quest completion are the foundation for future pet moods.',
     icon: 'petDragon',
     title: 'Grow Your Companion',
@@ -103,11 +108,6 @@ const currentLoop: GuideCard[] = [
 ];
 
 const comingSystems: GuideCard[] = [
-  {
-    body: 'Coins will buy pet food, skins, class badges, profile frames, streak freezes, and quest rerolls.',
-    icon: 'coin',
-    title: 'Reward Shop',
-  },
   {
     body: 'Each class gains passive advantages and later skill points from level-ups.',
     icon: 'shield',

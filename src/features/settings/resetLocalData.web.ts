@@ -6,6 +6,7 @@ const storageKeys = [
   'lifequest.streakSummary',
   'lifequest.dailyChest',
   'lifequest.dailyAdventures',
+  'lifequest.shopInventory',
 ];
 
 function getStorage() {

@@ -129,6 +129,7 @@ Task 26 quest quality v1:
 - Adventure Map v1.1 adds quest category badges, zone focus bonuses, Matched/Base/Bonus progress stats, and Scout/Trial/Gate/Boss node layers.
 - Existing daily quests reconcile category metadata from their source habits so old local data does not stay stuck on placeholder categories.
 - Daily Boss v1 is implemented with boss HP from today's quest load, quest progress damage, Adventure Map gate locking, and Boss Chest bonus coins.
+- Reward Shop v1 is implemented with Pet Food, Streak Freeze, and Quest Reroll purchases, local inventory persistence, and Pet Food feeding Mochi for bond XP.
 
 Latest checks:
 
@@ -139,14 +140,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Reward Shop v1
+## Next Task: Pet Interaction v1
 
 Recommended next steps:
 
-- Add a small coin shop in Rewards.
-- Start with streak freeze, pet food, and quest reroll placeholders.
-- Persist purchased inventory locally.
-- Make at least one item affect gameplay in a small, testable way.
+- Move pet feeding/action controls into the Companion screen.
+- Add clearer pet hunger/happy/sleepy states.
+- Show item inventory where pet actions are used.
+- Add one small animation/state change after feeding.
 
 ## Later MVP Tasks
 

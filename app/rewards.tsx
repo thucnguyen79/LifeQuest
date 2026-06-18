@@ -9,6 +9,7 @@ import type { GameIconName } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
+import { rewardShopItems } from '@/features/shop/shopItems';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const rewardTracks = [
@@ -41,7 +42,10 @@ export default function RewardsScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
   const dailyBoss = useLifeQuestStore((state) => state.dailyBoss);
+  const shopInventory = useLifeQuestStore((state) => state.shopInventory);
   const claimDailyChest = useLifeQuestStore((state) => state.claimDailyChest);
+  const purchaseShopItem = useLifeQuestStore((state) => state.purchaseShopItem);
+  const useShopItem = useLifeQuestStore((state) => state.useShopItem);
 
   if (!player) {
     return <Redirect href="/" />;
@@ -108,6 +112,69 @@ export default function RewardsScreen() {
             </Text>
           </Pressable>
         </GamePanel>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Reward Shop</Text>
+          <GameBadge label="Coins matter" tone="gold" />
+        </View>
+        <View style={styles.shopGrid}>
+          {rewardShopItems.map((item, index) => {
+            const ownedCount = shopInventory[item.id];
+            const canBuy = player.coins >= item.cost;
+            const canUse = item.usable && ownedCount > 0;
+
+            return (
+              <Animated.View
+                entering={FadeInDown.delay(index * 55).duration(260)}
+                key={item.id}
+                style={styles.shopCard}
+              >
+                <View style={styles.shopTopRow}>
+                  <GameIcon name={item.icon} size={50} tone={item.usable ? 'mint' : 'sky'} />
+                  <View style={styles.shopCopy}>
+                    <Text style={styles.shopTitle}>{item.name}</Text>
+                    <Text style={styles.shopBody}>{item.body}</Text>
+                  </View>
+                  <GameBadge label={`${ownedCount} owned`} tone={ownedCount > 0 ? 'gold' : 'muted'} />
+                </View>
+                <Text style={styles.shopEffect}>{item.effectLabel}</Text>
+                <View style={styles.shopActions}>
+                  <Pressable
+                    disabled={!canBuy}
+                    onPress={() => purchaseShopItem(item.id)}
+                    style={[styles.shopButton, !canBuy ? styles.shopButtonDisabled : null]}
+                  >
+                    <Text
+                      style={[
+                        styles.shopButtonText,
+                        !canBuy ? styles.shopButtonTextDisabled : null,
+                      ]}
+                    >
+                      Buy {item.cost}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    disabled={!canUse}
+                    onPress={() => useShopItem(item.id)}
+                    style={[
+                      styles.shopButtonSecondary,
+                      !canUse ? styles.shopButtonDisabled : null,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.shopButtonSecondaryText,
+                        !canUse ? styles.shopButtonTextDisabled : null,
+                      ]}
+                    >
+                      {item.actionLabel}
+                    </Text>
+                  </Pressable>
+                </View>
+              </Animated.View>
+            );
+          })}
+        </View>
 
         <View style={styles.trackList}>
           {rewardTracks.map((track, index) => (
@@ -269,6 +336,93 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   claimButtonTextDisabled: {
+    color: colors.muted,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sectionTitle: {
+    color: colors.ink,
+    fontSize: 22,
+    fontWeight: '900',
+  },
+  shopGrid: {
+    gap: spacing.md,
+  },
+  shopCard: {
+    backgroundColor: colors.panel,
+    borderColor: colors.gold,
+    borderLeftWidth: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  shopTopRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  shopCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  shopTitle: {
+    color: colors.ink,
+    fontSize: 17,
+    fontWeight: '900',
+  },
+  shopBody: {
+    color: colors.muted,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 2,
+  },
+  shopEffect: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '900',
+    lineHeight: 17,
+  },
+  shopActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  shopButton: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
+  shopButtonSecondary: {
+    alignItems: 'center',
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+    borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
+  shopButtonDisabled: {
+    backgroundColor: colors.border,
+    borderColor: colors.border,
+  },
+  shopButtonText: {
+    color: colors.surface,
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  shopButtonSecondaryText: {
+    color: colors.ink,
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  shopButtonTextDisabled: {
     color: colors.muted,
   },
   trackCard: {

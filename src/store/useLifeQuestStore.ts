@@ -5,6 +5,7 @@ import { playerRepository } from '@/data/repositories/playerRepository';
 import { dailyChestRepository } from '@/data/repositories/dailyChestRepository';
 import { dailyAdventureRepository } from '@/data/repositories/dailyAdventureRepository';
 import { petRepository } from '@/data/repositories/petRepository';
+import { shopInventoryRepository } from '@/data/repositories/shopInventoryRepository';
 import { streakSummaryRepository } from '@/data/repositories/streakSummaryRepository';
 import type { AdventureZoneId, DailyAdventure } from '@/data/models/adventure';
 import type { Pet } from '@/data/models/pet';
@@ -24,18 +25,28 @@ import { getTodayDateKey } from '@/features/quests/dateUtils';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
 import { getDailyChestState } from '@/features/rewards/dailyChest';
 import type { DailyChestState } from '@/features/rewards/dailyChest';
+import {
+  addShopItem,
+  defaultShopInventory,
+  feedPetWithFood,
+  getShopItem,
+  petFoodBondXp,
+  removeShopItem,
+} from '@/features/shop/shopItems';
+import type { ShopInventory, ShopItemId } from '@/features/shop/shopItems';
 import { advanceDailyStreak } from '@/features/streaks/dailyStreak';
 import { resetLocalData } from '@/features/settings/resetLocalData';
 import type { Quest } from '@/features/quests/types';
 import type { StreakSummary } from '@/data/repositories/streakSummaryRepository';
 
 type RewardFeedback = {
+  body?: string;
   coinsGained: number;
   id: string;
   newLevel?: number;
   previousLevel?: number;
   title: string;
-  type: 'chest' | 'levelUp' | 'quest';
+  type: 'chest' | 'levelUp' | 'quest' | 'shop';
   xpGained: number;
   leveledUp: boolean;
 };
@@ -54,6 +65,7 @@ type LifeQuestState = {
   dailyAdventure: DailyAdventure;
   dailyBoss: DailyBossState;
   dailyChest: DailyChestState;
+  shopInventory: ShopInventory;
   rewardFeedback: RewardFeedback | null;
   draftPlayerName: string;
   dailyQuests: Quest[];
@@ -62,6 +74,8 @@ type LifeQuestState = {
   completeQuest: (questId: string) => void;
   selectDailyAdventureZone: (zoneId: AdventureZoneId) => void;
   claimDailyChest: () => void;
+  purchaseShopItem: (itemId: ShopItemId) => void;
+  useShopItem: (itemId: ShopItemId) => void;
   dismissRewardFeedback: () => void;
   setDraftPlayerName: (name: string) => void;
   createPlayer: (name: string, selectedClass: PlayerClass) => Player;
@@ -138,12 +152,14 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   dailyAdventure: createInitialDailyAdventureState(),
   dailyBoss: createDailyBossState(),
   dailyChest: createDailyChestState(),
+  shopInventory: defaultShopInventory,
   rewardFeedback: null,
   draftPlayerName: '',
   dailyQuests: [],
   hydrateFromLocal: () => {
     const player = playerRepository.getCurrent();
     const activePet = petRepository.getActive() ?? initialPet;
+    const shopInventory = shopInventoryRepository.get();
     const streakSummary = streakSummaryRepository.get();
     const dailyQuests = generateDailyQuests();
     const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), player);
@@ -157,6 +173,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       dailyQuests,
       isHydrated: true,
       player,
+      shopInventory,
       streakSummary,
     });
   },
@@ -303,6 +320,76 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       };
     });
   },
+  purchaseShopItem: (itemId: ShopItemId) => {
+    set((state) => {
+      if (!state.player) {
+        return state;
+      }
+
+      const item = getShopItem(itemId);
+
+      if (!item || state.player.coins < item.cost) {
+        return state;
+      }
+
+      const nextInventory = addShopItem(state.shopInventory, itemId);
+      const nextPlayer = {
+        ...state.player,
+        coins: state.player.coins - item.cost,
+        updatedAt: new Date().toISOString(),
+      };
+
+      playerRepository.upsert(nextPlayer);
+      shopInventoryRepository.upsert(nextInventory);
+
+      return {
+        player: nextPlayer,
+        shopInventory: nextInventory,
+        rewardFeedback: {
+          body: `${item.name} added to inventory.`,
+          coinsGained: -item.cost,
+          id: `shop-buy-${item.id}-${Date.now()}`,
+          leveledUp: false,
+          title: 'Item Purchased',
+          type: 'shop',
+          xpGained: 0,
+        },
+      };
+    });
+  },
+  useShopItem: (itemId: ShopItemId) => {
+    set((state) => {
+      if (state.shopInventory[itemId] <= 0) {
+        return state;
+      }
+
+      const item = getShopItem(itemId);
+
+      if (!item?.usable || itemId !== 'petFood') {
+        return state;
+      }
+
+      const nextInventory = removeShopItem(state.shopInventory, itemId);
+      const nextPet = feedPetWithFood(state.activePet);
+
+      petRepository.upsert(nextPet);
+      shopInventoryRepository.upsert(nextInventory);
+
+      return {
+        activePet: nextPet,
+        shopInventory: nextInventory,
+        rewardFeedback: {
+          body: `${nextPet.name} gained +${petFoodBondXp} bond XP.`,
+          coinsGained: 0,
+          id: `shop-use-${item.id}-${Date.now()}`,
+          leveledUp: false,
+          title: 'Pet Fed',
+          type: 'shop',
+          xpGained: petFoodBondXp,
+        },
+      };
+    });
+  },
   dismissRewardFeedback: () => set({ rewardFeedback: null }),
   setDraftPlayerName: (name: string) => set({ draftPlayerName: name }),
   createPlayer: (name: string, selectedClass: PlayerClass) => {
@@ -311,6 +398,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     petRepository.upsert(initialPet);
     dailyChestRepository.reset();
     dailyAdventureRepository.reset();
+    shopInventoryRepository.reset();
     streakSummaryRepository.upsert({
       currentStreak: 0,
       longestStreak: 0,
@@ -325,6 +413,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       dailyChest: createDailyChestState([], getTodayDateKey(), player, dailyBoss),
       draftPlayerName: '',
       player,
+      shopInventory: defaultShopInventory,
       streakSummary: {
         currentStreak: 0,
         longestStreak: 0,
@@ -379,6 +468,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       dailyAdventure: createInitialDailyAdventureState(),
       dailyBoss: createDailyBossState(),
       dailyChest: createDailyChestState(),
+      shopInventory: defaultShopInventory,
       streakSummary: {
         currentStreak: 0,
         longestStreak: 0,

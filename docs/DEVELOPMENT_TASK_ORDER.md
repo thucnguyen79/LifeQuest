@@ -310,6 +310,17 @@ Completion note: Added derived Daily Boss state, boss HP based on quest target l
 - Persist purchased inventory locally
 - Make at least one item affect gameplay in a small, testable way
 
+Status: Done
+
+Completion note: Added Reward Shop cards in Rewards, Pet Food/Streak Freeze/Quest Reroll item definitions, persisted shop inventory for SQLite and web localStorage, purchase/use store actions, Pet Food bond XP effect for Mochi, reset handling, and focused inventory helper tests.
+
+## 30. Pet Interaction v1
+
+- Move pet feeding/action controls into the Companion screen
+- Add clearer happy, hungry, and sleepy pet states
+- Show relevant inventory beside pet actions
+- Add one small animation/state change after feeding
+
 Status: Pending
 
 ## Build Rules
