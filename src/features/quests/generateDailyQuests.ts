@@ -20,6 +20,7 @@ function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
   return {
     id: `quest-${habit.id}-${dateKey}`,
     habitId: habit.id,
+    category: habit.category,
     title: habit.title,
     date: dateKey,
     xpReward: xpRewardByDifficulty[habit.difficulty],
@@ -39,6 +40,15 @@ export function generateDailyQuests(dateKey = getTodayDateKey()) {
   questRepository.markPendingBeforeDateAsMissed(dateKey);
 
   const activeHabits = habitRepository.listActive();
+  const habitById = new Map(activeHabits.map((habit) => [habit.id, habit]));
+  questRepository.listByDate(dateKey).forEach((quest) => {
+    const sourceHabit = habitById.get(quest.habitId);
+
+    if (sourceHabit && quest.category !== sourceHabit.category) {
+      questRepository.upsert({ ...quest, category: sourceHabit.category });
+    }
+  });
+
   const existingQuests = questRepository.listByDate(dateKey);
   const existingHabitIds = new Set(existingQuests.map((quest) => quest.habitId));
 

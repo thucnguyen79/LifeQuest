@@ -126,6 +126,8 @@ Task 26 quest quality v1:
 - Adventure Map v1 is implemented with daily zone selection, persisted zone state, and quest progress converted into map node progress.
 - Dashboard now shows the active daily zone, node progress, route cleared state, and zone selector chips.
 - Added SQLite/localStorage repositories for daily adventure state and focused tests for default zone/progress rules.
+- Adventure Map v1.1 adds quest category badges, zone focus bonuses, Matched/Base/Bonus progress stats, and Scout/Trial/Gate/Boss node layers.
+- Existing daily quests reconcile category metadata from their source habits so old local data does not stay stuck on placeholder categories.
 
 Latest checks:
 

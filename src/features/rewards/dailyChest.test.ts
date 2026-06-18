@@ -8,6 +8,7 @@ import { dailyChestCoinReward, getDailyChestState } from './dailyChest';
 function createQuest(status: Quest['status']): Quest {
   return {
     coinReward: 3,
+    category: 'fitness',
     date: '2026-06-16',
     energy: 'medium',
     habitId: `habit-${status}`,

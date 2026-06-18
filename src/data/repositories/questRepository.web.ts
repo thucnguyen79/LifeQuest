@@ -23,6 +23,7 @@ function readQuests() {
   return quests.map((quest) => ({
     ...quest,
     bonusCompleted: quest.bonusCompleted ?? false,
+    category: quest.category ?? 'deepWork',
     energy: quest.energy ?? 'medium',
     priority: quest.priority ?? 'normal',
     progressCount: quest.progressCount ?? (quest.status === 'completed' ? quest.targetCount ?? 1 : 0),

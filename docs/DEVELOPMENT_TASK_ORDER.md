@@ -290,7 +290,7 @@ Completion note: Added habit/quest quality metadata, SQLite v2 migrations, web l
 
 Status: Done
 
-Completion note: Added persisted daily adventure state for SQLite and web localStorage, default zone by player class, Dashboard daily zone selector, map node progress from quest progress/completion, route cleared state, reset handling, and focused tests.
+Completion note: Added persisted daily adventure state for SQLite and web localStorage, default zone by player class, Dashboard daily zone selector, map node progress from quest progress/completion, route cleared state, reset handling, and focused tests. Follow-up polish added quest category metadata to quests, zone focus bonuses, Matched/Base/Bonus map stats, and Scout/Trial/Gate/Boss node layers.
 
 ## 28. Daily Boss v1
 

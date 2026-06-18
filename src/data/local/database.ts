@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const databaseName = 'lifequest.db';
-const schemaVersion = 3;
+const schemaVersion = 4;
 
 let database: SQLite.SQLiteDatabase | null = null;
 let initialized = false;
@@ -66,6 +66,7 @@ export function initializeLocalDatabase() {
     CREATE TABLE IF NOT EXISTS quests (
       id TEXT PRIMARY KEY NOT NULL,
       habit_id TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'deepWork',
       title TEXT NOT NULL,
       date TEXT NOT NULL,
       xp_reward INTEGER NOT NULL,
@@ -137,6 +138,10 @@ export function initializeLocalDatabase() {
 
   if (!questColumnNames.has('target_count')) {
     db.execSync('ALTER TABLE quests ADD COLUMN target_count INTEGER NOT NULL DEFAULT 1');
+  }
+
+  if (!questColumnNames.has('category')) {
+    db.execSync("ALTER TABLE quests ADD COLUMN category TEXT NOT NULL DEFAULT 'deepWork'");
   }
 
   if (!questColumnNames.has('progress_count')) {

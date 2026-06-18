@@ -1,4 +1,5 @@
 import type { GameIconName } from '@/core/components/GameIcon';
+import type { HabitCategory } from '@/data/models/habit';
 import type { AdventureZoneId } from '@/data/models/adventure';
 import type { PlayerClass, StatKey } from '@/data/models/player';
 
@@ -8,9 +9,11 @@ export type AdventureZone = {
   shortName: string;
   description: string;
   icon: GameIconName;
+  focusCategories: HabitCategory[];
   tone: 'dark' | 'gold' | 'mint' | 'plain' | 'sky';
   primaryStat: StatKey;
   mapTheme: string;
+  effectLabel: string;
 };
 
 export const defaultAdventureNodeTarget = 4;
@@ -21,6 +24,8 @@ export const adventureZones: Record<AdventureZoneId, AdventureZone> = {
     name: 'Calm Temple',
     shortName: 'Temple',
     description: 'Quiet quests steady your mind and protect streak momentum.',
+    effectLabel: 'Meditation quests grant +1 route node when completed.',
+    focusCategories: ['meditation'],
     icon: 'moon',
     tone: 'sky',
     primaryStat: 'wisdom',
@@ -31,6 +36,8 @@ export const adventureZones: Record<AdventureZoneId, AdventureZone> = {
     name: 'Explorer Trail',
     shortName: 'Trail',
     description: 'A flexible path for mixed quests, discovery, and chest luck.',
+    effectLabel: 'Social quests grant +1 route node when completed.',
+    focusCategories: ['social'],
     icon: 'compass',
     tone: 'mint',
     primaryStat: 'charisma',
@@ -41,6 +48,8 @@ export const adventureZones: Record<AdventureZoneId, AdventureZone> = {
     name: 'Forest of Focus',
     shortName: 'Forest',
     description: 'Deep work clears dense nodes and sharpens daily focus.',
+    effectLabel: 'Deep Work quests grant +1 route node when completed.',
+    focusCategories: ['deepWork'],
     icon: 'focus',
     tone: 'mint',
     primaryStat: 'focus',
@@ -51,6 +60,8 @@ export const adventureZones: Record<AdventureZoneId, AdventureZone> = {
     name: 'Scholar Library',
     shortName: 'Library',
     description: 'Learning quests turn pages into map progress and rewards.',
+    effectLabel: 'Learning quests grant +1 route node when completed.',
+    focusCategories: ['learning'],
     icon: 'book',
     tone: 'sky',
     primaryStat: 'intelligence',
@@ -61,6 +72,8 @@ export const adventureZones: Record<AdventureZoneId, AdventureZone> = {
     name: 'Strength Arena',
     shortName: 'Arena',
     description: 'Fitness and hard quests push through arena checkpoints.',
+    effectLabel: 'Fitness quests grant +1 route node when completed.',
+    focusCategories: ['fitness'],
     icon: 'shield',
     tone: 'gold',
     primaryStat: 'strength',

@@ -13,9 +13,11 @@ import { ProgressBar } from '@/core/components/ProgressBar';
 import { StatPill } from '@/core/components/StatPill';
 import { adventureZoneList, getAdventureZone } from '@/core/constants/adventureZones';
 import { characterClasses } from '@/core/constants/gameRules';
+import { getHabitCategoryLabel } from '@/core/constants/habitOptions';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { PlayerClass } from '@/data/models/player';
+import { calculateAdventureQuestSummary } from '@/features/adventure/dailyAdventure';
 import { classSkillInfo } from '@/features/classes/classSkills';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
@@ -34,6 +36,18 @@ const classIcons: Record<PlayerClass, GameIconName> = {
   scholar: 'classScholar',
   warrior: 'classWarrior',
 };
+
+const adventureLayers: Array<{
+  icon: GameIconName;
+  label: string;
+  meta: string;
+  threshold: number;
+}> = [
+  { icon: 'compass', label: 'Scout', meta: 'Find route', threshold: 1 },
+  { icon: 'spark', label: 'Trial', meta: 'Clear node', threshold: 2 },
+  { icon: 'shield', label: 'Gate', meta: 'Unlock layer', threshold: 3 },
+  { icon: 'flame', label: 'Boss', meta: 'Ready next', threshold: 4 },
+];
 
 export default function DashboardScreen() {
   const player = useLifeQuestStore((state) => state.player);
@@ -66,6 +80,11 @@ export default function DashboardScreen() {
   const allQuestsDone = totalQuestCount > 0 && completedQuestCount === totalQuestCount;
   const showLevelUpModal = rewardFeedback?.type === 'levelUp';
   const activeZone = getAdventureZone(dailyAdventure.zoneId);
+  const adventureSummary = calculateAdventureQuestSummary(
+    dailyQuests,
+    dailyAdventure.nodeTarget,
+    dailyAdventure.zoneId,
+  );
   const mapNodesRemaining = Math.max(dailyAdventure.nodeTarget - dailyAdventure.nodeProgress, 0);
 
   return (
@@ -239,6 +258,7 @@ export default function DashboardScreen() {
                     +{quest.xpReward} XP / +{quest.coinReward} coins
                   </Text>
                   <View style={styles.questMetaRow}>
+                    <GameBadge label={getHabitCategoryLabel(quest.category)} tone="gold" />
                     <GameBadge label={quest.priority ?? 'normal'} tone="muted" />
                     <GameBadge label={quest.energy ?? 'medium'} tone="muted" />
                     {quest.estimatedMinutes ? (
@@ -283,6 +303,7 @@ export default function DashboardScreen() {
               <Text style={styles.zoneEyebrow}>{activeZone.mapTheme}</Text>
               <Text style={styles.zoneTitle}>{activeZone.name}</Text>
               <Text style={styles.zoneBody}>{activeZone.description}</Text>
+              <Text style={styles.zoneEffect}>{activeZone.effectLabel}</Text>
             </View>
           </View>
           <View style={styles.zoneProgressPanel}>
@@ -293,9 +314,53 @@ export default function DashboardScreen() {
             />
             <Text style={styles.zoneHint}>
               {dailyAdventure.cleared
-                ? 'Boss layer unlocked for the next gameplay task.'
-                : `${mapNodesRemaining} node${mapNodesRemaining === 1 ? '' : 's'} until the reward layer unlocks.`}
+                ? 'Boss gate is open. Task 28 will turn this into a daily boss fight.'
+                : `${mapNodesRemaining} node${mapNodesRemaining === 1 ? '' : 's'} until the boss gate opens.`}
             </Text>
+            <View style={styles.zoneStatRow}>
+              <View style={styles.zoneStat}>
+                <Text style={styles.zoneStatLabel}>Matched</Text>
+                <Text style={styles.zoneStatValue}>{adventureSummary.matchedQuestCount}</Text>
+              </View>
+              <View style={styles.zoneStat}>
+                <Text style={styles.zoneStatLabel}>Base</Text>
+                <Text style={styles.zoneStatValue}>{adventureSummary.baseProgress}</Text>
+              </View>
+              <View style={styles.zoneStat}>
+                <Text style={styles.zoneStatLabel}>Bonus</Text>
+                <Text style={styles.zoneStatValue}>+{adventureSummary.bonusProgress}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.layerGrid}>
+            {adventureLayers.map((layer) => {
+              const cleared = dailyAdventure.nodeProgress >= layer.threshold;
+              const active =
+                !dailyAdventure.cleared && adventureSummary.nextNodeIndex === layer.threshold;
+
+              return (
+                <View
+                  key={layer.label}
+                  style={[
+                    styles.layerNode,
+                    cleared ? styles.layerNodeCleared : null,
+                    active ? styles.layerNodeActive : null,
+                  ]}
+                >
+                  <GameIcon
+                    name={layer.icon}
+                    size={34}
+                    tone={cleared ? 'gold' : active ? 'mint' : 'plain'}
+                  />
+                  <Text style={[styles.layerLabel, cleared ? styles.layerNodeClearedText : null]}>
+                    {layer.label}
+                  </Text>
+                  <Text style={[styles.layerMeta, cleared ? styles.layerNodeClearedText : null]}>
+                    {cleared ? 'Cleared' : active ? 'Active' : layer.meta}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
           <View style={styles.zoneGrid}>
             {adventureZoneList.map((zone) => {
@@ -772,6 +837,13 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 4,
   },
+  zoneEffect: {
+    color: colors.mint,
+    fontSize: 12,
+    fontWeight: '900',
+    lineHeight: 17,
+    marginTop: spacing.xs,
+  },
   zoneProgressPanel: {
     backgroundColor: colors.surface,
     borderRadius: 8,
@@ -783,6 +855,71 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     lineHeight: 17,
+  },
+  zoneStatRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  zoneStat: {
+    backgroundColor: colors.panel,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 54,
+    padding: spacing.sm,
+  },
+  zoneStatLabel: {
+    color: colors.accent,
+    fontSize: 10,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  zoneStatValue: {
+    color: colors.ink,
+    fontSize: 18,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  layerGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  layerNode: {
+    alignItems: 'center',
+    backgroundColor: '#17362E',
+    borderColor: '#285A4E',
+    borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 96,
+    minWidth: 96,
+    padding: spacing.sm,
+  },
+  layerNodeActive: {
+    borderColor: colors.mint,
+  },
+  layerNodeCleared: {
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+  },
+  layerLabel: {
+    color: colors.surface,
+    fontSize: 13,
+    fontWeight: '900',
+    marginTop: spacing.xs,
+    textAlign: 'center',
+  },
+  layerMeta: {
+    color: colors.goldSoft,
+    fontSize: 11,
+    fontWeight: '800',
+    marginTop: 2,
+    textAlign: 'center',
+  },
+  layerNodeClearedText: {
+    color: colors.ink,
   },
   zoneGrid: {
     flexDirection: 'row',

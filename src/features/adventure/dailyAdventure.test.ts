@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest';
 
-import { calculateAdventureProgress, getDefaultAdventureZone } from '@/features/adventure/dailyAdventure';
+import {
+  calculateAdventureProgress,
+  calculateAdventureQuestSummary,
+  getDefaultAdventureZone,
+} from '@/features/adventure/dailyAdventure';
 import type { Player } from '@/data/models/player';
 import type { Quest } from '@/data/models/quest';
 
 const baseQuest: Quest = {
   id: 'quest-1',
   habitId: 'habit-1',
+  category: 'learning',
   title: 'Read',
   date: '2026-06-18',
   xpReward: 10,
@@ -56,5 +61,21 @@ describe('daily adventure', () => {
     expect(progress.nodeProgress).toBe(4);
     expect(progress.nodeTarget).toBe(4);
     expect(progress.cleared).toBe(true);
+  });
+
+  it('adds a route bonus when a completed quest matches the active zone', () => {
+    const summary = calculateAdventureQuestSummary(
+      [
+        { ...baseQuest, status: 'completed', targetCount: 1, progressCount: 1 },
+        { ...baseQuest, id: 'quest-2', category: 'fitness', status: 'completed', targetCount: 1, progressCount: 1 },
+      ],
+      4,
+      'scholarLibrary',
+    );
+
+    expect(summary.baseProgress).toBe(2);
+    expect(summary.bonusProgress).toBe(1);
+    expect(summary.nodeProgress).toBe(3);
+    expect(summary.matchedQuestCount).toBe(1);
   });
 });

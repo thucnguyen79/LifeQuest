@@ -1,3 +1,5 @@
+import type { HabitCategory } from '@/data/models/habit';
+
 export type QuestStatus = 'pending' | 'completed' | 'missed';
 
 export type QuestEnergy = 'light' | 'medium' | 'heavy';
@@ -7,6 +9,7 @@ export type QuestPriority = 'low' | 'normal' | 'high';
 export type Quest = {
   id: string;
   habitId: string;
+  category: HabitCategory;
   title: string;
   date: string;
   xpReward: number;

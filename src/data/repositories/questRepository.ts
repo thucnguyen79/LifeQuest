@@ -1,9 +1,11 @@
 import { getDatabase, initializeLocalDatabase } from '@/data/local/database';
+import type { HabitCategory } from '@/data/models/habit';
 import type { Quest, QuestEnergy, QuestPriority, QuestStatus } from '@/data/models/quest';
 
 type QuestRow = {
   id: string;
   habit_id: string;
+  category: HabitCategory;
   title: string;
   date: string;
   xp_reward: number;
@@ -23,6 +25,7 @@ function toQuest(row: QuestRow): Quest {
   return {
     id: row.id,
     habitId: row.habit_id,
+    category: row.category ?? 'deepWork',
     title: row.title,
     date: row.date,
     xpReward: row.xp_reward,
@@ -72,6 +75,7 @@ export const questRepository = {
       INSERT OR REPLACE INTO quests (
         id,
         habit_id,
+        category,
         title,
         date,
         xp_reward,
@@ -85,10 +89,11 @@ export const questRepository = {
         bonus_completed,
         status,
         completed_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       quest.id,
       quest.habitId,
+      quest.category,
       quest.title,
       quest.date,
       quest.xpReward,

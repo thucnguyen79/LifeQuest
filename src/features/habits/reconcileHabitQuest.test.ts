@@ -41,6 +41,7 @@ function createHabit(overrides: Partial<Habit> = {}): Habit {
 function createQuest(overrides: Partial<Quest> = {}): Quest {
   return {
     coinReward: 3,
+    category: 'learning',
     date: '2026-06-16',
     energy: 'medium',
     habitId: 'habit-1',
@@ -75,6 +76,7 @@ describe('reconcileHabitQuestForDate', () => {
 
     expect(result).toEqual({
       coinReward: 10,
+      category: 'learning',
       date: '2026-06-16',
       habitId: 'habit-1',
       id: 'quest-habit-1-2026-06-16',

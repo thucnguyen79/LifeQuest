@@ -48,6 +48,7 @@ function createHabit(overrides: Partial<Habit> = {}): Habit {
 function createQuest(overrides: Partial<Quest> = {}): Quest {
   return {
     coinReward: 6,
+    category: 'fitness',
     date: '2026-06-16',
     energy: 'medium',
     habitId: 'habit-1',

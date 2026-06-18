@@ -49,7 +49,8 @@ Implemented:
 - Active class passives for Warrior, Scholar, Creator, and Explorer, plus Monk streak shield foundation
 - Quest progress, priority, energy, estimated time, and bonus objective metadata
 - Adventure Map daily zone selection with Forest of Focus, Scholar Library, Strength Arena, Calm Temple, and Explorer Trail
-- Map node progress generated from quest progress and completion
+- Map node progress generated from quest progress and completion, with zone focus bonuses for matching quest categories
+- Adventure Map Scout/Trial/Gate/Boss node layers and Matched/Base/Bonus progress stats
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
 - Web-specific player repository fallback for browser preview

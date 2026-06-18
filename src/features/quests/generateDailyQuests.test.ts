@@ -93,6 +93,7 @@ describe('generateDailyQuests', () => {
     mocks.quests = [
       {
         coinReward: 10,
+        category: 'fitness',
         date: '2026-06-16',
         habitId: 'daily-hard',
         id: 'quest-daily-hard-2026-06-16',
@@ -111,6 +112,7 @@ describe('generateDailyQuests', () => {
     expect(mocks.upsert).toHaveBeenCalledTimes(1);
     expect(mocks.upsert).toHaveBeenCalledWith({
       coinReward: 3,
+      category: 'fitness',
       date: '2026-06-16',
       habitId: 'tuesday-easy',
       id: 'quest-tuesday-easy-2026-06-16',
@@ -138,6 +140,7 @@ describe('generateDailyQuests', () => {
     mocks.quests = [
       {
         coinReward: 3,
+        category: 'fitness',
         date: '2026-06-15',
         habitId: 'old-habit',
         id: 'quest-old-habit-2026-06-15',
@@ -157,6 +160,37 @@ describe('generateDailyQuests', () => {
     expect(mocks.quests.find((quest) => quest.id === 'quest-old-habit-2026-06-15')?.status).toBe(
       'missed',
     );
+  });
+
+  it('reconciles existing quest category from its source habit', () => {
+    mocks.activeHabits = [
+      createHabit({
+        category: 'learning',
+        id: 'study-habit',
+        title: 'Study',
+      }),
+    ];
+    mocks.quests = [
+      {
+        coinReward: 3,
+        category: 'deepWork',
+        date: '2026-06-16',
+        habitId: 'study-habit',
+        id: 'quest-study-habit-2026-06-16',
+        targetCount: 1,
+        progressCount: 0,
+        priority: 'normal',
+        energy: 'medium',
+        status: 'pending',
+        title: 'Study',
+        xpReward: 10,
+      },
+    ];
+
+    const quests = generateDailyQuests('2026-06-16');
+
+    expect(quests[0].category).toBe('learning');
+    expect(mocks.upsert).toHaveBeenCalledWith(expect.objectContaining({ category: 'learning' }));
   });
 
   it('copies target count and quest quality metadata from habit', () => {

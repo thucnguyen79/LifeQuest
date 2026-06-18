@@ -26,6 +26,7 @@ function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
 
   return {
     coinReward: coinRewardByDifficulty[habit.difficulty],
+    category: habit.category,
     date: dateKey,
     habitId: habit.id,
     id: getQuestId(habit.id, dateKey),
