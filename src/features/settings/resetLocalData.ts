@@ -13,5 +13,6 @@ export function resetLocalData() {
     DELETE FROM app_metadata WHERE key = 'streak_summary';
     DELETE FROM app_metadata WHERE key = 'daily_chest';
     DELETE FROM app_metadata WHERE key = 'shop_inventory';
+    DELETE FROM app_metadata WHERE key = 'achievement_progress';
   `);
 }

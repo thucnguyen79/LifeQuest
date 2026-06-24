@@ -7,6 +7,7 @@ const storageKeys = [
   'lifequest.dailyChest',
   'lifequest.dailyAdventures',
   'lifequest.shopInventory',
+  'lifequest.achievementProgress',
 ];
 
 function getStorage() {

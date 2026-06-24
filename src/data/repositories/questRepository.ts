@@ -45,6 +45,14 @@ function toQuest(row: QuestRow): Quest {
 }
 
 export const questRepository = {
+  listAll() {
+    initializeLocalDatabase();
+
+    return getDatabase()
+      .getAllSync<QuestRow>('SELECT * FROM quests ORDER BY date DESC, title ASC')
+      .map(toQuest);
+  },
+
   markPendingBeforeDateAsMissed(date: string) {
     initializeLocalDatabase();
 

@@ -6,10 +6,12 @@ import { GameBadge } from '@/core/components/GameBadge';
 import { GameIcon } from '@/core/components/GameIcon';
 import type { GameIconName } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
+import { ProgressBar } from '@/core/components/ProgressBar';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { PlayerClass } from '@/data/models/player';
 import { classSkillInfo } from '@/features/classes/classSkills';
+import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 type ClassGuide = {
   bestFor: string;
@@ -118,14 +120,12 @@ const comingSystems: GuideCard[] = [
     icon: 'chest',
     title: 'Chest Rarity',
   },
-  {
-    body: 'Milestones such as 7-day streaks, pet level 5, and 10 Learning quests will unlock badges.',
-    icon: 'book',
-    title: 'Achievements',
-  },
 ];
 
 export default function GuideScreen() {
+  const achievements = useLifeQuestStore((state) => state.achievements);
+  const unlockedAchievementCount = achievements.filter((achievement) => achievement.unlocked).length;
+
   return (
     <AppScreen backTo="/dashboard" canGoBack>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -162,7 +162,43 @@ export default function GuideScreen() {
           ))}
         </View>
 
-        <SectionTitle badge="Next" title="Coming Gameplay Pass" />
+        <SectionTitle
+          badge={`${unlockedAchievementCount}/${achievements.length}`}
+          title="Achievement Codex"
+        />
+        <View style={styles.achievementList}>
+          {achievements.map((achievement) => (
+            <GamePanel
+              accent={achievement.unlocked}
+              key={achievement.id}
+              tone={achievement.unlocked ? 'surface' : 'parchment'}
+              style={styles.achievementCard}
+            >
+              <GameIcon
+                name={achievement.icon}
+                size={46}
+                tone={achievement.unlocked ? 'gold' : 'sky'}
+              />
+              <View style={styles.achievementCopy}>
+                <View style={styles.achievementHeader}>
+                  <Text style={styles.achievementTitle}>{achievement.title}</Text>
+                  <GameBadge
+                    label={achievement.unlocked ? 'Unlocked' : 'Locked'}
+                    tone={achievement.unlocked ? 'gold' : 'muted'}
+                  />
+                </View>
+                <Text style={styles.achievementBody}>{achievement.body}</Text>
+                <ProgressBar
+                  current={achievement.current}
+                  label={`${Math.min(achievement.current, achievement.target)}/${achievement.target}`}
+                  max={achievement.target}
+                />
+              </View>
+            </GamePanel>
+          ))}
+        </View>
+
+        <SectionTitle badge="Live" title="Systems Reference" />
         <View style={styles.grid}>
           {comingSystems.map((item) => (
             <GuideInfoCard key={item.title} item={item} muted />
@@ -222,6 +258,36 @@ function ClassCard({ item }: { item: ClassGuide }) {
 }
 
 const styles = StyleSheet.create({
+  achievementBody: {
+    color: colors.muted,
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  achievementCard: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  achievementCopy: {
+    flex: 1,
+    gap: spacing.xs,
+    minWidth: 0,
+  },
+  achievementHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+  },
+  achievementList: {
+    gap: spacing.sm,
+  },
+  achievementTitle: {
+    color: colors.ink,
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '900',
+  },
   actionButton: {
     alignItems: 'center',
     alignSelf: 'flex-start',

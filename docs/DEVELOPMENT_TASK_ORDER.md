@@ -354,6 +354,17 @@ Completion note: Added Common, Rare, and Epic chest tiers; deterministic bounded
 - Track pet level 5 and first 100 coins
 - Persist unlocks and show badge progress in Rewards
 
+Status: Done
+
+Completion note: Added persisted achievement progress for a 7-day streak, 10 Learning quests, pet level 5, and 100 lifetime coins; historical quest counting; migration floor from current coin balance; unlock feedback from quests, chests, and pet feeding; live Badge Rack and Codex progress; reset handling; and focused domain/repository tests.
+
+## 34. Bonus Objective Rewards v1
+
+- Let optional bonus objectives be completed separately
+- Award bounded XP and coin bonuses
+- Add a small Adventure Map or boss contribution
+- Persist bonus completion and test reward rules
+
 Status: Pending
 
 ## Build Rules

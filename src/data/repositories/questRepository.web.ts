@@ -38,6 +38,12 @@ function writeQuests(quests: Quest[]) {
 }
 
 export const questRepository = {
+  listAll() {
+    return [...readQuests()].sort(
+      (a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title),
+    );
+  },
+
   markPendingBeforeDateAsMissed(date: string) {
     writeQuests(
       readQuests().map((quest) =>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { calculatePetGrowthStage, calculatePetLevel } from '@/core/constants/gameRules';
+import { achievementProgressRepository } from '@/data/repositories/achievementProgressRepository';
 import { playerRepository } from '@/data/repositories/playerRepository';
 import { dailyChestRepository } from '@/data/repositories/dailyChestRepository';
 import { dailyAdventureRepository } from '@/data/repositories/dailyAdventureRepository';
@@ -10,6 +11,15 @@ import { shopInventoryRepository } from '@/data/repositories/shopInventoryReposi
 import { streakSummaryRepository } from '@/data/repositories/streakSummaryRepository';
 import type { AdventureZoneId, DailyAdventure } from '@/data/models/adventure';
 import type { Pet } from '@/data/models/pet';
+import {
+  addLifetimeCoins,
+  defaultAchievementProgress,
+  syncAchievementProgress,
+} from '@/features/achievements/achievements';
+import type {
+  AchievementProgressRecord,
+  AchievementState,
+} from '@/features/achievements/achievements';
 import type { ReminderPermissionStatus } from '@/features/notifications/habitReminders';
 import { syncHabitReminderNotifications } from '@/features/notifications/habitReminders';
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
@@ -48,7 +58,7 @@ type RewardFeedback = {
   newLevel?: number;
   previousLevel?: number;
   title: string;
-  type: 'chest' | 'levelUp' | 'quest' | 'shop';
+  type: 'achievement' | 'chest' | 'levelUp' | 'quest' | 'shop';
   xpGained: number;
   leveledUp: boolean;
 };
@@ -68,6 +78,8 @@ type LifeQuestState = {
   dailyBoss: DailyBossState;
   dailyChest: DailyChestState;
   shopInventory: ShopInventory;
+  achievementProgress: AchievementProgressRecord;
+  achievements: AchievementState[];
   rewardFeedback: RewardFeedback | null;
   draftPlayerName: string;
   dailyQuests: Quest[];
@@ -119,6 +131,31 @@ function createInitialDailyAdventureState() {
   return createDailyAdventure(getTodayDateKey(), 'explorerTrail');
 }
 
+function createAchievementState(
+  record: AchievementProgressRecord,
+  player: Player | null,
+  pet: Pet,
+  streakSummary: StreakSummary,
+) {
+  const completedLearningQuests = questRepository
+    .listAll()
+    .filter((quest) => quest.status === 'completed' && quest.category === 'learning').length;
+
+  return syncAchievementProgress(record, {
+    completedLearningQuests,
+    currentCoins: player?.coins ?? 0,
+    longestStreak: streakSummary.longestStreak,
+    petLevel: pet.level,
+  });
+}
+
+function getNewAchievementLabel(result: ReturnType<typeof syncAchievementProgress>) {
+  return result.achievements
+    .filter((achievement) => result.newlyUnlockedIds.includes(achievement.id))
+    .map((achievement) => achievement.title)
+    .join(', ');
+}
+
 function createDailyAdventureState(
   quests: Quest[] = [],
   date = getTodayDateKey(),
@@ -164,6 +201,13 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   dailyBoss: createDailyBossState(),
   dailyChest: createDailyChestState(),
   shopInventory: defaultShopInventory,
+  achievementProgress: defaultAchievementProgress,
+  achievements: syncAchievementProgress(defaultAchievementProgress, {
+    completedLearningQuests: 0,
+    currentCoins: 0,
+    longestStreak: 0,
+    petLevel: initialPet.level,
+  }).achievements,
   rewardFeedback: null,
   draftPlayerName: '',
   dailyQuests: [],
@@ -171,13 +215,24 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     const player = playerRepository.getCurrent();
     const activePet = petRepository.getActive() ?? initialPet;
     const shopInventory = shopInventoryRepository.get();
+    const achievementProgress = achievementProgressRepository.get();
     const streakSummary = streakSummaryRepository.get();
     const dailyQuests = generateDailyQuests();
     const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), player);
     const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
+    const achievementResult = createAchievementState(
+      achievementProgress,
+      player,
+      activePet,
+      streakSummary,
+    );
+
+    achievementProgressRepository.upsert(achievementResult.record);
 
     set({
       activePet,
+      achievementProgress: achievementResult.record,
+      achievements: achievementResult.achievements,
       dailyAdventure,
       dailyBoss,
       dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), player, dailyBoss),
@@ -252,15 +307,37 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       const dailyQuests = generateDailyQuests();
       const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), result.player);
       const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
+      const achievementProgress = addLifetimeCoins(
+        state.achievementProgress,
+        result.coinsGained,
+      );
+      const achievementResult = createAchievementState(
+        achievementProgress,
+        result.player,
+        nextPet,
+        nextStreakSummary,
+      );
+      const newAchievementLabel = getNewAchievementLabel(achievementResult);
+      const rewardNotes = [
+        streakResult.usedStreakFreeze
+          ? 'Streak Freeze protected your streak across the missed day gap.'
+          : '',
+        newAchievementLabel ? `Achievement unlocked: ${newAchievementLabel}.` : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
 
       petRepository.upsert(nextPet);
       streakSummaryRepository.upsert(nextStreakSummary);
+      achievementProgressRepository.upsert(achievementResult.record);
       if (streakResult.usedStreakFreeze) {
         shopInventoryRepository.upsert(nextInventory);
       }
 
       return {
         player: result.player,
+        achievementProgress: achievementResult.record,
+        achievements: achievementResult.achievements,
         dailyAdventure,
         dailyBoss,
         dailyChest: createDailyChestState(
@@ -277,17 +354,17 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         rewardFeedback: {
           id: `${result.quest.id}-${result.quest.completedAt}`,
           coinsGained: result.coinsGained,
-          body: streakResult.usedStreakFreeze
-            ? 'Streak Freeze protected your streak across the missed day gap.'
-            : undefined,
+          body: rewardNotes || undefined,
           title: result.leveledUp
             ? 'Level Up'
-            : streakResult.usedStreakFreeze
-              ? 'Streak Protected'
-              : result.classBonusLabels.length > 0
-                ? 'Class Bonus'
-                : 'Quest Complete',
-          type: result.leveledUp ? 'levelUp' : 'quest',
+            : newAchievementLabel
+              ? 'Achievement Unlocked'
+              : streakResult.usedStreakFreeze
+                ? 'Streak Protected'
+                : result.classBonusLabels.length > 0
+                  ? 'Class Bonus'
+                  : 'Quest Complete',
+          type: result.leveledUp ? 'levelUp' : newAchievementLabel ? 'achievement' : 'quest',
           newLevel: result.newLevel,
           previousLevel: result.previousLevel,
           xpGained: result.xpGained,
@@ -337,17 +414,31 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         nextPlayer,
         state.dailyBoss,
       );
+      const achievementProgress = addLifetimeCoins(
+        state.achievementProgress,
+        state.dailyChest.coinReward,
+      );
+      const achievementResult = createAchievementState(
+        achievementProgress,
+        nextPlayer,
+        state.activePet,
+        state.streakSummary,
+      );
+      const newAchievementLabel = getNewAchievementLabel(achievementResult);
 
       playerRepository.upsert(nextPlayer);
+      achievementProgressRepository.upsert(achievementResult.record);
 
       return {
+        achievementProgress: achievementResult.record,
+        achievements: achievementResult.achievements,
         dailyChest,
         player: nextPlayer,
         rewardFeedback: {
           coinsGained: state.dailyChest.coinReward,
           id: `daily-chest-${state.dailyChest.date}`,
           leveledUp: false,
-          body: `${chestRarityLabels[state.dailyChest.tier]} reward: +${state.dailyChest.coinReward} coins.`,
+          body: `${chestRarityLabels[state.dailyChest.tier]} reward: +${state.dailyChest.coinReward} coins.${newAchievementLabel ? ` Achievement unlocked: ${newAchievementLabel}.` : ''}`,
           title: `${chestRarityLabels[state.dailyChest.tier]} Chest Claimed`,
           type: 'chest',
           xpGained: 0,
@@ -450,15 +541,25 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
 
       const nextInventory = removeShopItem(state.shopInventory, itemId);
       const nextPet = feedPetWithFood(state.activePet);
+      const achievementResult = createAchievementState(
+        state.achievementProgress,
+        state.player,
+        nextPet,
+        state.streakSummary,
+      );
+      const newAchievementLabel = getNewAchievementLabel(achievementResult);
 
       petRepository.upsert(nextPet);
       shopInventoryRepository.upsert(nextInventory);
+      achievementProgressRepository.upsert(achievementResult.record);
 
       return {
         activePet: nextPet,
+        achievementProgress: achievementResult.record,
+        achievements: achievementResult.achievements,
         shopInventory: nextInventory,
         rewardFeedback: {
-          body: `${nextPet.name} gained +${petFoodBondXp} bond XP.`,
+          body: `${nextPet.name} gained +${petFoodBondXp} bond XP.${newAchievementLabel ? ` Achievement unlocked: ${newAchievementLabel}.` : ''}`,
           coinsGained: 0,
           id: `shop-use-${item.id}-${Date.now()}`,
           leveledUp: false,
@@ -478,15 +579,24 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
     dailyChestRepository.reset();
     dailyAdventureRepository.reset();
     shopInventoryRepository.reset();
+    achievementProgressRepository.reset();
     streakSummaryRepository.upsert({
       currentStreak: 0,
       longestStreak: 0,
     });
     const dailyAdventure = createDailyAdventureState([], getTodayDateKey(), player);
     const dailyBoss = createDailyBossState([], getTodayDateKey(), dailyAdventure);
+    const achievementResult = createAchievementState(
+      defaultAchievementProgress,
+      player,
+      initialPet,
+      { currentStreak: 0, longestStreak: 0 },
+    );
 
     set({
       activePet: initialPet,
+      achievementProgress: achievementResult.record,
+      achievements: achievementResult.achievements,
       dailyAdventure,
       dailyBoss,
       dailyChest: createDailyChestState([], getTodayDateKey(), player, dailyBoss),
@@ -534,6 +644,7 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
   resetAppData: async () => {
     await syncHabitReminderNotifications(false);
     resetLocalData();
+    achievementProgressRepository.reset();
     set({
       isHydrated: true,
       notificationsEnabled: false,
@@ -544,6 +655,13 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
       soundEnabled: true,
       player: null,
       activePet: initialPet,
+      achievementProgress: defaultAchievementProgress,
+      achievements: syncAchievementProgress(defaultAchievementProgress, {
+        completedLearningQuests: 0,
+        currentCoins: 0,
+        longestStreak: 0,
+        petLevel: initialPet.level,
+      }).achievements,
       dailyAdventure: createInitialDailyAdventureState(),
       dailyBoss: createDailyBossState(),
       dailyChest: createDailyChestState(),

@@ -86,6 +86,15 @@ Streak Freeze:
 5. Reload before claiming and confirm the rolled reward does not change.
 6. With Explorer, confirm the final reward is 5 coins above the displayed tier roll.
 
+## Achievements QA
+
+1. Open Rewards and confirm Badge Rack shows four progress counters.
+2. Confirm existing local data backfills streak, Learning quest, pet level, and current coin progress.
+3. Reach one target and confirm its badge changes from Locked to Unlocked.
+4. Spend coins in the shop and confirm First Fortune progress does not decrease.
+5. Reload the app and confirm unlocked badges remain unlocked.
+6. Open Codex and confirm the same progress and unlock states appear there.
+
 ## Build Readiness Checks
 
 Run these before creating a dev build or handing the repo to another machine:

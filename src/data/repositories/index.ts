@@ -1,3 +1,4 @@
+export { achievementProgressRepository } from './achievementProgressRepository';
 export { dailyChestRepository } from './dailyChestRepository';
 export { habitRepository } from './habitRepository';
 export { petRepository } from './petRepository';

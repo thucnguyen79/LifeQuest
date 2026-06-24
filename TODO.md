@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Gameplay tasks are implemented through Task 32, Chest Rarity v1. Task 23 Native Device QA remains pending.
+Gameplay tasks are implemented through Task 33, Milestones and Achievements v1. Task 23 Native Device QA remains pending.
 
 Task 14B/14C UI pass:
 
@@ -133,6 +133,7 @@ Task 26 quest quality v1:
 - Pet Interaction v1 is implemented with Companion-screen feeding controls, Pet Food inventory display, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states.
 - Shop Item Effects v1 is implemented: Quest Reroll lightens one pending quest, Streak Freeze auto-protects a missed-day gap, and Monk extends freeze protection to two missed days.
 - Chest Rarity v1 is implemented with Common/Rare/Epic conditions, bounded deterministic rolls, Explorer bonus support, and a visible rarity path in Rewards.
+- Milestones and Achievements v1 is implemented with persisted unlock timestamps, lifetime coin tracking, historical Learning quest counts, streak/pet milestones, and live Badge Rack progress in Rewards and Codex.
 
 Latest checks:
 
@@ -143,14 +144,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Milestones and Achievements v1
+## Next Task: Bonus Objective Rewards v1
 
 Recommended next steps:
 
-- Track persistent achievements for streak, quest category, pet level, and earned coins.
-- Start with 7-day streak, 10 Learning quests, pet level 5, and first 100 coins.
-- Show locked/unlocked badges in Rewards and Codex.
-- Keep progress counters visible and testable.
+- Let players complete the optional bonus objective separately from the base quest.
+- Award a small bounded XP/coin bonus without breaking class balance.
+- Add a small Adventure Map or boss contribution.
+- Persist bonus completion and add focused tests.
 
 ## Later MVP Tasks
 

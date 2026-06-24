@@ -7,6 +7,7 @@ import { GameBadge } from '@/core/components/GameBadge';
 import { GameIcon } from '@/core/components/GameIcon';
 import type { GameIconName } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
+import { ProgressBar } from '@/core/components/ProgressBar';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import {
@@ -25,12 +26,6 @@ const rewardTracks = [
     title: 'Daily Chest',
     status: 'Live',
     body: 'Clear every quest today to unlock the chest. Boss victories and streaks raise its rarity.',
-  },
-  {
-    icon: 'shield',
-    title: 'Badge Rack',
-    status: 'Locked',
-    body: 'Streak and level badges will appear here after test coverage is in place.',
   },
   {
     icon: 'spark',
@@ -87,6 +82,7 @@ export default function RewardsScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
   const shopInventory = useLifeQuestStore((state) => state.shopInventory);
+  const achievements = useLifeQuestStore((state) => state.achievements);
   const claimDailyChest = useLifeQuestStore((state) => state.claimDailyChest);
   const purchaseShopItem = useLifeQuestStore((state) => state.purchaseShopItem);
   const useShopItem = useLifeQuestStore((state) => state.useShopItem);
@@ -94,6 +90,8 @@ export default function RewardsScreen() {
   if (!player) {
     return <Redirect href="/" />;
   }
+
+  const unlockedAchievementCount = achievements.filter((achievement) => achievement.unlocked).length;
 
   return (
     <AppScreen backTo="/dashboard" canGoBack>
@@ -173,6 +171,49 @@ export default function RewardsScreen() {
             </Text>
           </Pressable>
         </GamePanel>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Badge Rack</Text>
+          <GameBadge
+            label={`${unlockedAchievementCount}/${achievements.length} unlocked`}
+            tone={unlockedAchievementCount > 0 ? 'gold' : 'muted'}
+          />
+        </View>
+        <View style={styles.achievementList}>
+          {achievements.map((achievement, index) => (
+            <Animated.View
+              entering={FadeInDown.delay(index * 50).duration(260)}
+              key={achievement.id}
+            >
+              <GamePanel
+                accent={achievement.unlocked}
+                tone={achievement.unlocked ? 'surface' : 'parchment'}
+                style={styles.achievementCard}
+              >
+                <View style={styles.achievementHeader}>
+                  <GameIcon
+                    name={achievement.icon}
+                    size={48}
+                    tone={achievement.unlocked ? 'gold' : 'sky'}
+                  />
+                  <View style={styles.achievementCopy}>
+                    <Text style={styles.achievementTitle}>{achievement.title}</Text>
+                    <Text style={styles.achievementBody}>{achievement.body}</Text>
+                  </View>
+                  <GameBadge
+                    label={achievement.unlocked ? 'Unlocked' : 'Locked'}
+                    tone={achievement.unlocked ? 'gold' : 'muted'}
+                  />
+                </View>
+                <ProgressBar
+                  current={achievement.current}
+                  label={`${Math.min(achievement.current, achievement.target)}/${achievement.target}`}
+                  max={achievement.target}
+                />
+              </GamePanel>
+            </Animated.View>
+          ))}
+        </View>
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Chest Rarity</Text>
@@ -471,6 +512,32 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontSize: 22,
     fontWeight: '900',
+  },
+  achievementList: {
+    gap: spacing.sm,
+  },
+  achievementCard: {
+    gap: spacing.sm,
+  },
+  achievementHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  achievementCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  achievementTitle: {
+    color: colors.ink,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  achievementBody: {
+    color: colors.muted,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 2,
   },
   rarityPanel: {
     gap: spacing.sm,
