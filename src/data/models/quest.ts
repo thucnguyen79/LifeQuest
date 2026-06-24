@@ -21,6 +21,7 @@ export type Quest = {
   estimatedMinutes?: number;
   bonusObjective?: string;
   bonusCompleted?: boolean;
+  rerolledAt?: string;
   status: QuestStatus;
   completedAt?: string;
 };

@@ -57,9 +57,11 @@ export default function DashboardScreen() {
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
   const dailyAdventure = useLifeQuestStore((state) => state.dailyAdventure);
   const dailyBoss = useLifeQuestStore((state) => state.dailyBoss);
+  const shopInventory = useLifeQuestStore((state) => state.shopInventory);
   const rewardFeedback = useLifeQuestStore((state) => state.rewardFeedback);
   const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const completeQuest = useLifeQuestStore((state) => state.completeQuest);
+  const rerollQuest = useLifeQuestStore((state) => state.rerollQuest);
   const selectDailyAdventureZone = useLifeQuestStore((state) => state.selectDailyAdventureZone);
   const dismissRewardFeedback = useLifeQuestStore((state) => state.dismissRewardFeedback);
 
@@ -228,6 +230,11 @@ export default function DashboardScreen() {
               Longest streak: {streakSummary.longestStreak} days
               {streakSummary.lastCompletedDate ? ` / Last: ${streakSummary.lastCompletedDate}` : ''}
             </Text>
+            <Text style={styles.inventoryHint}>
+              {shopInventory.streakFreeze > 0
+                ? `${shopInventory.streakFreeze} freeze ready`
+                : 'No streak freeze stored'}
+            </Text>
           </View>
         </View>
 
@@ -275,6 +282,7 @@ export default function DashboardScreen() {
                     {quest.estimatedMinutes ? (
                       <GameBadge label={`${quest.estimatedMinutes} min`} tone="muted" />
                     ) : null}
+                    {quest.rerolledAt ? <GameBadge label="rerolled" tone="accent" /> : null}
                   </View>
                   {quest.bonusObjective ? (
                     <Text style={styles.questBonus}>Bonus: {quest.bonusObjective}</Text>
@@ -290,13 +298,22 @@ export default function DashboardScreen() {
                     <Text style={styles.questStatusText}>Missed</Text>
                   </View>
                 ) : (
-                  <Pressable onPress={() => completeQuest(quest.id)} style={styles.completeButton}>
-                    <Text adjustsFontSizeToFit numberOfLines={1} style={styles.completeButtonText}>
-                      {(quest.progressCount ?? 0) + 1 >= (quest.targetCount ?? 1)
-                        ? 'Complete'
-                        : 'Add Progress'}
-                    </Text>
-                  </Pressable>
+                  <View style={styles.questActions}>
+                    {shopInventory.questReroll > 0 && !quest.rerolledAt ? (
+                      <Pressable onPress={() => rerollQuest(quest.id)} style={styles.rerollButton}>
+                        <Text adjustsFontSizeToFit numberOfLines={1} style={styles.rerollButtonText}>
+                          Reroll ({shopInventory.questReroll})
+                        </Text>
+                      </Pressable>
+                    ) : null}
+                    <Pressable onPress={() => completeQuest(quest.id)} style={styles.completeButton}>
+                      <Text adjustsFontSizeToFit numberOfLines={1} style={styles.completeButtonText}>
+                        {(quest.progressCount ?? 0) + 1 >= (quest.targetCount ?? 1)
+                          ? 'Complete'
+                          : 'Add Progress'}
+                      </Text>
+                    </Pressable>
+                  </View>
                 )}
               </Animated.View>
             ))}
@@ -751,6 +768,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
   },
+  inventoryHint: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '900',
+  },
   questList: {
     gap: spacing.sm,
   },
@@ -828,6 +850,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 40,
     paddingHorizontal: spacing.md,
+  },
+  questActions: {
+    gap: spacing.xs,
+    minWidth: 104,
+  },
+  rerollButton: {
+    alignItems: 'center',
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minHeight: 36,
+    paddingHorizontal: spacing.sm,
+  },
+  rerollButtonText: {
+    color: colors.ink,
+    fontSize: 12,
+    fontWeight: '900',
   },
   completeButtonText: {
     color: colors.surface,

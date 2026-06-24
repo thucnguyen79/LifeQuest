@@ -52,7 +52,7 @@ Implemented:
 - Map node progress generated from quest progress and completion, with zone focus bonuses for matching quest categories
 - Adventure Map Scout/Trial/Gate/Boss node layers and Matched/Base/Bonus progress stats
 - Daily Boss HP, quest damage, Adventure Map boss gate, and Boss Chest bonus coins
-- Reward Shop with Pet Food, Streak Freeze, Quest Reroll, local inventory, and Pet Food bond XP effect
+- Reward Shop with persistent inventory and active Pet Food, Streak Freeze, and Quest Reroll effects
 - Companion-screen Pet Care controls with Pet Food inventory, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states
 - Domain models for Player, Habit, Quest, Streak, and Pet
 - SQLite schema and repository foundation
@@ -125,4 +125,4 @@ Notes:
 
 ## Recommended Next Task
 
-Continue with Shop Item Effects v1: make Quest Reroll and Streak Freeze affect gameplay in small, testable ways. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue with Chest Rarity v1: turn Daily and Boss Chest rewards into clear Common, Rare, and Epic tiers. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

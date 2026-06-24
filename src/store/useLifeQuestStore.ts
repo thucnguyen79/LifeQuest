@@ -5,6 +5,7 @@ import { playerRepository } from '@/data/repositories/playerRepository';
 import { dailyChestRepository } from '@/data/repositories/dailyChestRepository';
 import { dailyAdventureRepository } from '@/data/repositories/dailyAdventureRepository';
 import { petRepository } from '@/data/repositories/petRepository';
+import { questRepository } from '@/data/repositories/questRepository';
 import { shopInventoryRepository } from '@/data/repositories/shopInventoryRepository';
 import { streakSummaryRepository } from '@/data/repositories/streakSummaryRepository';
 import type { AdventureZoneId, DailyAdventure } from '@/data/models/adventure';
@@ -23,6 +24,7 @@ import type { DailyBossState } from '@/features/boss/dailyBoss';
 import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
 import { getTodayDateKey } from '@/features/quests/dateUtils';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
+import { rerollPendingQuest } from '@/features/quests/rerollQuest';
 import { getDailyChestState } from '@/features/rewards/dailyChest';
 import type { DailyChestState } from '@/features/rewards/dailyChest';
 import {
@@ -75,6 +77,7 @@ type LifeQuestState = {
   selectDailyAdventureZone: (zoneId: AdventureZoneId) => void;
   claimDailyChest: () => void;
   purchaseShopItem: (itemId: ShopItemId) => void;
+  rerollQuest: (questId: string) => void;
   useShopItem: (itemId: ShopItemId) => void;
   dismissRewardFeedback: () => void;
   setDraftPlayerName: (name: string) => void;
@@ -220,7 +223,12 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         };
       }
 
-      const streakResult = advanceDailyStreak(state.streakSummary, result.quest.date);
+      const streakResult = advanceDailyStreak(
+        state.streakSummary,
+        result.quest.date,
+        state.shopInventory.streakFreeze > 0,
+        state.player.selectedClass === 'monk' ? 2 : 1,
+      );
       const nextPetXp = state.activePet.xp + result.xpGained;
       const nextPet: Pet = {
         ...state.activePet,
@@ -230,12 +238,18 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         growthStage: calculatePetGrowthStage(nextPetXp),
       };
       const nextStreakSummary = streakResult.summary;
+      const nextInventory = streakResult.usedStreakFreeze
+        ? removeShopItem(state.shopInventory, 'streakFreeze')
+        : state.shopInventory;
       const dailyQuests = generateDailyQuests();
       const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), result.player);
       const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
 
       petRepository.upsert(nextPet);
       streakSummaryRepository.upsert(nextStreakSummary);
+      if (streakResult.usedStreakFreeze) {
+        shopInventoryRepository.upsert(nextInventory);
+      }
 
       return {
         player: result.player,
@@ -244,15 +258,21 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), result.player, dailyBoss),
         dailyQuests,
         streakSummary: nextStreakSummary,
+        shopInventory: nextInventory,
         activePet: nextPet,
         rewardFeedback: {
           id: `${result.quest.id}-${result.quest.completedAt}`,
           coinsGained: result.coinsGained,
+          body: streakResult.usedStreakFreeze
+            ? 'Streak Freeze protected your streak across the missed day gap.'
+            : undefined,
           title: result.leveledUp
             ? 'Level Up'
-            : result.classBonusLabels.length > 0
-              ? 'Class Bonus'
-              : 'Quest Complete',
+            : streakResult.usedStreakFreeze
+              ? 'Streak Protected'
+              : result.classBonusLabels.length > 0
+                ? 'Class Bonus'
+                : 'Quest Complete',
           type: result.leveledUp ? 'levelUp' : 'quest',
           newLevel: result.newLevel,
           previousLevel: result.previousLevel,
@@ -351,6 +371,50 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
           id: `shop-buy-${item.id}-${Date.now()}`,
           leveledUp: false,
           title: 'Item Purchased',
+          type: 'shop',
+          xpGained: 0,
+        },
+      };
+    });
+  },
+  rerollQuest: (questId: string) => {
+    set((state) => {
+      if (state.shopInventory.questReroll <= 0) {
+        return state;
+      }
+
+      const currentQuest = questRepository.getById(questId);
+
+      if (!currentQuest) {
+        return state;
+      }
+
+      const result = rerollPendingQuest(currentQuest);
+
+      if (!result.rerolled) {
+        return state;
+      }
+
+      const nextInventory = removeShopItem(state.shopInventory, 'questReroll');
+      questRepository.upsert(result.quest);
+      shopInventoryRepository.upsert(nextInventory);
+
+      const dailyQuests = generateDailyQuests();
+      const dailyAdventure = createDailyAdventureState(dailyQuests, getTodayDateKey(), state.player);
+      const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
+
+      return {
+        dailyAdventure,
+        dailyBoss,
+        dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), state.player, dailyBoss),
+        dailyQuests,
+        shopInventory: nextInventory,
+        rewardFeedback: {
+          body: `${result.quest.title} now has a lighter daily target.`,
+          coinsGained: 0,
+          id: `shop-use-questReroll-${Date.now()}`,
+          leveledUp: false,
+          title: 'Quest Rerolled',
           type: 'shop',
           xpGained: 0,
         },

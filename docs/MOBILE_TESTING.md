@@ -59,6 +59,24 @@ Known MVP behavior:
 - Notification channel is configured as `habit-reminders`.
 - Sound effects are still a placeholder toggle.
 
+## Shop Item Effects QA
+
+Quest Reroll:
+
+1. Earn at least 18 coins and buy Quest Reroll in Rewards.
+2. Return to Dashboard and choose `Reroll` on a pending quest.
+3. Confirm the item count decreases by one and the quest receives a `rerolled` badge.
+4. Confirm target count, energy, or estimated time becomes lighter without losing progress.
+5. Confirm the same quest cannot be rerolled twice.
+
+Streak Freeze:
+
+1. Earn at least 25 coins and buy Streak Freeze in Rewards.
+2. Confirm Dashboard shows the stored freeze count in the Streak card.
+3. Skip one calendar day, then complete a quest on the following day.
+4. Confirm the streak continues, one freeze is consumed, and `Streak Protected` feedback appears.
+5. For Monk, repeat with up to two skipped days; other classes only protect one skipped day.
+
 ## Build Readiness Checks
 
 Run these before creating a dev build or handing the repo to another machine:

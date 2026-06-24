@@ -96,7 +96,7 @@ const currentLoop: GuideCard[] = [
     title: 'Claim Rewards',
   },
   {
-    body: 'Spend coins on Pet Food, Streak Freeze, and Quest Reroll inventory. Pet Food can feed Mochi now.',
+    body: 'Spend coins on Pet Food, Streak Freeze, and Quest Reroll. Feed Mochi in Companion, reroll pending quests on Dashboard, and let a freeze protect a one-day streak gap automatically.',
     icon: 'coin',
     title: 'Use Reward Shop',
   },

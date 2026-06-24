@@ -28,7 +28,7 @@ export const classSkillInfo: Record<PlayerClass, ClassSkillInfo> = {
     name: 'Insight',
   },
   monk: {
-    activeEffect: 'Streak shield foundation. Shield spending arrives with inventory.',
+    activeEffect: 'Streak Freeze protects up to two missed days instead of one.',
     futureTradeoff: 'More forgiving consistency, but slower burst progression.',
     name: 'Calm Mind',
   },

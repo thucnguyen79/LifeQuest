@@ -131,6 +131,7 @@ Task 26 quest quality v1:
 - Daily Boss v1 is implemented with boss HP from today's quest load, quest progress damage, Adventure Map gate locking, and Boss Chest bonus coins.
 - Reward Shop v1 is implemented with Pet Food, Streak Freeze, and Quest Reroll purchases, local inventory persistence, and Pet Food feeding Mochi for bond XP.
 - Pet Interaction v1 is implemented with Companion-screen feeding controls, Pet Food inventory display, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states.
+- Shop Item Effects v1 is implemented: Quest Reroll lightens one pending quest, Streak Freeze auto-protects a missed-day gap, and Monk extends freeze protection to two missed days.
 
 Latest checks:
 
@@ -141,14 +142,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Shop Item Effects v1
+## Next Task: Chest Rarity v1
 
 Recommended next steps:
 
-- Make Quest Reroll affect one pending quest.
-- Make Streak Freeze interact with missed-day streak protection.
-- Keep each item effect small and testable.
-- Surface usable item actions in the relevant screen, not only in Rewards.
+- Add Common, Rare, and Epic chest tiers.
+- Derive chest rarity from daily clear, boss defeat, and streak context.
+- Keep random rewards bounded and deterministic enough to test.
+- Show reward odds/tier clearly before claiming.
 
 ## Later MVP Tasks
 

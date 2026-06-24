@@ -17,6 +17,7 @@ type QuestRow = {
   estimated_minutes: number | null;
   bonus_objective: string | null;
   bonus_completed: number;
+  rerolled_at: string | null;
   status: QuestStatus;
   completed_at: string | null;
 };
@@ -37,6 +38,7 @@ function toQuest(row: QuestRow): Quest {
     estimatedMinutes: row.estimated_minutes ?? undefined,
     bonusObjective: row.bonus_objective ?? undefined,
     bonusCompleted: row.bonus_completed === 1,
+    rerolledAt: row.rerolled_at ?? undefined,
     status: row.status,
     completedAt: row.completed_at ?? undefined,
   };
@@ -87,9 +89,10 @@ export const questRepository = {
         estimated_minutes,
         bonus_objective,
         bonus_completed,
+        rerolled_at,
         status,
         completed_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       quest.id,
       quest.habitId,
@@ -105,6 +108,7 @@ export const questRepository = {
       quest.estimatedMinutes ?? null,
       quest.bonusObjective ?? null,
       quest.bonusCompleted ? 1 : 0,
+      quest.rerolledAt ?? null,
       quest.status,
       quest.completedAt ?? null,
     );

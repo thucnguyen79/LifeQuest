@@ -27,6 +27,7 @@ function readQuests() {
     energy: quest.energy ?? 'medium',
     priority: quest.priority ?? 'normal',
     progressCount: quest.progressCount ?? (quest.status === 'completed' ? quest.targetCount ?? 1 : 0),
+    rerolledAt: quest.rerolledAt ?? undefined,
     targetCount: quest.targetCount ?? 1,
   }));
 }

@@ -332,6 +332,17 @@ Completion note: Added Pet Care controls to the Companion screen, displayed Pet 
 - Keep each item effect small and testable
 - Surface usable item actions in the relevant screen, not only in Rewards
 
+Status: Done
+
+Completion note: Added a persisted one-time reroll state to quests, a Dashboard Reroll action that lowers target count, energy, and estimated time without losing progress, automatic Streak Freeze consumption across a one-day gap, a two-day protection window for Monk, inventory feedback on Dashboard, SQLite schema v5 migration, and focused domain tests.
+
+## 32. Chest Rarity v1
+
+- Add Common, Rare, and Epic chest tiers
+- Derive rarity from daily clear, boss defeat, and streak context
+- Use bounded rewards that remain straightforward to test
+- Show chest tier and reward context before claiming
+
 Status: Pending
 
 ## Build Rules

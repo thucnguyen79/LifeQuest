@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const databaseName = 'lifequest.db';
-const schemaVersion = 4;
+const schemaVersion = 5;
 
 let database: SQLite.SQLiteDatabase | null = null;
 let initialized = false;
@@ -78,6 +78,7 @@ export function initializeLocalDatabase() {
       estimated_minutes INTEGER,
       bonus_objective TEXT,
       bonus_completed INTEGER NOT NULL DEFAULT 0,
+      rerolled_at TEXT,
       status TEXT NOT NULL,
       completed_at TEXT,
       FOREIGN KEY (habit_id) REFERENCES habits (id) ON DELETE CASCADE
@@ -166,6 +167,10 @@ export function initializeLocalDatabase() {
 
   if (!questColumnNames.has('bonus_completed')) {
     db.execSync('ALTER TABLE quests ADD COLUMN bonus_completed INTEGER NOT NULL DEFAULT 0');
+  }
+
+  if (!questColumnNames.has('rerolled_at')) {
+    db.execSync('ALTER TABLE quests ADD COLUMN rerolled_at TEXT');
   }
 
   db.runSync(
