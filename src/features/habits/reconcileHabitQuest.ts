@@ -21,7 +21,7 @@ function isHabitDueOnDate(habit: Habit, dateKey: string) {
   return habit.selectedWeekdays.includes(weekday);
 }
 
-function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
+function createQuestFromHabit(habit: Habit, dateKey: string, existingQuest?: Quest | null): Quest {
   const targetCount = Math.max(habit.targetCount ?? 1, 1);
 
   return {
@@ -36,7 +36,7 @@ function createQuestFromHabit(habit: Habit, dateKey: string): Quest {
     energy: habit.energy ?? 'medium',
     estimatedMinutes: habit.estimatedMinutes,
     bonusObjective: habit.bonusObjective,
-    bonusCompleted: false,
+    bonusCompleted: existingQuest?.bonusCompleted ?? false,
     status: 'pending',
     title: habit.title,
     xpReward: xpRewardByDifficulty[habit.difficulty],
@@ -58,7 +58,7 @@ export function reconcileHabitQuestForDate(habit: Habit, dateKey = getTodayDateK
     return null;
   }
 
-  const nextQuest = createQuestFromHabit(habit, dateKey);
+  const nextQuest = createQuestFromHabit(habit, dateKey, existingQuest);
   questRepository.upsert(nextQuest);
   return nextQuest;
 }

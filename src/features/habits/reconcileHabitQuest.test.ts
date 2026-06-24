@@ -115,6 +115,24 @@ describe('reconcileHabitQuestForDate', () => {
     expect(mocks.remove).not.toHaveBeenCalled();
   });
 
+  it('preserves a claimed bonus when the pending habit is edited', () => {
+    mocks.questById = createQuest({
+      bonusCompleted: true,
+      bonusObjective: 'No phone',
+    });
+
+    const result = reconcileHabitQuestForDate(
+      createHabit({ bonusObjective: 'Use paper notes', title: 'Read deeply' }),
+      '2026-06-16',
+    );
+
+    expect(result).toMatchObject({
+      bonusCompleted: true,
+      bonusObjective: 'Use paper notes',
+      title: 'Read deeply',
+    });
+  });
+
   it('removes today pending quest when selected weekdays no longer include today', () => {
     mocks.questById = createQuest();
 

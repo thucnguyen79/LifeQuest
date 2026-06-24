@@ -52,6 +52,7 @@ function createPlayer(selectedClass: Player['selectedClass']): Player {
 
 function createBoss(overrides: Partial<DailyBossState> = {}): DailyBossState {
   return {
+    bonusDamage: 0,
     currentHp: 0,
     damage: 20,
     date: '2026-06-16',

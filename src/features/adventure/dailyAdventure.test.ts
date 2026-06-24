@@ -75,7 +75,22 @@ describe('daily adventure', () => {
 
     expect(summary.baseProgress).toBe(2);
     expect(summary.bonusProgress).toBe(1);
+    expect(summary.routeBonusProgress).toBe(1);
+    expect(summary.objectiveBonusProgress).toBe(0);
     expect(summary.nodeProgress).toBe(3);
     expect(summary.matchedQuestCount).toBe(1);
+  });
+
+  it('adds one map progress for each completed bonus objective', () => {
+    const summary = calculateAdventureQuestSummary(
+      [{ ...baseQuest, bonusCompleted: true, bonusObjective: 'No phone', progressCount: 1 }],
+      4,
+      'forestOfFocus',
+    );
+
+    expect(summary.baseProgress).toBe(1);
+    expect(summary.objectiveBonusProgress).toBe(1);
+    expect(summary.bonusProgress).toBe(1);
+    expect(summary.nodeProgress).toBe(2);
   });
 });

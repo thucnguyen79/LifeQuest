@@ -83,6 +83,11 @@ const currentLoop: GuideCard[] = [
     title: 'Clear Daily Quests',
   },
   {
+    body: 'Claim optional bonus objectives separately for +5 XP, +2 coins, +1 map progress, and +2 boss damage.',
+    icon: 'scroll',
+    title: 'Pursue Bonus Objectives',
+  },
+  {
     body: 'Choose a daily zone. Quest progress clears map nodes and unlocks the next reward layer.',
     icon: 'compass',
     title: 'Advance The Map',

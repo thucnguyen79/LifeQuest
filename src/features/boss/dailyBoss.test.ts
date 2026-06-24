@@ -61,4 +61,15 @@ describe('getDailyBossState', () => {
     expect(boss.currentHp).toBe(0);
     expect(boss.unlocksRareChest).toBe(true);
   });
+
+  it('adds bounded damage for a completed bonus objective', () => {
+    const boss = getDailyBossState(
+      '2026-06-18',
+      [{ ...baseQuest, bonusCompleted: true, progressCount: 1 }],
+      adventure,
+    );
+
+    expect(boss.bonusDamage).toBe(2);
+    expect(boss.damage).toBe(8);
+  });
 });

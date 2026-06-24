@@ -128,6 +128,16 @@ export const questRepository = {
     getDatabase().runSync('UPDATE quests SET progress_count = ? WHERE id = ?', progressCount, id);
   },
 
+  updateBonusCompleted(id: string, bonusCompleted: boolean) {
+    initializeLocalDatabase();
+
+    getDatabase().runSync(
+      'UPDATE quests SET bonus_completed = ? WHERE id = ?',
+      bonusCompleted ? 1 : 0,
+      id,
+    );
+  },
+
   updateStatus(id: string, status: QuestStatus, completedAt?: string) {
     initializeLocalDatabase();
 

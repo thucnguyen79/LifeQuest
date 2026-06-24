@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Gameplay tasks are implemented through Task 33, Milestones and Achievements v1. Task 23 Native Device QA remains pending.
+Gameplay tasks are implemented through Task 34, Bonus Objective Rewards v1. Task 23 Native Device QA remains pending.
 
 Implemented:
 
@@ -54,6 +54,7 @@ Implemented:
 - Daily Boss HP, quest damage, Adventure Map boss gate, and Rare chest unlock
 - Common, Rare, and Epic chests with bounded deterministic coin rolls and streak conditions
 - Persistent achievement badges for streak, Learning quests, pet level, and lifetime coins
+- Optional bonus objective claims with bounded XP, coin, map, and boss rewards
 - Reward Shop with persistent inventory and active Pet Food, Streak Freeze, and Quest Reroll effects
 - Companion-screen Pet Care controls with Pet Food inventory, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states
 - Domain models for Player, Habit, Quest, Streak, and Pet
@@ -127,4 +128,4 @@ Notes:
 
 ## Recommended Next Task
 
-Continue with Bonus Objective Rewards v1: let optional habit objectives grant controlled XP, coin, and adventure bonuses. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue with Cosmetic Rewards v1: add earnable pet skins, class badges, and profile frames without changing gameplay balance. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

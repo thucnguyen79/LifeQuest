@@ -17,8 +17,16 @@ import { getHabitCategoryLabel } from '@/core/constants/habitOptions';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
 import type { PlayerClass } from '@/data/models/player';
-import { calculateAdventureQuestSummary } from '@/features/adventure/dailyAdventure';
+import {
+  bonusObjectiveMapProgress,
+  calculateAdventureQuestSummary,
+} from '@/features/adventure/dailyAdventure';
+import { bonusObjectiveBossDamage } from '@/features/boss/dailyBoss';
 import { classSkillInfo } from '@/features/classes/classSkills';
+import {
+  bonusObjectiveCoinReward,
+  bonusObjectiveXpReward,
+} from '@/features/quests/completeBonusObjective';
 import {
   chestRarityLabels,
   epicChestStreakRequirement,
@@ -65,6 +73,7 @@ export default function DashboardScreen() {
   const rewardFeedback = useLifeQuestStore((state) => state.rewardFeedback);
   const generateTodayQuests = useLifeQuestStore((state) => state.generateTodayQuests);
   const completeQuest = useLifeQuestStore((state) => state.completeQuest);
+  const completeBonusObjective = useLifeQuestStore((state) => state.completeBonusObjective);
   const rerollQuest = useLifeQuestStore((state) => state.rerollQuest);
   const selectDailyAdventureZone = useLifeQuestStore((state) => state.selectDailyAdventureZone);
   const dismissRewardFeedback = useLifeQuestStore((state) => state.dismissRewardFeedback);
@@ -289,7 +298,35 @@ export default function DashboardScreen() {
                     {quest.rerolledAt ? <GameBadge label="rerolled" tone="accent" /> : null}
                   </View>
                   {quest.bonusObjective ? (
-                    <Text style={styles.questBonus}>Bonus: {quest.bonusObjective}</Text>
+                    <View style={styles.questBonusPanel}>
+                      <View style={styles.questBonusHeader}>
+                        <Text style={styles.questBonusLabel}>Bonus Objective</Text>
+                        <GameBadge
+                          label={
+                            quest.bonusCompleted
+                              ? 'Claimed'
+                              : quest.status === 'missed'
+                                ? 'Forfeited'
+                                : 'Optional'
+                          }
+                          tone={quest.bonusCompleted ? 'gold' : 'muted'}
+                        />
+                      </View>
+                      <Text style={styles.questBonus}>{quest.bonusObjective}</Text>
+                      <View style={styles.questBonusFooter}>
+                        <Text style={styles.questBonusReward}>
+                          {`+${bonusObjectiveXpReward} XP / +${bonusObjectiveCoinReward} coins / +${bonusObjectiveMapProgress} map / +${bonusObjectiveBossDamage} boss`}
+                        </Text>
+                        {!quest.bonusCompleted && quest.status !== 'missed' ? (
+                          <Pressable
+                            onPress={() => completeBonusObjective(quest.id)}
+                            style={styles.bonusButton}
+                          >
+                            <Text style={styles.bonusButtonText}>Claim Bonus</Text>
+                          </Pressable>
+                        ) : null}
+                      </View>
+                    </View>
                   ) : null}
                 </View>
                 {quest.status === 'completed' ? (
@@ -451,7 +488,7 @@ export default function DashboardScreen() {
                 current={dailyBoss.damage}
                 label={
                   dailyBoss.maxHp > 0
-                    ? `${dailyBoss.damage}/${dailyBoss.maxHp} damage / ${dailyBoss.currentHp} HP left`
+                    ? `${dailyBoss.damage}/${dailyBoss.maxHp} damage / ${dailyBoss.currentHp} HP left${dailyBoss.bonusDamage > 0 ? ` / +${dailyBoss.bonusDamage} bonus` : ''}`
                     : 'Create quests to summon a daily boss'
                 }
                 max={dailyBoss.maxHp}
@@ -823,7 +860,57 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     lineHeight: 17,
-    marginTop: spacing.xs,
+  },
+  questBonusPanel: {
+    backgroundColor: colors.panel,
+    borderColor: colors.gold,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.xs,
+    marginTop: spacing.sm,
+    padding: spacing.sm,
+  },
+  questBonusHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+  },
+  questBonusLabel: {
+    color: colors.accent,
+    flex: 1,
+    fontSize: 11,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  questBonusFooter: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    justifyContent: 'space-between',
+  },
+  questBonusReward: {
+    color: colors.muted,
+    flex: 1,
+    fontSize: 11,
+    fontWeight: '800',
+    minWidth: 140,
+  },
+  bonusButton: {
+    alignItems: 'center',
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minHeight: 34,
+    paddingHorizontal: spacing.sm,
+  },
+  bonusButtonText: {
+    color: colors.ink,
+    fontSize: 11,
+    fontWeight: '900',
   },
   questStatus: {
     alignItems: 'center',

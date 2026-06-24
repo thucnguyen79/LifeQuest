@@ -5,6 +5,7 @@ import type { Quest } from '@/data/models/quest';
 export type DailyBossStatus = 'active' | 'defeated' | 'locked';
 
 export type DailyBossState = {
+  bonusDamage: number;
   currentHp: number;
   damage: number;
   date: string;
@@ -17,6 +18,7 @@ export type DailyBossState = {
 
 const damagePerProgress = 6;
 const completionDamageBonus = 4;
+export const bonusObjectiveBossDamage = 2;
 function getBossName(adventure: DailyAdventure) {
   const zone = getAdventureZone(adventure.zoneId);
 
@@ -30,7 +32,7 @@ function calculateBossMaxHp(quests: Quest[]) {
 }
 
 function calculateBossDamage(quests: Quest[]) {
-  return quests.reduce((total, quest) => {
+  const baseDamage = quests.reduce((total, quest) => {
     const targetCount = Math.max(quest.targetCount ?? 1, 1);
     const progressCount =
       quest.status === 'completed' ? targetCount : Math.min(quest.progressCount ?? 0, targetCount);
@@ -39,6 +41,8 @@ function calculateBossDamage(quests: Quest[]) {
 
     return total + progressDamage + completionBonus;
   }, 0);
+
+  return baseDamage + quests.filter((quest) => quest.bonusCompleted).length * bonusObjectiveBossDamage;
 }
 
 export function getDailyBossState(
@@ -48,12 +52,14 @@ export function getDailyBossState(
 ): DailyBossState {
   const maxHp = calculateBossMaxHp(quests);
   const rawDamage = calculateBossDamage(quests);
+  const bonusDamage = quests.filter((quest) => quest.bonusCompleted).length * bonusObjectiveBossDamage;
   const unlocked = adventure.cleared && quests.length > 0;
   const damage = unlocked ? Math.min(rawDamage, maxHp) : 0;
   const defeated = unlocked && maxHp > 0 && damage >= maxHp;
   const zone = getAdventureZone(adventure.zoneId);
 
   return {
+    bonusDamage,
     currentHp: Math.max(maxHp - damage, 0),
     damage,
     date,

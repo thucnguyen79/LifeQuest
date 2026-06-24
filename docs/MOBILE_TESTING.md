@@ -95,6 +95,16 @@ Streak Freeze:
 5. Reload the app and confirm unlocked badges remain unlocked.
 6. Open Codex and confirm the same progress and unlock states appear there.
 
+## Bonus Objective QA
+
+1. Create or edit a habit and enter a Bonus objective.
+2. Open Dashboard and confirm the quest shows an Optional bonus with its reward breakdown.
+3. Claim the bonus before or after completing the base quest.
+4. Confirm +5 XP, +2 coins, +1 map progress, and +2 boss damage feedback.
+5. Confirm the bonus changes to Claimed and cannot be claimed twice.
+6. Edit the habit again and confirm the claimed state remains intact.
+7. Let a bonus quest become missed and confirm its bonus is forfeited.
+
 ## Build Readiness Checks
 
 Run these before creating a dev build or handing the repo to another machine:

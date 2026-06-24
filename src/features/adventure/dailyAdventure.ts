@@ -14,8 +14,12 @@ export type AdventureQuestSummary = AdventureProgress & {
   bonusProgress: number;
   matchedQuestCount: number;
   nextNodeIndex: number;
+  objectiveBonusProgress: number;
   rawProgress: number;
+  routeBonusProgress: number;
 };
+
+export const bonusObjectiveMapProgress = 1;
 
 export function getDefaultAdventureZone(player?: Player | null): AdventureZoneId {
   return player ? defaultZoneByClass[player.selectedClass] : 'explorerTrail';
@@ -66,11 +70,14 @@ export function calculateAdventureQuestSummary(
   const matchedQuestCount = zone
     ? quests.filter((quest) => zone.focusCategories.includes(quest.category)).length
     : 0;
-  const bonusProgress = zone
+  const routeBonusProgress = zone
     ? quests.filter(
         (quest) => quest.status === 'completed' && zone.focusCategories.includes(quest.category),
       ).length
     : 0;
+  const objectiveBonusProgress =
+    quests.filter((quest) => quest.bonusCompleted).length * bonusObjectiveMapProgress;
+  const bonusProgress = routeBonusProgress + objectiveBonusProgress;
   const rawProgress = baseProgress + bonusProgress;
   const nodeProgress = Math.min(rawProgress, nodeTarget);
 
@@ -82,7 +89,9 @@ export function calculateAdventureQuestSummary(
     nextNodeIndex: Math.min(nodeProgress + 1, nodeTarget),
     nodeProgress,
     nodeTarget,
+    objectiveBonusProgress,
     rawProgress,
+    routeBonusProgress,
   };
 }
 

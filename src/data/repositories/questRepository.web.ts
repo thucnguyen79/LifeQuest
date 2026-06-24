@@ -87,6 +87,14 @@ export const questRepository = {
     );
   },
 
+  updateBonusCompleted(id: string, bonusCompleted: boolean) {
+    writeQuests(
+      readQuests().map((quest) =>
+        quest.id === id ? { ...quest, bonusCompleted } : quest,
+      ),
+    );
+  },
+
   removeForDate(date: string) {
     writeQuests(readQuests().filter((quest) => quest.date !== date));
   },

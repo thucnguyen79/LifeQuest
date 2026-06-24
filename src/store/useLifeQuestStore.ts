@@ -25,13 +25,15 @@ import { syncHabitReminderNotifications } from '@/features/notifications/habitRe
 import { createInitialPlayer } from '@/features/player/createInitialPlayer';
 import type { Player, PlayerClass } from '@/features/player/types';
 import {
+  bonusObjectiveMapProgress,
   createDailyAdventure,
   getDefaultAdventureZone,
   syncDailyAdventureProgress,
 } from '@/features/adventure/dailyAdventure';
-import { getDailyBossState } from '@/features/boss/dailyBoss';
+import { bonusObjectiveBossDamage, getDailyBossState } from '@/features/boss/dailyBoss';
 import type { DailyBossState } from '@/features/boss/dailyBoss';
 import { completeQuest as completeQuestWithRewards } from '@/features/quests/completeQuest';
+import { completeBonusObjective as completeBonusObjectiveWithRewards } from '@/features/quests/completeBonusObjective';
 import { getTodayDateKey } from '@/features/quests/dateUtils';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
 import { rerollPendingQuest } from '@/features/quests/rerollQuest';
@@ -86,6 +88,7 @@ type LifeQuestState = {
   hydrateFromLocal: () => void;
   generateTodayQuests: () => void;
   completeQuest: (questId: string) => void;
+  completeBonusObjective: (questId: string) => void;
   selectDailyAdventureZone: (zoneId: AdventureZoneId) => void;
   claimDailyChest: () => void;
   purchaseShopItem: (itemId: ShopItemId) => void;
@@ -369,6 +372,66 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
           previousLevel: result.previousLevel,
           xpGained: result.xpGained,
           leveledUp: result.leveledUp,
+        },
+      };
+    });
+  },
+  completeBonusObjective: (questId: string) => {
+    set((state) => {
+      if (!state.player) {
+        return state;
+      }
+
+      const result = completeBonusObjectiveWithRewards(state.player, questId);
+
+      if (!result) {
+        return state;
+      }
+
+      const dailyQuests = generateDailyQuests();
+      const dailyAdventure = createDailyAdventureState(
+        dailyQuests,
+        getTodayDateKey(),
+        result.player,
+      );
+      const dailyBoss = createDailyBossState(dailyQuests, getTodayDateKey(), dailyAdventure);
+      const achievementProgress = addLifetimeCoins(
+        state.achievementProgress,
+        result.coinsGained,
+      );
+      const achievementResult = createAchievementState(
+        achievementProgress,
+        result.player,
+        state.activePet,
+        state.streakSummary,
+      );
+      const newAchievementLabel = getNewAchievementLabel(achievementResult);
+
+      achievementProgressRepository.upsert(achievementResult.record);
+
+      return {
+        achievementProgress: achievementResult.record,
+        achievements: achievementResult.achievements,
+        dailyAdventure,
+        dailyBoss,
+        dailyChest: createDailyChestState(
+          dailyQuests,
+          getTodayDateKey(),
+          result.player,
+          dailyBoss,
+        ),
+        dailyQuests,
+        player: result.player,
+        rewardFeedback: {
+          body: `+${bonusObjectiveMapProgress} map progress / +${bonusObjectiveBossDamage} boss damage.${newAchievementLabel ? ` Achievement unlocked: ${newAchievementLabel}.` : ''}`,
+          coinsGained: result.coinsGained,
+          id: `bonus-${result.quest.id}-${Date.now()}`,
+          leveledUp: result.leveledUp,
+          newLevel: result.newLevel,
+          previousLevel: result.previousLevel,
+          title: result.leveledUp ? 'Level Up' : 'Bonus Objective Complete',
+          type: result.leveledUp ? 'levelUp' : 'quest',
+          xpGained: result.xpGained,
         },
       };
     });

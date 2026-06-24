@@ -365,6 +365,17 @@ Completion note: Added persisted achievement progress for a 7-day streak, 10 Lea
 - Add a small Adventure Map or boss contribution
 - Persist bonus completion and test reward rules
 
+Status: Done
+
+Completion note: Added one-time optional bonus claims before or after base quest completion, fixed +5 XP and +2 coin rewards without class/stat multipliers, +1 Adventure Map progress, +2 boss damage, lifetime coin and achievement integration, level-up feedback, edit-safe `bonusCompleted` persistence, Dashboard controls, and focused reward/map/boss/reconciliation tests.
+
+## 35. Cosmetic Rewards v1
+
+- Add earnable pet skins, class badges, and profile frames
+- Keep cosmetics visual only with no stat advantage
+- Persist owned and equipped cosmetic choices
+- Surface cosmetics in Companion and player presentation
+
 Status: Pending
 
 ## Build Rules
