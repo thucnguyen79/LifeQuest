@@ -91,7 +91,7 @@ const currentLoop: GuideCard[] = [
     title: 'Defeat Daily Boss',
   },
   {
-    body: 'Clear quests to unlock the chest. Defeat the boss first to upgrade it into a Boss Chest.',
+    body: 'Clear every quest to unlock a chest. Boss victories and streaks raise its rarity and reward range.',
     icon: 'chest',
     title: 'Claim Rewards',
   },
@@ -114,7 +114,7 @@ const comingSystems: GuideCard[] = [
     title: 'Class Skills',
   },
   {
-    body: 'Chests will roll Common, Rare, or Epic rewards. Streaks and class bonuses improve odds.',
+    body: 'Chest rarity is live: Common pays 15-18 coins, Rare pays 25-30, and Epic pays 40-48. Rewards are stable for the day, and Explorer adds +5 coins.',
     icon: 'chest',
     title: 'Chest Rarity',
   },

@@ -77,6 +77,15 @@ Streak Freeze:
 4. Confirm the streak continues, one freeze is consumed, and `Streak Protected` feedback appears.
 5. For Monk, repeat with up to two skipped days; other classes only protect one skipped day.
 
+## Chest Rarity QA
+
+1. Open Rewards before clearing quests and confirm Common shows a 15-18 coin range.
+2. Clear all quests without a boss victory or 3-day streak and claim the Common chest.
+3. Defeat the daily boss or reach a 3-day streak and confirm the chest upgrades to Rare with 25-30 coins.
+4. Defeat the boss while holding a 7-day streak and confirm Epic shows 40-48 coins.
+5. Reload before claiming and confirm the rolled reward does not change.
+6. With Explorer, confirm the final reward is 5 coins above the displayed tier roll.
+
 ## Build Readiness Checks
 
 Run these before creating a dev build or handing the repo to another machine:

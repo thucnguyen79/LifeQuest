@@ -25,7 +25,7 @@ import { completeQuest as completeQuestWithRewards } from '@/features/quests/com
 import { getTodayDateKey } from '@/features/quests/dateUtils';
 import { generateDailyQuests } from '@/features/quests/generateDailyQuests';
 import { rerollPendingQuest } from '@/features/quests/rerollQuest';
-import { getDailyChestState } from '@/features/rewards/dailyChest';
+import { chestRarityLabels, getDailyChestState } from '@/features/rewards/dailyChest';
 import type { DailyChestState } from '@/features/rewards/dailyChest';
 import {
   addShopItem,
@@ -103,8 +103,16 @@ function createDailyChestState(
   date = getTodayDateKey(),
   player?: Player | null,
   boss?: DailyBossState,
+  streakSummary = streakSummaryRepository.get(),
 ) {
-  return getDailyChestState(date, quests, dailyChestRepository.get(), player, boss);
+  return getDailyChestState(
+    date,
+    quests,
+    dailyChestRepository.get(),
+    player,
+    boss,
+    streakSummary.currentStreak,
+  );
 }
 
 function createInitialDailyAdventureState() {
@@ -255,7 +263,13 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
         player: result.player,
         dailyAdventure,
         dailyBoss,
-        dailyChest: createDailyChestState(dailyQuests, getTodayDateKey(), result.player, dailyBoss),
+        dailyChest: createDailyChestState(
+          dailyQuests,
+          getTodayDateKey(),
+          result.player,
+          dailyBoss,
+          nextStreakSummary,
+        ),
         dailyQuests,
         streakSummary: nextStreakSummary,
         shopInventory: nextInventory,
@@ -333,7 +347,8 @@ export const useLifeQuestStore = create<LifeQuestState>((set, get) => ({
           coinsGained: state.dailyChest.coinReward,
           id: `daily-chest-${state.dailyChest.date}`,
           leveledUp: false,
-          title: state.dailyChest.tier === 'boss' ? 'Boss Chest Claimed' : 'Daily Chest Claimed',
+          body: `${chestRarityLabels[state.dailyChest.tier]} reward: +${state.dailyChest.coinReward} coins.`,
+          title: `${chestRarityLabels[state.dailyChest.tier]} Chest Claimed`,
           type: 'chest',
           xpGained: 0,
         },

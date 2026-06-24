@@ -4,7 +4,7 @@ Full roadmap: [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md)
 
 ## Current Status
 
-Tasks 14-26 are implemented through Quest Quality v1.
+Gameplay tasks are implemented through Task 32, Chest Rarity v1. Task 23 Native Device QA remains pending.
 
 Task 14B/14C UI pass:
 
@@ -128,10 +128,11 @@ Task 26 quest quality v1:
 - Added SQLite/localStorage repositories for daily adventure state and focused tests for default zone/progress rules.
 - Adventure Map v1.1 adds quest category badges, zone focus bonuses, Matched/Base/Bonus progress stats, and Scout/Trial/Gate/Boss node layers.
 - Existing daily quests reconcile category metadata from their source habits so old local data does not stay stuck on placeholder categories.
-- Daily Boss v1 is implemented with boss HP from today's quest load, quest progress damage, Adventure Map gate locking, and Boss Chest bonus coins.
+- Daily Boss v1 is implemented with boss HP from today's quest load, quest progress damage, Adventure Map gate locking, and Rare chest eligibility.
 - Reward Shop v1 is implemented with Pet Food, Streak Freeze, and Quest Reroll purchases, local inventory persistence, and Pet Food feeding Mochi for bond XP.
 - Pet Interaction v1 is implemented with Companion-screen feeding controls, Pet Food inventory display, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states.
 - Shop Item Effects v1 is implemented: Quest Reroll lightens one pending quest, Streak Freeze auto-protects a missed-day gap, and Monk extends freeze protection to two missed days.
+- Chest Rarity v1 is implemented with Common/Rare/Epic conditions, bounded deterministic rolls, Explorer bonus support, and a visible rarity path in Rewards.
 
 Latest checks:
 
@@ -142,14 +143,14 @@ Latest checks:
 - Android EAS development build finished successfully.
 - Web bundle returns `200 OK`.
 
-## Next Task: Chest Rarity v1
+## Next Task: Milestones and Achievements v1
 
 Recommended next steps:
 
-- Add Common, Rare, and Epic chest tiers.
-- Derive chest rarity from daily clear, boss defeat, and streak context.
-- Keep random rewards bounded and deterministic enough to test.
-- Show reward odds/tier clearly before claiming.
+- Track persistent achievements for streak, quest category, pet level, and earned coins.
+- Start with 7-day streak, 10 Learning quests, pet level 5, and first 100 coins.
+- Show locked/unlocked badges in Rewards and Codex.
+- Keep progress counters visible and testable.
 
 ## Later MVP Tasks
 

@@ -19,6 +19,10 @@ import { spacing } from '@/core/theme/spacing';
 import type { PlayerClass } from '@/data/models/player';
 import { calculateAdventureQuestSummary } from '@/features/adventure/dailyAdventure';
 import { classSkillInfo } from '@/features/classes/classSkills';
+import {
+  chestRarityLabels,
+  epicChestStreakRequirement,
+} from '@/features/rewards/dailyChest';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
 const navItems = [
@@ -439,7 +443,7 @@ export default function DashboardScreen() {
               {dailyBoss.status === 'locked'
                 ? 'Clear the Adventure Map route to open the boss gate.'
                 : dailyBoss.status === 'defeated'
-                  ? `Defeated. Boss Chest bonus unlocked: +${dailyBoss.chestBonusCoins} coins.`
+                  ? `Defeated. Rare chest unlocked; reach a ${epicChestStreakRequirement}-day streak for Epic.`
                   : 'Quest progress deals damage. Complete every target to finish the fight.'}
             </Text>
             <View style={styles.bossProgress}>
@@ -481,16 +485,14 @@ export default function DashboardScreen() {
           <GameIcon name="chest" size={52} tone={dailyChest.status === 'available' ? 'gold' : 'sky'} />
           <View style={styles.chestCopy}>
             <Text style={styles.chestTitle}>
-              {dailyChest.tier === 'boss' ? 'Boss Chest' : 'Daily Chest'}
+              {chestRarityLabels[dailyChest.tier]} Chest
             </Text>
             <Text style={styles.chestBody}>
               {dailyChest.status === 'available'
-                ? dailyChest.tier === 'boss'
-                  ? `Ready to claim +${dailyChest.coinReward} coins, including +${dailyChest.bossBonusCoins} boss bonus`
-                  : `Ready to claim +${dailyChest.coinReward} coins`
+                ? `Ready: +${dailyChest.coinReward} coins from a ${dailyChest.rewardMin}-${dailyChest.rewardMax} roll`
                 : dailyChest.status === 'claimed'
                   ? 'Claimed for today'
-                  : `${dailyChest.completedQuestCount}/${dailyChest.totalQuestCount} quests cleared`}
+                  : `${dailyChest.completedQuestCount}/${dailyChest.totalQuestCount} quests cleared / ${dailyChest.rarityReason}`}
             </Text>
           </View>
           <GameBadge

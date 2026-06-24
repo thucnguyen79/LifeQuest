@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { DailyAdventure } from '@/data/models/adventure';
 import type { Quest } from '@/data/models/quest';
 
-import { defeatedBossChestBonusCoins, getDailyBossState } from './dailyBoss';
+import { getDailyBossState } from './dailyBoss';
 
 const adventure: DailyAdventure = {
   cleared: true,
@@ -39,7 +39,7 @@ describe('getDailyBossState', () => {
 
     expect(boss.status).toBe('locked');
     expect(boss.damage).toBe(0);
-    expect(boss.chestBonusCoins).toBe(0);
+    expect(boss.unlocksRareChest).toBe(false);
   });
 
   it('tracks quest progress as boss damage', () => {
@@ -50,7 +50,7 @@ describe('getDailyBossState', () => {
     expect(boss.currentHp).toBeGreaterThan(0);
   });
 
-  it('defeats the boss and unlocks chest bonus when all damage is dealt', () => {
+  it('defeats the boss and unlocks Rare chest eligibility when all damage is dealt', () => {
     const boss = getDailyBossState(
       '2026-06-18',
       [{ ...baseQuest, progressCount: 2, status: 'completed' }],
@@ -59,6 +59,6 @@ describe('getDailyBossState', () => {
 
     expect(boss.status).toBe('defeated');
     expect(boss.currentHp).toBe(0);
-    expect(boss.chestBonusCoins).toBe(defeatedBossChestBonusCoins);
+    expect(boss.unlocksRareChest).toBe(true);
   });
 });

@@ -19,7 +19,7 @@ LifeQuest is a mobile habit RPG built with React Native and Expo. The MVP turns 
 
 ## Current Status
 
-Tasks 1-30 are implemented through Pet Interaction v1.
+Gameplay tasks are implemented through Task 32, Chest Rarity v1. Task 23 Native Device QA remains pending.
 
 Implemented:
 
@@ -51,7 +51,8 @@ Implemented:
 - Adventure Map daily zone selection with Forest of Focus, Scholar Library, Strength Arena, Calm Temple, and Explorer Trail
 - Map node progress generated from quest progress and completion, with zone focus bonuses for matching quest categories
 - Adventure Map Scout/Trial/Gate/Boss node layers and Matched/Base/Bonus progress stats
-- Daily Boss HP, quest damage, Adventure Map boss gate, and Boss Chest bonus coins
+- Daily Boss HP, quest damage, Adventure Map boss gate, and Rare chest unlock
+- Common, Rare, and Epic chests with bounded deterministic coin rolls and streak conditions
 - Reward Shop with persistent inventory and active Pet Food, Streak Freeze, and Quest Reroll effects
 - Companion-screen Pet Care controls with Pet Food inventory, Feed Mochi action, and Happy/Hungry/Sleepy/Resting care states
 - Domain models for Player, Habit, Quest, Streak, and Pet
@@ -125,4 +126,4 @@ Notes:
 
 ## Recommended Next Task
 
-Continue with Chest Rarity v1: turn Daily and Boss Chest rewards into clear Common, Rare, and Epic tiers. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).
+Continue with Milestones and Achievements v1: award persistent badges for streak, quest, pet, and coin milestones. Details are tracked in [TODO.md](./TODO.md), with the full roadmap in [docs/DEVELOPMENT_TASK_ORDER.md](./docs/DEVELOPMENT_TASK_ORDER.md).

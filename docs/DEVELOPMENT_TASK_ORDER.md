@@ -301,7 +301,7 @@ Completion note: Added persisted daily adventure state for SQLite and web localS
 
 Status: Done
 
-Completion note: Added derived Daily Boss state, boss HP based on quest target load, quest progress/completion damage, Adventure Map gate locking, Dashboard boss panel, Rewards Boss Chest copy, and boss chest bonus coins when the boss is defeated.
+Completion note: Added derived Daily Boss state, boss HP based on quest target load, quest progress/completion damage, Adventure Map gate locking, Dashboard boss panel, and chest upgrade eligibility when the boss is defeated.
 
 ## 29. Reward Shop v1
 
@@ -342,6 +342,17 @@ Completion note: Added a persisted one-time reroll state to quests, a Dashboard 
 - Derive rarity from daily clear, boss defeat, and streak context
 - Use bounded rewards that remain straightforward to test
 - Show chest tier and reward context before claiming
+
+Status: Done
+
+Completion note: Added Common, Rare, and Epic chest tiers; deterministic bounded coin rolls; Rare conditions from boss defeat or a 3-day streak; Epic condition from boss defeat plus a 7-day streak; Explorer bonus support; rarity reason, range, and next-tier hints; Rewards rarity path UI; Dashboard rarity summary; and focused chest/boss tests.
+
+## 33. Milestones and Achievements v1
+
+- Track a 7-day streak achievement
+- Track 10 completed Learning quests
+- Track pet level 5 and first 100 coins
+- Persist unlocks and show badge progress in Rewards
 
 Status: Pending
 

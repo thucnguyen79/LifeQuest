@@ -4,7 +4,14 @@ import type { Player } from '@/data/models/player';
 import type { Quest } from '@/data/models/quest';
 import type { DailyBossState } from '@/features/boss/dailyBoss';
 
-import { dailyChestCoinReward, getDailyChestState } from './dailyChest';
+import {
+  chestRewardRanges,
+  epicChestStreakRequirement,
+  getBoundedChestReward,
+  getChestRarity,
+  getDailyChestState,
+  rareChestStreakRequirement,
+} from './dailyChest';
 
 function createQuest(status: Quest['status']): Quest {
   return {
@@ -45,13 +52,13 @@ function createPlayer(selectedClass: Player['selectedClass']): Player {
 
 function createBoss(overrides: Partial<DailyBossState> = {}): DailyBossState {
   return {
-    chestBonusCoins: 10,
     currentHp: 0,
     damage: 20,
     date: '2026-06-16',
     maxHp: 20,
     name: 'Forest Warden',
     status: 'defeated',
+    unlocksRareChest: true,
     zoneName: 'Forest of Focus',
     ...overrides,
   };
@@ -59,80 +66,76 @@ function createBoss(overrides: Partial<DailyBossState> = {}): DailyBossState {
 
 describe('getDailyChestState', () => {
   it('locks until every quest for the day is completed', () => {
-    expect(
-      getDailyChestState(
-        '2026-06-16',
-        [createQuest('completed'), createQuest('pending')],
-        {},
-      ),
-    ).toEqual({
-      bossBonusCoins: 0,
-      bossDefeated: false,
-      coinReward: dailyChestCoinReward,
+    const chest = getDailyChestState(
+      '2026-06-16',
+      [createQuest('completed'), createQuest('pending')],
+      {},
+    );
+
+    expect(chest).toMatchObject({
       completedQuestCount: 1,
-      date: '2026-06-16',
       status: 'locked',
-      tier: 'daily',
+      tier: 'common',
       totalQuestCount: 2,
     });
   });
 
-  it('becomes available when all quests are completed', () => {
-    expect(
-      getDailyChestState(
-        '2026-06-16',
-        [createQuest('completed'), createQuest('completed')],
-        {},
-      ).status,
-    ).toBe('available');
-  });
+  it('becomes available when all quests are completed and stays claimed afterward', () => {
+    const quests = [createQuest('completed')];
 
-  it('stays claimed after the daily reward is claimed', () => {
+    expect(getDailyChestState('2026-06-16', quests, {}).status).toBe('available');
     expect(
-      getDailyChestState(
-        '2026-06-16',
-        [createQuest('completed')],
-        { claimedDate: '2026-06-16' },
-      ).status,
+      getDailyChestState('2026-06-16', quests, { claimedDate: '2026-06-16' }).status,
     ).toBe('claimed');
   });
 
-  it('adds Explorer chest bonus coins', () => {
-    expect(
-      getDailyChestState(
-        '2026-06-16',
-        [createQuest('completed')],
-        {},
-        createPlayer('explorer'),
-      ).coinReward,
-    ).toBe(dailyChestCoinReward + 5);
+  it('uses Common, Rare, and Epic conditions', () => {
+    expect(getChestRarity(false, rareChestStreakRequirement - 1)).toBe('common');
+    expect(getChestRarity(false, rareChestStreakRequirement)).toBe('rare');
+    expect(getChestRarity(true, 0)).toBe('rare');
+    expect(getChestRarity(true, epicChestStreakRequirement)).toBe('epic');
   });
 
-  it('keeps the base chest reward for non-Explorer classes', () => {
-    expect(
-      getDailyChestState(
-        '2026-06-16',
-        [createQuest('completed')],
-        {},
-        createPlayer('warrior'),
-      ).coinReward,
-    ).toBe(dailyChestCoinReward);
+  it('rolls a stable reward inside each rarity range', () => {
+    (['common', 'rare', 'epic'] as const).forEach((rarity) => {
+      const first = getBoundedChestReward(rarity, '2026-06-16:player-1');
+      const second = getBoundedChestReward(rarity, '2026-06-16:player-1');
+
+      expect(first).toBe(second);
+      expect(first).toBeGreaterThanOrEqual(chestRewardRanges[rarity].min);
+      expect(first).toBeLessThanOrEqual(chestRewardRanges[rarity].max);
+    });
   });
 
-  it('upgrades to a boss chest when the daily boss is defeated', () => {
+  it('adds the Explorer bonus after the rarity roll', () => {
+    const explorerChest = getDailyChestState(
+      '2026-06-16',
+      [createQuest('completed')],
+      {},
+      createPlayer('explorer'),
+    );
+
+    expect(explorerChest.classBonusCoins).toBe(5);
+    expect(explorerChest.coinReward).toBe(explorerChest.rolledCoinReward + 5);
+  });
+
+  it('upgrades a defeated boss plus seven-day streak to Epic', () => {
     const chest = getDailyChestState(
       '2026-06-16',
       [createQuest('completed')],
       {},
       createPlayer('warrior'),
       createBoss(),
+      epicChestStreakRequirement,
     );
 
     expect(chest).toMatchObject({
-      bossBonusCoins: 10,
       bossDefeated: true,
-      coinReward: dailyChestCoinReward + 10,
-      tier: 'boss',
+      classBonusCoins: 0,
+      status: 'available',
+      tier: 'epic',
     });
+    expect(chest.coinReward).toBeGreaterThanOrEqual(chestRewardRanges.epic.min);
+    expect(chest.coinReward).toBeLessThanOrEqual(chestRewardRanges.epic.max);
   });
 });

@@ -9,6 +9,13 @@ import type { GameIconName } from '@/core/components/GameIcon';
 import { GamePanel } from '@/core/components/GamePanel';
 import { colors } from '@/core/theme/colors';
 import { spacing } from '@/core/theme/spacing';
+import {
+  chestRewardRanges,
+  chestRarityLabels,
+  epicChestStreakRequirement,
+  rareChestStreakRequirement,
+  type ChestRarity,
+} from '@/features/rewards/dailyChest';
 import { rewardShopItems } from '@/features/shop/shopItems';
 import { useLifeQuestStore } from '@/store/useLifeQuestStore';
 
@@ -17,7 +24,7 @@ const rewardTracks = [
     icon: 'chest',
     title: 'Daily Chest',
     status: 'Live',
-    body: 'Clear every quest today to unlock the chest. Defeat the boss first to upgrade its coin reward.',
+    body: 'Clear every quest today to unlock the chest. Boss victories and streaks raise its rarity.',
   },
   {
     icon: 'shield',
@@ -38,10 +45,47 @@ const rewardTracks = [
   title: string;
 }>;
 
+const rarityRules: Array<{
+  body: string;
+  reward: string;
+  tier: ChestRarity;
+  title: string;
+}> = [
+  {
+    body: 'Clear every quest today.',
+    reward: `${chestRewardRanges.common.min}-${chestRewardRanges.common.max} coins`,
+    tier: 'common',
+    title: 'Common',
+  },
+  {
+    body: `Defeat the boss or reach a ${rareChestStreakRequirement}-day streak.`,
+    reward: `${chestRewardRanges.rare.min}-${chestRewardRanges.rare.max} coins`,
+    tier: 'rare',
+    title: 'Rare',
+  },
+  {
+    body: `Defeat the boss with a ${epicChestStreakRequirement}-day streak.`,
+    reward: `${chestRewardRanges.epic.min}-${chestRewardRanges.epic.max} coins`,
+    tier: 'epic',
+    title: 'Epic',
+  },
+];
+
+const rarityBadgeTone: Record<ChestRarity, 'accent' | 'danger' | 'gold'> = {
+  common: 'accent',
+  epic: 'danger',
+  rare: 'gold',
+};
+
+const rarityIconTone: Record<ChestRarity, 'dark' | 'gold' | 'sky'> = {
+  common: 'sky',
+  epic: 'dark',
+  rare: 'gold',
+};
+
 export default function RewardsScreen() {
   const player = useLifeQuestStore((state) => state.player);
   const dailyChest = useLifeQuestStore((state) => state.dailyChest);
-  const dailyBoss = useLifeQuestStore((state) => state.dailyBoss);
   const shopInventory = useLifeQuestStore((state) => state.shopInventory);
   const claimDailyChest = useLifeQuestStore((state) => state.claimDailyChest);
   const purchaseShopItem = useLifeQuestStore((state) => state.purchaseShopItem);
@@ -57,7 +101,7 @@ export default function RewardsScreen() {
         <View style={styles.header}>
           <Text style={styles.eyebrow}>Rewards</Text>
           <Text style={styles.title}>Vault</Text>
-          <Text style={styles.body}>Quest coins and future badges collect here.</Text>
+          <Text style={styles.body}>Claim bounded loot rolls and spend coins on adventure tools.</Text>
         </View>
 
         <Animated.View entering={FadeInDown.duration(300)} style={styles.coinCard}>
@@ -73,26 +117,43 @@ export default function RewardsScreen() {
             <GameIcon
               name="chest"
               size={64}
-              tone={dailyChest.status === 'available' ? 'gold' : 'sky'}
+              tone={rarityIconTone[dailyChest.tier]}
             />
             <View style={styles.claimCopy}>
-              <Text style={styles.claimTitle}>
-                {dailyChest.tier === 'boss' ? 'Boss Chest' : 'Daily Chest'}
-              </Text>
+              <Text style={styles.claimTitle}>{chestRarityLabels[dailyChest.tier]} Chest</Text>
               <Text style={styles.claimBody}>
                 {dailyChest.status === 'available'
-                  ? dailyChest.tier === 'boss'
-                    ? `${dailyBoss.name} defeated. Claim +${dailyChest.coinReward} coins, including +${dailyChest.bossBonusCoins} boss bonus.`
-                    : `Unlocked. Claim +${dailyChest.coinReward} coins.`
+                  ? `Guaranteed roll: +${dailyChest.coinReward} coins.`
                   : dailyChest.status === 'claimed'
                     ? 'Claimed for today. Come back after tomorrow quests.'
                     : `Clear ${dailyChest.totalQuestCount - dailyChest.completedQuestCount} more quest(s) today.`}
               </Text>
             </View>
             <GameBadge
-              label={dailyChest.status}
-              tone={dailyChest.status === 'available' ? 'gold' : 'muted'}
+              label={dailyChest.tier}
+              tone={rarityBadgeTone[dailyChest.tier]}
             />
+          </View>
+          <View style={styles.chestDetails}>
+            <View style={styles.chestDetailRow}>
+              <Text style={styles.chestDetailLabel}>Tier roll</Text>
+              <Text style={styles.chestDetailValue}>
+                {dailyChest.rewardMin}-{dailyChest.rewardMax} coins
+              </Text>
+            </View>
+            <View style={styles.chestDetailRow}>
+              <Text style={styles.chestDetailLabel}>Tier source</Text>
+              <Text style={styles.chestDetailValue}>{dailyChest.rarityReason}</Text>
+            </View>
+            {dailyChest.classBonusCoins > 0 ? (
+              <View style={styles.chestDetailRow}>
+                <Text style={styles.chestDetailLabel}>Class bonus</Text>
+                <Text style={styles.chestDetailValue}>
+                  +{dailyChest.classBonusCoins} Explorer coins
+                </Text>
+              </View>
+            ) : null}
+            <Text style={styles.chestNextHint}>{dailyChest.nextTierHint}</Text>
           </View>
           <Pressable
             disabled={dailyChest.status !== 'available'}
@@ -111,6 +172,35 @@ export default function RewardsScreen() {
               {dailyChest.status === 'claimed' ? 'Claimed' : 'Claim Chest'}
             </Text>
           </Pressable>
+        </GamePanel>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Chest Rarity</Text>
+          <GameBadge label="Bounded rolls" tone="accent" />
+        </View>
+        <GamePanel tone="parchment" style={styles.rarityPanel}>
+          {rarityRules.map((rule) => {
+            const isCurrent = dailyChest.tier === rule.tier;
+
+            return (
+              <View
+                key={rule.tier}
+                style={[styles.rarityRow, isCurrent ? styles.rarityRowCurrent : null]}
+              >
+                <GameIcon name="chest" size={42} tone={rarityIconTone[rule.tier]} />
+                <View style={styles.rarityCopy}>
+                  <View style={styles.rarityTitleRow}>
+                    <Text style={styles.rarityTitle}>{rule.title}</Text>
+                    {isCurrent ? (
+                      <GameBadge label="Current" tone={rarityBadgeTone[rule.tier]} />
+                    ) : null}
+                  </View>
+                  <Text style={styles.rarityBody}>{rule.body}</Text>
+                </View>
+                <Text style={styles.rarityReward}>{rule.reward}</Text>
+              </View>
+            );
+          })}
         </GamePanel>
 
         <View style={styles.sectionHeader}>
@@ -320,6 +410,40 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 2,
   },
+  chestDetails: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: spacing.xs,
+    padding: spacing.sm,
+  },
+  chestDetailRow: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+  },
+  chestDetailLabel: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  chestDetailValue: {
+    color: colors.ink,
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '900',
+    textAlign: 'right',
+  },
+  chestNextHint: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '800',
+    lineHeight: 17,
+    marginTop: spacing.xs,
+  },
   claimButton: {
     alignItems: 'center',
     backgroundColor: colors.ink,
@@ -347,6 +471,51 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontSize: 22,
     fontWeight: '900',
+  },
+  rarityPanel: {
+    gap: spacing.sm,
+  },
+  rarityRow: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    minHeight: 76,
+    padding: spacing.sm,
+  },
+  rarityRowCurrent: {
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.gold,
+  },
+  rarityCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  rarityTitleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  rarityTitle: {
+    color: colors.ink,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  rarityBody: {
+    color: colors.muted,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 2,
+  },
+  rarityReward: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '900',
+    maxWidth: 64,
+    textAlign: 'right',
   },
   shopGrid: {
     gap: spacing.md,

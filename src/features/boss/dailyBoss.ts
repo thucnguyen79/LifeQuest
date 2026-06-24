@@ -5,20 +5,18 @@ import type { Quest } from '@/data/models/quest';
 export type DailyBossStatus = 'active' | 'defeated' | 'locked';
 
 export type DailyBossState = {
-  chestBonusCoins: number;
   currentHp: number;
   damage: number;
   date: string;
   maxHp: number;
   name: string;
   status: DailyBossStatus;
+  unlocksRareChest: boolean;
   zoneName: string;
 };
 
 const damagePerProgress = 6;
 const completionDamageBonus = 4;
-export const defeatedBossChestBonusCoins = 10;
-
 function getBossName(adventure: DailyAdventure) {
   const zone = getAdventureZone(adventure.zoneId);
 
@@ -56,13 +54,13 @@ export function getDailyBossState(
   const zone = getAdventureZone(adventure.zoneId);
 
   return {
-    chestBonusCoins: defeated ? defeatedBossChestBonusCoins : 0,
     currentHp: Math.max(maxHp - damage, 0),
     damage,
     date,
     maxHp,
     name: getBossName(adventure),
     status: !unlocked ? 'locked' : defeated ? 'defeated' : 'active',
+    unlocksRareChest: defeated,
     zoneName: zone.name,
   };
 }
